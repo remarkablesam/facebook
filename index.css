@@ -856,7 +856,7 @@ body {
 }
 
 /* === Responsive Design for Mobile Screens === */
-@media (max-width: 1000px) {
+@media (max-width: 500px) {
   .product-card {
     max-width: 60%;
   }
