@@ -228,3 +228,55 @@ function addProductCard(imgSrc, price) {
 }
 
 
+const searchPage = document.getElementById('searchPage');
+const searchInput = document.getElementById('searchInput');
+const closeSearchPage = document.getElementById('closeSearchPage');
+const searchResults = document.getElementById('searchResults');
+
+// Show search page when search icon is clicked (second header-btn)
+document.querySelectorAll('.header-btn')[1].onclick = function() {
+    searchPage.style.display = 'flex';
+    searchInput.value = '';
+    searchInput.focus();
+    renderSearchResults('');
+};
+
+// Hide search page
+closeSearchPage.onclick = function() {
+    searchPage.style.display = 'none';
+};
+
+// Filter products as user types
+searchInput.oninput = function() {
+    renderSearchResults(searchInput.value.trim().toLowerCase());
+};
+
+// Example renderSearchResults function (customize as needed)
+function renderSearchResults(query) {
+    const products = JSON.parse(localStorage.getItem('products') || '[]');
+    if (!query) {
+        searchResults.innerHTML = '<div>No results found.</div>';
+        return;
+    }
+    const filtered = products.filter(product =>
+        (product.username && product.username.toLowerCase().includes(query)) ||
+        (product.phone && product.phone.toLowerCase().includes(query)) ||
+        (product.price && product.price.toString().includes(query))
+    );
+    searchResults.innerHTML = filtered.length
+        ? filtered.map(product => `
+            <div class="product-card">
+                <img src="${product.image}" class="product-img" alt="Product">
+                <div class="prices">
+                    <span>₦${product.price}</span>
+                </div>
+                <div class="meta">
+                    <span>${product.username || ''}</span>
+                    <span>${product.phone || ''}</span>
+                </div>
+            </div>
+        `).join('')
+        : '<div>search for ussers.</div>';
+}
+
+
