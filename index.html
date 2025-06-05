@@ -17,21 +17,22 @@
     </div>
 </header>
 <nav class="fb-nav">
+    
     <button class="nav-btn">
         <span class="material-icons">home</span>
-        <span class="badge">15+</span>
+        
     </button>
     <button class="nav-btn">
         <span class="material-icons">group</span>
-        <span class="badge">6</span>
+
     </button>
     <button class="nav-btn">
         <span class="material-icons">chat</span>
-        <span class="badge">15+</span>
+        
     </button>
     <button class="nav-btn">
         <span class="material-icons">notifications</span>
-        <span class="badge">15+</span>
+        
     </button>
     <button class="nav-btn">
         <span class="material-icons">storefront</span>
@@ -41,7 +42,7 @@
         <img src="avatar1.jpg" alt="Profile" class="profile-pic">
         <input type="text" placeholder="What's on your mind?" readonly>
         <button class="photo-btn">
-            <span class="material-icons">image</span>photo
+            <span class="material-icons">image</span> Photo
         </button>
     </section>
     <section class="stories">
@@ -74,6 +75,47 @@
 </div>
 
 <div class="product-list" id="productList"></div>
+
+
+
+<div id="searchPage" class="search-page" style="display:none;">
+    <header class="topbar">
+    <div class="logo fb-blue">Remarkable E-shop</div>
+    <div class="header-actions">
+        <button class="header-btn"><span class="material-icons">add</span></button>
+        <button class="header-btn"><span class="material-icons">search</span></button>
+        <button class="header-btn"><span class="material-icons">menu</span></button>
+    </div>
+</header>
+<nav class="fb-nav">
+    
+    <button class="nav-btn">
+        <span class="material-icons"><a href="index.html" id="home">home</a></span>
+        
+    </button>
+    <button class="nav-btn">
+        <span class="material-icons">group</span>
+
+    </button>
+    <button class="nav-btn">
+        <span class="material-icons">chat</span>
+        
+    </button>
+    <button class="nav-btn">
+        <span class="material-icons">notifications</span>
+        
+    </button>
+    <button class="nav-btn">
+        <span class="material-icons">storefront</span>
+    </button>
+</nav>
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search by username, phone, or anything...">
+    </div>
+    <div class="search-results" id="searchResults"></div>
+</div>
+
+
 
     <script src="index.js"></script>
 </body>
