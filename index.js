@@ -226,3 +226,64 @@ function addProductCard(imgSrc, price) {
     };
     productList.prepend(card);
 }
+
+
+// ...existing code...
+
+// Helper: Read file as Base64
+function readFileAsBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+// Save product to localStorage
+function saveProduct(product) {
+    const products = JSON.parse(localStorage.getItem('products') || '[]');
+    products.unshift(product); // Add new product to the start
+    localStorage.setItem('products', JSON.stringify(products));
+}
+
+// Load products from localStorage
+function loadProducts() {
+    const products = JSON.parse(localStorage.getItem('products') || '[]');
+    // Render products
+    const productList = document.getElementById('productList');
+    productList.innerHTML = '';
+    products.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            <img class="product-img" src="${product.image}" alt="Product">
+            <div class="product-info">
+                <div class="product-price">₦${product.price}</div>
+            </div>
+        `;
+        productList.appendChild(card);
+    });
+}
+
+document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const fileInput = document.getElementById('productImage');
+    const priceInput = document.getElementById('priceNaira');
+    if (fileInput.files.length === 0) return;
+    const file = fileInput.files[0];
+    const base64 = await readFileAsBase64(file);
+    const product = {
+        image: base64,
+        price: priceInput.value
+    };
+    saveProduct(product);
+    loadProducts();
+    // Optionally reset form and close modal
+    this.reset();
+    document.getElementById('uploadModal').classList.remove('show');
+});
+
+// On page load
+window.addEventListener('DOMContentLoaded', loadProducts);
+
