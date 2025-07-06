@@ -1,0 +1,4203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Know Empire Marketplace</title>
+    <!-- Google Fonts - Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Google Fonts - Inter (from previous versions, keeping for consistency if desired) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', Arial, sans-serif;
+            background: #f0f2f5;
+            display: flex; /* Added for main/profile container flex */
+            flex-direction: column; /* Added for main/profile container flex */
+            min-height: 100vh; /* Ensure body takes full viewport height */
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            padding: 10px 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            color: #9b23ea;
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: -1px;
+        }
+
+        .icons .material-icons {
+            font-size: 2rem;
+            margin-left: 18px;
+            color: #65676b;
+            cursor: pointer;
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            padding: 12px 16px;
+            margin-top: 8px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            object-fit: cover;
+            cursor: pointer; /* Make it clickable */
+        }
+
+        .status-bar input {
+            flex: 1; /* Allow it to grow and take available space */
+            border: none;
+            background: #f0f2f5;
+            border-radius: 20px;
+            padding: 10px 16px;
+            font-size: 1rem;
+            margin-right: 10px;
+        }
+
+        .photo-btn {
+            background: #f0f2f5;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            color: #9b23ea;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .photo-btn .material-icons {
+            font-size: 1.2rem;
+            margin-right: 4px;
+        }
+
+        .stories {
+            margin: 16px 0;
+            padding: 0 8px;
+            padding: 12px 0;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .story-cards {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .story-card {
+            background: #fff;
+            border-radius: 12px;
+            width: 110px;
+            min-width: 110px;
+            height: 200px;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            overflow: hidden;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+        }
+
+        .story-card.active {
+            border: 3px solid #9b23ea;
+            box-shadow: 0 4px 16px rgba(24,119,242,0.15);
+        }
+
+        .story-card .story-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%; /* Changed to 100% to fill the card */
+            object-fit: cover;
+        }
+
+        @media (max-width: 600px) {
+            .story-card {
+                width: 80px;
+                min-width: 80px;
+                height: 140px;
+            }
+            .story-card .story-img {
+                height: 100%; /* Ensure it fills the smaller card */
+            }
+        }
+
+        .fb-blue {
+            color: #9b23ea;
+            font-weight: bold;
+            font-size: 2rem;
+            letter-spacing: -1px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .header-btn {
+            background: #f0f2f5;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 1.5rem;
+            color: #050505;
+        }
+        .header-btn:hover,
+        .header-btn:active {
+            background: #9b23ea;
+            color: #fff;
+        }
+
+        .fb-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: #fff;
+            padding: 0 0 2px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 4px;
+            position: sticky;
+            bottom: 0;
+            z-index: 1000;
+        }
+        .nav-btn {
+            background: none;
+            border: none;
+            position: relative;
+            padding: 8px 0;
+            margin: 0 2px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #65676b;
+            font-size: 1.7rem;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .nav-btn:hover,
+        .nav-btn:active {
+            background: #9b23ea;
+            color: #fff;
+        }
+        .nav-btn .material-icons {
+            font-size: 2rem;
+        }
+        .badge {
+            position: absolute;
+            top: 4px;
+            right: 10px;
+            background: #e41e3f;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-radius: 12px;
+            padding: 1px 6px;
+            min-width: 22px;
+            text-align: center;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .topbar {
+                padding: 8px 6px;
+            }
+            .logo {
+                font-size: 1.3rem;
+            }
+            .header-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 1.1rem;
+            }
+            .fb-nav {
+                padding: 0 0 2px 0;
+            }
+            .nav-btn .material-icons {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Header and Nav Buttons */
+        .header-btn, .nav-btn {
+            background: none;
+            border: none;
+            border-radius: 10px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: #65676b;
+            font-size: 2rem;
+            position: relative;
+            outline: none;
+            padding: 0;
+        }
+
+        .header-btn .material-icons,
+        .nav-btn .material-icons {
+            transition: color 0.2s;
+            font-size: 2rem;
+            padding: 0;
+            border-radius: 0;
+            background: none;
+        }
+
+        .header-btn:hover,
+        .header-btn:active,
+        .nav-btn:hover,
+        .nav-btn:active {
+            background: #9b23ea;
+            color: #fff;
+        }
+
+        .header-btn:hover .material-icons,
+        .header-btn:active .material-icons,
+        .nav-btn:hover .material-icons,
+        .nav-btn:active .material-icons {
+            color: #fff;
+            background: none;
+        }
+
+        .badge {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .header-btn, .nav-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 1.3rem;
+                border-radius: 8px;
+            }
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 32px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background: #1877f2;
+            color: #fff;
+            border-radius: 50%;
+            box-shadow: 0 4px 16px rgba(24,119,242,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            cursor: pointer;
+            z-index: 3000;
+            transition: background 0.2s;
+        }
+        .fab:hover {
+            background: #9b23ea;
+        }
+
+        /* Modals (General Styling) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.5); /* Darker overlay */
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+            padding: 10px; /* Add some padding for smaller screens */
+            box-sizing: border-box; /* Include padding in width/height */
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px 20px 20px 20px;
+            min-width: 280px;
+            max-width: 90vw;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            animation: slideIn 0.3s ease-out;
+            max-height: 90vh; /* Limit height for scrollable content */
+            overflow-y: auto; /* Enable scrolling for long modals */
+        }
+        .close {
+            position: absolute;
+            right: 16px;
+            top: 10px;
+            font-size: 1.5rem;
+            color: #888;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Form Inputs in Modals */
+        .modal-content input[type="text"],
+        .modal-content input[type="number"],
+        .modal-content input[type="tel"],
+        .modal-content input[type="email"],
+        .modal-content input[type="password"],
+        .modal-content textarea,
+        .modal-content select { /* Added select for category */
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .converted-price {
+            margin-bottom: 14px;
+            color: #1877f2;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .modal-content .action-btn { /* Renamed from upload-btn for general use */
+            background: #9b23ea;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+            width: 100%; /* Make buttons full width in modals */
+            margin-top: 5px;
+        }
+        .modal-content .action-btn:hover {
+            background: #1877f2;
+        }
+        .modal-content .secondary-btn { /* For "Sign Up" link in login modal */
+            background: none;
+            color: #1877f2;
+            border: none;
+            padding: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 10px;
+            display: block;
+            width: 100%;
+        }
+        .modal-content .secondary-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Error message for form fields */
+        .error-message {
+            color: #e41e3f;
+            font-size: 0.85rem;
+            margin-top: -8px;
+            margin-bottom: 10px;
+            display: block; /* Ensure it takes full width */
+        }
+
+
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #9b23ea;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Product Card Styles */
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            padding: 16px;
+            margin: 0;
+        }
+        .product-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 3/4;
+            transition: transform 0.2s;
+        }
+        .product-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .product-card .product-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .product-card .prices {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0,0,0,0.55);
+            color: #fff;
+            border-radius: 8px;
+            padding: 2px 8px 2px 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            gap: 6px;
+            z-index: 2;
+        }
+
+        .product-card .product-info {
+            padding: 12px 10px 10px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0));
+            color: #fff;
+            box-sizing: border-box;
+            padding-top: 30px;
+        }
+
+        .product-card .product-info h4, .product-card .product-info p {
+            margin: 0;
+            color: #fff;
+        }
+        .product-card .product-info h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .product-card .product-info p {
+            font-size: 0.85rem;
+            line-height: 1.2;
+        }
+        .product-card .product-info .seller-info {
+            font-size: 0.75rem;
+            color: #ccc;
+        }
+
+
+        .product-card .like-order {
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0 10px;
+            z-index: 2;
+        }
+
+        .product-card .like-btn {
+            background: rgba(255,255,255,0.85);
+            border: none;
+            border-radius: 50%;
+            color: #e41e3f;
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 7px;
+            transition: background 0.2s, transform 0.15s;
+        }
+        .product-card .like-btn.liked {
+            background: #e41e3f;
+            color: #fff;
+            transform: scale(1.15);
+        }
+        .product-card .like-count {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-left: 2px;
+            color: #e41e3f;
+        }
+        .product-card .like-btn.liked .like-count {
+            color: #fff;
+        }
+
+        .product-card .order-btn {
+            background: #1877f2;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 5px 12px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+            margin-left: auto;
+        }
+        .product-card .order-btn:hover {
+            background: #9b23ea;
+        }
+
+        /* New: View Details Button on Product Card */
+        .product-card .view-details-btn {
+            background: rgba(255,255,255,0.9);
+            color: #9b23ea;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: absolute;
+            bottom: 8px; /* Align with like/order buttons */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3; /* Ensure it's above other elements */
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.3s ease-in-out;
+            white-space: nowrap;
+        }
+
+        .product-card:hover .view-details-btn {
+            opacity: 1; /* Show on hover */
+        }
+
+        /* Edit/Delete Buttons on Product Card */
+        .product-actions {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            gap: 5px;
+            z-index: 3;
+        }
+        .product-actions .action-icon-btn {
+            background: rgba(0,0,0,0.6);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #fff;
+            font-size: 1.2rem;
+            transition: background 0.2s;
+        }
+        .product-actions .action-icon-btn:hover {
+            background: rgba(0,0,0,0.8);
+        }
+
+
+        /* Modal image preview */
+        .preview-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .image-preview {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #eee;
+            display: block;
+        }
+
+        /* Search Page */
+        .search-page {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #f0f2f5;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+        }
+        .search-page .topbar {
+            position: static;
+        }
+        .search-bar input {
+            width: 70%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            border: 1px solid #9b23ea;
+            font-size: 1rem;
+        }
+        .search-results {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        /* Product Details Modal */
+        #productDetailsModal .modal-content {
+            max-width: 400px;
+            padding: 20px;
+            text-align: center;
+        }
+        #productDetailsModal img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        #productDetailsModal h3 {
+            margin-top: 0;
+            color: #333;
+            font-size: 1.8rem;
+        }
+        #productDetailsModal p {
+            color: #555;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        #productDetailsModal .user-id-display {
+            font-size: 0.9rem;
+            color: #777;
+            word-break: break-all;
+        }
+        /* Comments Section in Product Details */
+        .comments-section {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            text-align: left;
+        }
+        .comments-section h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .comments-list {
+            max-height: 150px; /* Scrollable comment list */
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding-right: 5px; /* Space for scrollbar */
+        }
+        .comment-item {
+            background: #f9f9f9;
+            padding: 8px 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #444;
+        }
+        .comment-item strong {
+            color: #000;
+            margin-right: 5px;
+        }
+        .comment-input-container {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .comment-input-container input {
+            flex: 1;
+            border-radius: 20px;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+        }
+        .comment-input-container button {
+            background: #9b23ea;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+
+        /* Registration/Signup Modal Specifics */
+        #signupModal .profile-upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: #f0f2f5;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            margin-bottom: 14px;
+        }
+        #signupModal .profile-upload-label .material-icons {
+            color: #9b23ea;
+            font-size: 2rem;
+        }
+        #signupModal .profile-upload-label img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #9b23ea;
+        }
+
+        /* Timed Message Popup */
+        #timedMessagePopup {
+            position: fixed;
+            bottom: 80px; /* Above the FAB */
+            left: 50%;
+            transform: translateX(-50%);
+            background: #9b23ea; /* Purple background */
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            z-index: 4000; /* Higher than other modals */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+        #timedMessagePopup.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+
+        a{
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Page Containers (main, profile, users, ads, notifications, chat) */
+        .page-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 120px); /* Adjust height for topbar and navbar */
+            box-sizing: border-box;
+            display: none; /* Hidden by default */
+            overflow-y: auto;
+        }
+        .page-container.show {
+            display: flex;
+        }
+
+        /* New Profile Header Section */
+        .profile-header {
+            background: #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            padding-bottom: 20px; /* Space below profile info */
+            position: relative;
+            margin-bottom: 10px; /* Space before tabs */
+        }
+
+        .banner-img {
+            width: 100%;
+            height: 180px; /* Adjust as needed */
+            object-fit: cover;
+            display: block;
+            background: linear-gradient(to right, #9b23ea, #6a0dad); /* Placeholder gradient */
+        }
+        @media (max-width: 600px) {
+            .banner-img {
+                height: 120px;
+            }
+        }
+
+        .profile-picture-container {
+            position: relative;
+            width: 150px; /* Larger size */
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid #fff; /* White border around profile pic */
+            overflow: hidden;
+            margin: -75px auto 0; /* Pulls it up over the banner */
+            background: #eee;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .profile-picture-container .profile-img-large {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .profile-picture-container .camera-icon {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: #f0f2f5;
+            border-radius: 50%;
+            padding: 5px;
+            font-size: 1.2rem;
+            color: #65676b;
+            cursor: pointer;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+        @media (max-width: 600px) {
+            .profile-picture-container {
+                width: 100px;
+                height: 100px;
+                margin-top: -50px;
+            }
+            .profile-picture-container .camera-icon {
+                font-size: 1rem;
+                padding: 3px;
+            }
+        }
+
+        .profile-info-section {
+            text-align: center;
+            padding: 15px 20px 0;
+        }
+        .profile-info-section h2 {
+            font-size: 1.8rem;
+            margin: 10px 0 5px;
+            color: #050505;
+        }
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            color: #65676b;
+            font-size: 0.9rem;
+        }
+        .profile-stats span {
+            font-weight: 600;
+            color: #050505;
+        }
+
+        .profile-actions-row {
+            display: flex;
+            gap: 10px;
+            padding: 0 16px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        .profile-actions-row .action-btn,
+        .profile-actions-row .secondary-btn {
+            flex: 1;
+            padding: 10px 15px;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+        .profile-actions-row .action-btn.professional {
+            background: #1877f2;
+            color: #fff;
+        }
+        .profile-actions-row .action-btn.professional:hover {
+            background: #1565c0;
+        }
+        .profile-actions-row .secondary-btn {
+            background: #e4e6eb;
+            color: #050505;
+        }
+        .profile-actions-row .secondary-btn:hover {
+            background: #d8dadf;
+        }
+        .profile-actions-row .material-icons {
+            font-size: 1.2rem;
+        }
+        .profile-actions-row .more-options-btn {
+            background: #e4e6eb;
+            color: #050505;
+            width: 40px;
+            min-width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .profile-actions-row .more-options-btn:hover {
+            background: #d8dadf;
+        }
+
+        /* Profile Tabs */
+        .profile-tabs {
+            display: flex;
+            justify-content: space-around;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            margin-top: 10px;
+            padding: 0 10px;
+        }
+        .profile-tab-item {
+            padding: 12px 0;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #65676b;
+            cursor: pointer;
+            position: relative;
+            flex-grow: 1;
+            text-align: center;
+            transition: color 0.2s;
+        }
+        .profile-tab-item:hover {
+            background: #f0f2f5;
+        }
+        .profile-tab-item.active {
+            color: #9b23ea;
+            border-bottom: 3px solid #9b23ea;
+            font-weight: 600;
+        }
+
+        /* Profile Content Sections */
+        .profile-content-section {
+            padding: 16px;
+            background: #fff;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .profile-details-section {
+            margin-top: 10px; /* Space below tabs */
+        }
+        .profile-details-section h3,
+        .post-creation-section h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .profile-details-section .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+        .profile-details-section .detail-item .material-icons {
+            font-size: 1.2rem;
+            color: #65676b;
+        }
+        .profile-details-section .edit-public-btn {
+            background: #e4e6eb;
+            color: #050505;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: background 0.2s;
+        }
+        .profile-details-section .edit-public-btn:hover {
+            background: #d8dadf;
+        }
+
+        .post-creation-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-top: 10px;
+        }
+        .post-creation-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .post-creation-top .profile-pic-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .post-creation-top input {
+            flex: 1;
+            border: none;
+            background: #f0f2f5;
+            border-radius: 20px;
+            padding: 10px 16px;
+            font-size: 1rem;
+            cursor: pointer; /* Indicate it's clickable */
+        }
+        .post-creation-actions {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        .post-creation-actions .action-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #65676b;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .post-creation-actions .action-item:hover {
+            background: #f0f2f5;
+        }
+        .post-creation-actions .action-item .material-icons {
+            font-size: 1.5rem;
+        }
+        .post-creation-actions .action-item.photo .material-icons { color: #42b72a; }
+        .post-creation-actions .action-item.reels .material-icons { color: #f02849; }
+        .post-creation-actions .action-item.event .material-icons { color: #f7b928; }
+
+        /* My Products List on Profile Page */
+        #myProductsList {
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px; /* Space below post creation */
+            background: #f0f2f5; /* Match body background */
+            border-radius: 8px;
+        }
+        @media (max-width: 600px) {
+            #myProductsList {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                padding: 10px;
+            }
+        }
+
+        /* Users List Page Styles */
+        .users-list-page {
+            flex-grow: 1;
+            padding: 16px;
+            background: #f0f2f5;
+            display: none; /* Hidden by default */
+            overflow-y: auto;
+        }
+        .users-list-page.show {
+            display: block;
+        }
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        .user-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 15px 10px;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .user-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .user-card .user-profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border: 2px solid #9b23ea;
+        }
+        .user-card .user-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+            word-break: break-word; /* Allow long names to wrap */
+        }
+
+        /* Back button on profile page when viewing another user */
+        .page-header { /* Combined for consistency */
+            padding: 10px 16px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            display: none; /* Hidden by default */
+        }
+        .page-header.show {
+            display: flex;
+        }
+        .page-header .back-btn {
+            background: #e4e6eb;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #050505;
+            transition: background 0.2s;
+        }
+        .page-header .back-btn:hover {
+            background: #d8dadf;
+        }
+        .page-header .page-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Ad Card Specific Styles */
+        .product-card.ad-card {
+            border: 2px solid #9b23ea; /* Highlight ads */
+            box-shadow: 0 4px 12px rgba(155, 35, 234, 0.2);
+        }
+        .ad-card .sponsored-tag {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #9b23ea;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 5px;
+            z-index: 3;
+        }
+
+        /* Standalone Ad Details Page Styling */
+        .ad-details-page {
+            background: #f0f2f5;
+            padding: 16px;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            align-items: center;
+        }
+        .ad-details-page.show {
+            display: flex;
+        }
+        .ad-details-content {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+            text-align: center;
+        }
+        .ad-details-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .ad-details-content h2 {
+            margin-top: 0;
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .ad-details-content p {
+            color: #555;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .ad-details-content .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 1rem;
+            color: #444;
+        }
+        .ad-details-content .detail-row:last-child {
+            border-bottom: none;
+        }
+        .ad-details-content .detail-row strong {
+            color: #000;
+        }
+        .ad-details-content .seller-info {
+            font-size: 0.9rem;
+            color: #777;
+            margin-top: 20px;
+            word-break: break-all;
+        }
+
+        /* Spinner for Signup Form */
+        .signup-spinner-container {
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        .signup-spinner {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-top: 3px solid #9b23ea;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        /* Notifications Modal Specifics */
+        .notifications-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #f0f2f5;
+            z-index: 2000;
+            flex-direction: column;
+            display: none; /* Hidden by default */
+        }
+        .notifications-modal .page-header {
+            position: static; /* Override fixed positioning for modal header */
+            border-bottom: 1px solid #eee;
+        }
+        .notifications-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        .notification-item {
+            background: #fff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: #333;
+            cursor: pointer; /* Make notifications clickable to mark as read */
+        }
+        .notification-item .material-icons {
+            color: #9b23ea;
+            font-size: 1.5rem;
+        }
+        .notification-item.unread {
+            background: #e6f0ff; /* Light blue for unread */
+            font-weight: 500;
+        }
+        .notifications-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 16px;
+            background: #fff;
+            border-top: 1px solid #eee;
+        }
+        .notifications-actions button {
+            background: #9b23ea;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .notifications-actions button:hover {
+            background: #1877f2;
+        }
+
+        /* Category Filter Bar */
+        .category-filter-bar {
+            background: #fff;
+            padding: 10px 16px;
+            margin-top: 8px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch; /* For smoother scrolling on iOS */
+        }
+        .category-filter-bar button {
+            background: #e4e6eb;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 14px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            color: #65676b;
+            flex-shrink: 0; /* Prevent buttons from shrinking */
+        }
+        .category-filter-bar button.active {
+            background: #9b23ea;
+            color: #fff;
+        }
+        .category-filter-bar button:hover {
+            background: #d8dadf;
+        }
+        .category-filter-bar button.active:hover {
+             background: #1877f2;
+        }
+
+        /* Custom Alert/Confirm Modal */
+        .custom-alert-modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 5000; /* Ensure it's on top of everything */
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-alert-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            max-width: 350px;
+            width: 90%;
+            text-align: center;
+            animation: fadeIn 0.3s ease-out;
+            position: relative;
+        }
+
+        .custom-alert-content h3 {
+            margin-top: 0;
+            color: #333;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+
+        .custom-alert-content p {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        .custom-alert-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .custom-alert-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            flex: 1; /* Make buttons take equal width */
+        }
+
+        .custom-alert-ok-btn {
+            background-color: #9b23ea;
+            color: white;
+        }
+
+        .custom-alert-ok-btn:hover {
+            background-color: #1877f2;
+        }
+
+        .custom-alert-cancel-btn {
+            background-color: #e4e6eb;
+            color: #050505;
+        }
+
+        .custom-alert-cancel-btn:hover {
+            background-color: #d8dadf;
+        }
+
+        /* Profile page specific for follow button */
+        .profile-actions-row .follow-btn {
+            background: #42b72a;
+            color: #fff;
+            display: none; /* Hidden by default, shown for other users */
+        }
+        .profile-actions-row .follow-btn:hover {
+            background: #36a420;
+        }
+        .profile-actions-row .following-btn {
+            background: #e4e6eb;
+            color: #050505;
+            display: none; /* Hidden by default, shown for other users */
+        }
+        .profile-actions-row .following-btn:hover {
+            background: #d8dadf;
+        }
+
+        /* Chat Modal Styles */
+        .chat-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #f0f2f5;
+            z-index: 2000;
+            flex-direction: column;
+            display: none;
+        }
+        .chat-header {
+            background: #fff;
+            padding: 10px 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chat-header .chat-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            flex-grow: 1;
+        }
+        .chat-header .chat-profile-pic {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #e5ddd5; /* WhatsApp-like background */
+        }
+        .message-bubble {
+            max-width: 75%;
+            padding: 10px 12px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            word-wrap: break-word; /* Ensure long words wrap */
+        }
+        .message-bubble.sent {
+            background: #dcf8c6; /* Green for sent messages */
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+        .message-bubble.received {
+            background: #fff; /* White for received messages */
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+        .message-bubble .sender-name {
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: #128c7e; /* Darker green for sender name */
+            margin-bottom: 4px;
+            display: block;
+        }
+        .message-bubble.received .sender-name {
+            color: #333;
+        }
+        .message-bubble .timestamp {
+            font-size: 0.7rem;
+            color: #777;
+            text-align: right;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 10px 16px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            gap: 8px;
+            align-items: center;
+        }
+        .chat-input-area input[type="text"] {
+            flex: 1;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            font-size: 1rem;
+            margin-bottom: 0; /* Override default margin-bottom */
+        }
+        .chat-input-area button {
+            background: #9b23ea;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+        .chat-input-area button:hover {
+            background: #1877f2;
+        }
+        .chat-input-area #sendTextBtn {
+            border-radius: 20px; /* Make text send button rounded rectangle */
+            width: auto;
+            padding: 0 15px;
+        }
+
+        /* Ads Page Specific Styles */
+        .ads-page-container {
+            flex-grow: 1;
+            background: #f0f2f5;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .ads-page-container.show {
+            display: flex;
+        }
+        .ads-page-content {
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        .ads-page-header {
+            background: #fff;
+            padding: 10px 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .ads-page-header .page-title {
+            flex-grow: 1;
+        }
+        .ads-page-header .create-ad-btn {
+            background: #9b23ea;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .ads-page-header .create-ad-btn:hover {
+            background: #1877f2;
+        }
+        .ads-page-header .create-ad-btn .material-icons {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a href="#" class="logo fb-blue">KnowEmpire</a>
+        <div class="header-actions">
+            <button class="header-btn" id="addBtn"><span class="material-icons">add</span></button>
+            <button class="header-btn" id="searchBtn"><span class="material-icons">search</span></button>
+            <button class="header-btn" id="chatBtn"><span class="material-icons">chat_bubble_outline</span></button>
+        </div>
+    </header>
+
+    <nav class="fb-nav">
+        <button class="nav-btn" id="homeNavBtn"><span class="material-icons">home</span></button>
+        <button class="nav-btn" id="adsNavBtn"><span class="material-icons">storefront</span></button> <!-- Ads Button -->
+        <button class="nav-btn" id="usersNavBtn"><span class="material-icons">group</span></button> <!-- Users Button -->
+        <button class="nav-btn" id="notificationsNavBtn"><span class="material-icons">notifications</span></button>
+        <button class="nav-btn" id="menuNavBtn"><span class="material-icons">menu</span></button>
+    </nav>
+
+    <!-- Main Content Area (Home Feed) -->
+    <main class="page-container" id="mainContent">
+        <div class="status-bar">
+            <img src="https://placehold.co/40x40/cccccc/333333?text=P" alt="Profile" class="profile-pic" id="statusBarProfilePic">
+            <input type="text" placeholder="Search products..." id="statusBarSearchInput">
+            <button class="photo-btn"><span class="material-icons">photo_library</span> Photo</button>
+        </div>
+
+        <div class="stories">
+            <h3 style="padding-left: 8px; margin-bottom: 10px; font-size: 1.1rem; font-weight: 600; color: #333;">Stories</h3>
+            <div class="story-cards" id="storyCards">
+                <!-- Story cards will be injected here by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Category Filter Bar -->
+        <div class="category-filter-bar" id="categoryFilterBar">
+            <button class="active" data-category="All">All</button>
+            <button data-category="Electronics">Electronics</button>
+            <button data-category="Fashion">Fashion</button>
+            <button data-category="Home">Home & Garden</button>
+            <button data-category="Vehicles">Vehicles</button>
+            <button data-category="Services">Services</button>
+            <button data-category="Other">Other</button>
+            <button id="clearFiltersBtn">Clear Filters</button>
+        </div>
+
+        <div class="product-grid" id="productList">
+            <!-- Product and Ad cards will be injected here by JavaScript -->
+            <div style="text-align: center; padding: 20px; color: #666; width: 100%; display: none;" id="emptyProductListMessage">No products or ads available. Be the first to post!</div>
+        </div>
+    </main>
+
+    <!-- Users List Page -->
+    <div class="page-container" id="usersListPage">
+        <h3 style="margin-bottom: 15px; font-size: 1.5rem; text-align: center; color: #333;">All Users</h3>
+        <div class="users-grid" id="usersGrid">
+            <!-- User cards will be injected here by JavaScript -->
+            <div style="text-align: center; padding: 20px; color: #666; width: 100%; display: none;" id="emptyUsersListMessage">No users registered yet.</div>
+        </div>
+    </div>
+
+    <!-- Profile Page Container (now dynamic for any user) -->
+    <div class="page-container" id="profilePageContainer">
+        <div class="page-header" id="profilePageHeader">
+            <button class="back-btn" id="profileBackBtn"><span class="material-icons">arrow_back</span></button>
+            <span class="page-title">Profile</span>
+        </div>
+        <div class="profile-header">
+            <img src="https://placehold.co/600x180/9b23ea/ffffff?text=KnowEmpire+Banner" alt="Profile Banner" class="banner-img" id="profileBannerImg">
+            <div class="profile-picture-container">
+                <img id="userProfileImageLarge" src="https://placehold.co/150x150/cccccc/333333?text=P" alt="User Profile" class="profile-img-large">
+                <span class="material-icons camera-icon">photo_camera</span>
+            </div>
+            <div class="profile-info-section">
+                <h2 id="profileNameDisplay"></h2>
+                <div class="profile-stats">
+                    <p><span>4.8K</span> followers</p>
+                    <p><span>217</span> following</p>
+                </div>
+                <div class="profile-actions-row">
+                    <button class="action-btn professional" id="professionalDashboardBtn">
+                        <span class="material-icons">dashboard</span> Professional dashboard
+                    </button>
+                    <button class="secondary-btn" id="addToStoryBtn">
+                        <span class="material-icons">add</span> Add to story
+                    </button>
+                    <button class="action-btn follow-btn" id="followUserBtn" style="display: none;">
+                        <span class="material-icons">person_add</span> Follow
+                    </button>
+                     <button class="secondary-btn following-btn" id="unfollowUserBtn" style="display: none;">
+                        <span class="material-icons">check</span> Following
+                    </button>
+                    <button class="more-options-btn" id="moreOptionsBtn">
+                        <span class="material-icons">more_horiz</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-tabs">
+            <div class="profile-tab-item active" data-tab="posts">Posts</div>
+            <div class="profile-tab-item" data-tab="about">About</div>
+            <div class="profile-tab-item" data-tab="reels">Reels</div>
+            <div class="profile-tab-item" data-tab="photos">Photos</div>
+            <div class="profile-tab-item" data-tab="videos">Videos</div>
+        </div>
+
+        <!-- Tab Content Area -->
+        <div id="profileTabContent">
+            <!-- Posts Tab Content -->
+            <div id="postsTab" class="profile-content-section">
+                <div class="profile-details-section">
+                    <h3>Details</h3>
+                    <div class="detail-item"><span class="material-icons">person</span> Profile • Digital creator</div>
+                    <div class="detail-item"><span class="material-icons">info</span> Bio: <span id="profileBio">No bio yet.</span></div>
+                    <div class="detail-item"><span class="material-icons">link</span> Social: <a href="#" id="profileSocialLink" target="_blank">Not set</a></div>
+                    <button class="edit-public-btn" id="editPublicDetailsBtn">Edit Public Details</button>
+                </div>
+
+                <div class="post-creation-section profile-content-section" style="margin-top: 10px;">
+                    <h3>Posts</h3>
+                    <div class="post-creation-top">
+                        <img id="postCreationProfilePic" src="https://placehold.co/40x40/cccccc/333333?text=P" alt="Profile" class="profile-pic-small">
+                        <input type="text" placeholder="Post a status update" id="postStatusInput">
+                    </div>
+                    <div class="post-creation-actions">
+                        <div class="action-item photo"><span class="material-icons">photo_library</span> Photo</div>
+                        <div class="action-item reels"><span class="material-icons">videocam</span> Reels</div>
+                        <div class="action-item event"><span class="material-icons">event</span> Life event</div>
+                    </div>
+                </div>
+
+                <!-- User's Products will be displayed here -->
+                <div class="product-grid" id="myProductsList">
+                    <!-- Products posted by the logged-in user will be injected here -->
+                    <div style="text-align: center; padding: 20px; color: #666; width: 100%; display: none;" id="emptyMyProductsMessage">This user has not posted any products or ads yet.</div>
+                </div>
+            </div>
+
+            <!-- About Tab Content (Placeholder) -->
+            <div id="aboutTab" class="profile-content-section" style="display: none;">
+                <h3>About</h3>
+                <p>This section will contain detailed information about the user.</p>
+                <div class="detail-item"><span class="material-icons">phone</span> Phone: <span id="aboutUserPhone"></span></div>
+                <div class="detail-item"><span class="material-icons">location_on</span> Location: <span id="aboutUserLocation"></span></div>
+                <div class="detail-item"><span class="material-icons">account_balance</span> Bank Name: <span id="aboutUserBankName"></span></div>
+                <div class="detail-item"><span class="material-icons">account_circle</span> Username: <span id="aboutUserUsername"></span></div>
+                <button class="action-btn" id="aboutEditProfileBtn" style="margin-top: 20px;">Edit Profile</button>
+                <button class="secondary-btn" id="aboutLogoutBtn" style="margin-top: 10px;">Logout</button>
+            </div>
+
+            <!-- Reels, Photos, Videos Tabs Content (Placeholders) -->
+            <div id="reelsTab" class="profile-content-section" style="display: none;">
+                <h3>Reels</h3>
+                <p>This section will display the user's reels.</p>
+            </div>
+            <div id="photosTab" class="profile-content-section" style="display: none;">
+                <h3>Photos</h3>
+                <p>This section will display the user's photos.</p>
+            </div>
+            <div id="videosTab" class="profile-content-section" style="display: none;">
+                <h3>Videos</h3>
+                <p>This section will display the user's videos.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Standalone Ad Details Page -->
+    <div class="page-container" id="adDetailsPage">
+        <div class="page-header" id="adDetailsPageHeader">
+            <button class="back-btn" id="adDetailsBackBtn"><span class="material-icons">arrow_back</span></button>
+            <span class="page-title">Ad Details</span>
+        </div>
+        <div class="ad-details-content">
+            <img id="adDetailsImage" src="" alt="Ad Image">
+            <h2 id="adDetailsTitle"></h2>
+            <p id="adDetailsDescription"></p>
+            <div class="detail-row">
+                <span>Category:</span>
+                <strong id="adDetailsCategory"></strong>
+            </div>
+            <div class="detail-row">
+                <span>Location:</span>
+                <strong id="adDetailsLocation"></strong>
+            </div>
+            <div class="detail-row">
+                <span>Duration:</span>
+                <strong id="adDetailsDuration"></strong> days
+            </div>
+            <div class="detail-row">
+                <span>Budget:</span>
+                <strong>₦<span id="adDetailsBudget"></span></strong>
+            </div>
+            <p class="seller-info">Advertiser: <span id="adDetailsContactUsername"></span> (<span id="adDetailsContactPhone"></span>)</p>
+            <p class="user-id-display">Advertiser User ID: <span id="adDetailsUserId"></span></p>
+
+            <div class="comments-section">
+                <h4>Comments</h4>
+                <div class="comments-list" id="adCommentsList">
+                    <!-- Ad comments will be injected here -->
+                    <div style="text-align: center; color: #888;">No comments yet.</div>
+                </div>
+                <div class="comment-input-container">
+                    <input type="text" id="newAdCommentInput" placeholder="Add a comment...">
+                    <button id="postAdCommentBtn">Post</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div class="page-container" id="notificationsModal">
+        <div class="page-header" id="notificationsPageHeader">
+            <button class="back-btn" id="notificationsBackBtn"><span class="material-icons">arrow_back</span></button>
+            <span class="page-title">Notifications</span>
+        </div>
+        <div class="notifications-list" id="notificationsList">
+            <!-- Notifications will be injected here -->
+            <div style="text-align: center; padding: 20px; color: #666; display: none;" id="noNotificationsMessage">No new notifications.</div>
+        </div>
+        <div class="notifications-actions">
+            <button id="markAllReadBtn">Mark All Read</button>
+            <button id="clearAllNotificationsBtn">Clear All</button>
+            <button id="addTestNotificationBtn">Add Test Notification</button>
+        </div>
+    </div>
+
+    <!-- Chat Modal -->
+    <div class="page-container" id="chatModal">
+        <div class="page-header" id="chatPageHeader">
+            <button class="back-btn" id="chatBackBtn"><span class="material-icons">arrow_back</span></button>
+            <img src="https://placehold.co/36x36/9b23ea/ffffff?text=S" alt="Support" class="chat-profile-pic">
+            <span class="page-title chat-title">KnowEmpire Support</span>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <!-- Chat messages will be injected here -->
+            <div class="message-bubble received">
+                <span class="sender-name">KnowEmpire Support</span>
+                Welcome to KnowEmpire chat! How can I help you today?
+                <span class="timestamp">Just now</span>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatTextInput" placeholder="Type a message...">
+            <button id="sendTextBtn"><span class="material-icons">send</span></button>
+            <button id="sendPhotoBtn"><span class="material-icons">image</span></button>
+            <button id="sendVoiceBtn"><span class="material-icons">mic</span></button>
+        </div>
+    </div>
+
+    <!-- Ads Full Page -->
+    <div class="page-container" id="adsFullPage">
+        <div class="ads-page-header">
+            <button class="back-btn" id="adsPageBackBtn"><span class="material-icons">arrow_back</span></button>
+            <span class="page-title">All Ads</span>
+            <button class="create-ad-btn" id="createAdBtnHeader">
+                <span class="material-icons">add</span> Create Ad
+            </button>
+        </div>
+        <div class="ads-page-content" id="adsListContent">
+            <!-- Ads will be injected here -->
+            <div style="text-align: center; padding: 20px; color: #666; width: 100%; display: none;" id="emptyAdsListMessage">No ads available. Be the first to create one!</div>
+        </div>
+    </div>
+
+
+    <div class="fab" id="fab">
+        <span class="material-icons">add</span>
+    </div>
+
+    <!-- Upload Product Modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeUploadModal">&times;</span>
+            <h3 style="margin-bottom: 15px; font-size: 1.5rem; text-align: center; color: #333;" id="uploadModalTitle">Upload New Product</h3>
+            <form id="uploadForm">
+                <label for="productImage" class="upload-label">
+                    <span class="material-icons">cloud_upload</span> Select Image
+                    <input type="file" id="productImage" accept="image/*">
+                </label>
+                <div class="preview-container">
+                    <img id="imagePreview" class="image-preview" src="" alt="Image Preview" style="display: none;">
+                </div>
+                <input type="text" id="productName" placeholder="Product Name" required>
+                <span class="error-message" id="productNameError"></span>
+                <textarea id="productDescription" placeholder="Product Description" rows="3" required></textarea>
+                <span class="error-message" id="productDescriptionError"></span>
+                <select id="productCategory" required>
+                    <option value="">Select Category</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Fashion">Fashion</option>
+                    <option value="Home">Home & Garden</option>
+                    <option value="Vehicles">Vehicles</option>
+                    <option value="Services">Services</option>
+                    <option value="Other">Other</option>
+                </select>
+                <span class="error-message" id="productCategoryError"></span>
+                <input type="number" id="priceNaira" placeholder="Price in Naira (₦)" required>
+                <span class="error-message" id="priceNairaError"></span>
+                <div class="converted-price" id="convertedPrice"></div>
+                <div class="loading-spinner" id="uploadSpinner"></div>
+                <button type="submit" class="action-btn" id="uploadProductSubmitBtn">Upload Product</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Ad Modal -->
+    <div id="createAdModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeCreateAdModal">&times;</span>
+            <h3 style="margin-bottom: 15px; font-size: 1.5rem; text-align: center; color: #333;" id="createAdModalTitle">Create New Ad</h3>
+            <form id="createAdForm">
+                <label for="adImage" class="upload-label">
+                    <span class="material-icons">cloud_upload</span> Select Ad Image
+                    <input type="file" id="adImage" accept="image/*">
+                </label>
+                <div class="preview-container">
+                    <img id="adImagePreview" class="image-preview" src="" alt="Ad Image Preview" style="display: none;">
+                </div>
+                <input type="text" id="adTitle" placeholder="Ad Title/Headline" required>
+                <span class="error-message" id="adTitleError"></span>
+                <textarea id="adDescription" placeholder="Ad Description" rows="3" required></textarea>
+                <span class="error-message" id="adDescriptionError"></span>
+                <select id="adCategory" required>
+                    <option value="">Select Category</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Fashion">Fashion</option>
+                    <option value="Home">Home & Garden</option>
+                    <option value="Vehicles">Vehicles</option>
+                    <option value="Services">Services</option>
+                    <option value="Other">Other</option>
+                </select>
+                <span class="error-message" id="adCategoryError"></span>
+                <input type="text" id="adLocation" placeholder="Target Location (e.g., Lagos, Nigeria)" required>
+                <span class="error-message" id="adLocationError"></span>
+                <input type="number" id="adDuration" placeholder="Duration (days)" min="1" required>
+                <span class="error-message" id="adDurationError"></span>
+                <input type="number" id="adBudget" placeholder="Budget in Naira (₦)" min="100" required>
+                <span class="error-message" id="adBudgetError"></span>
+                <div class="loading-spinner" id="adSpinner"></div>
+                <button type="submit" class="action-btn" id="createAdSubmitBtn">Post Ad</button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeLoginModal">&times;</span>
+            <h3 style="margin-bottom: 15px; font-size: 1.5rem; text-align: center; color: #333;">Login</h3>
+            <form id="loginForm">
+                <input type="text" id="loginUsername" placeholder="Username or Email" required>
+                <span class="error-message" id="loginUsernameError"></span>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <span class="error-message" id="loginPasswordError"></span>
+                <button type="submit" class="action-btn">Login</button>
+                <button type="button" class="secondary-btn" id="goToSignupBtn">Don't have an account? Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeSignupModal">&times;</span>
+            <h3 style="margin-bottom: 15px; font-size: 1.5rem; text-align: center; color: #333;">Create Your Account</h3>
+            <form id="signupForm">
+                <label for="profilePhoto" class="profile-upload-label">
+                    <img id="profilePhotoPreview" src="https://placehold.co/80x80/cccccc/333333?text=P" alt="Profile Photo Preview">
+                    <span class="material-icons">add_a_photo</span> Upload Photo
+                    <input type="file" id="profilePhoto" accept="image/*">
+                </label>
+                <input type="text" id="signupName" placeholder="Your Full Name" required>
+                <span class="error-message" id="signupNameError"></span>
+                <input type="tel" id="signupPhone" placeholder="Phone Number (e.g., 08012345678)" required>
+                <span class="error-message" id="signupPhoneError"></span>
+                <input type="text" id="signupLocation" placeholder="Your Location" required>
+                <span class="error-message" id="signupLocationError"></span>
+                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <input type="number" id="signupAccountNumber" placeholder="Bank Account Number" required>
+                    <span class="signup-spinner-container"><div id="accountNumberSpinner" class="signup-spinner"></div></span>
+                </div>
+                <span class="error-message" id="signupAccountNumberError"></span>
+                <input type="text" id="signupAccountName" placeholder="Bank Account Name" disabled>
+                <span class="error-message" id="signupAccountNameError"></span>
+                <input type="text" id="signupBankName" placeholder="Bank Name" disabled>
+                <span class="error-message" id="signupBankNameError"></span>
+                <hr style="margin: 15px 0; border: none; border-top: 1px solid #eee;">
+                <input type="text" id="signupUsername" placeholder="Choose a Username or Email" required>
+                <span class="error-message" id="signupUsernameError"></span>
+                <input type="password" id="signupPassword" placeholder="Choose a Password" required>
+                <span class="error-message" id="signupPasswordError"></span>
+                <button type="submit" class="action-btn">Sign Up</button>
+                <button type="button" class="secondary-btn" id="goToLoginBtn">Already have an account? Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Product Details Modal (now only for products) -->
+    <div id="productDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeProductDetailsModal">&times;</span>
+            <img id="detailsImage" src="" alt="Product Image">
+            <h3 id="detailsProductName"></h3>
+            <p id="detailsProductDescription"></p>
+            <div class="detail-row">
+                <span>Category:</span>
+                <strong id="detailsProductCategory"></strong>
+            </div>
+            <p style="font-weight: bold; font-size: 1.2rem;">Price: <span id="detailsPriceNaira"></span> (<span id="detailsPriceDollar"></span>)</p>
+            <p class="user-id-display">Seller: <span id="detailsContactUsername"></span> (<span id="detailsContactPhone"></span>)</p>
+            <p class="user-id-display">Uploaded by User ID: <span id="detailsUserId"></span></p>
+
+            <div class="comments-section">
+                <h4>Comments</h4>
+                <div class="comments-list" id="productCommentsList">
+                    <!-- Product comments will be injected here -->
+                    <div style="text-align: center; color: #888;">No comments yet.</div>
+                </div>
+                <div class="comment-input-container">
+                    <input type="text" id="newProductCommentInput" placeholder="Add a comment...">
+                    <button id="postProductCommentBtn">Post</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timed Message Popup -->
+    <div id="timedMessagePopup"></div>
+
+    <!-- Custom Alert/Confirm Modal Structure -->
+    <div id="customAlertModal" class="custom-alert-modal">
+        <div class="custom-alert-content">
+            <h3 id="customAlertTitle">Alert</h3>
+            <p id="customAlertMessage">This is a custom alert message.</p>
+            <div class="custom-alert-buttons">
+                <button class="custom-alert-ok-btn" id="customAlertOkBtn">OK</button>
+                <button class="custom-alert-cancel-btn" id="customAlertCancelBtn" style="display: none;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // --- Custom Alert/Confirm System ---
+            const customAlertModal = document.getElementById('customAlertModal');
+            const customAlertTitle = document.getElementById('customAlertTitle');
+            const customAlertMessage = document.getElementById('customAlertMessage');
+            const customAlertOkBtn = document.getElementById('customAlertOkBtn');
+            const customAlertCancelBtn = document.getElementById('customAlertCancelBtn');
+
+            let resolveAlertPromise; // Used for customAlert
+            let resolveConfirmPromise; // Used for customConfirm
+
+            function customAlert(message, title = 'Alert') {
+                return new Promise(resolve => {
+                    customAlertTitle.textContent = title;
+                    customAlertMessage.textContent = message;
+                    customAlertCancelBtn.style.display = 'none'; // Hide cancel button for alerts
+                    customAlertOkBtn.textContent = 'OK';
+                    customAlertModal.classList.add('show');
+                    customAlertModal.style.display = 'flex'; // Ensure flex display
+
+                    resolveAlertPromise = resolve; // Store resolve function
+
+                    customAlertOkBtn.onclick = () => {
+                        customAlertModal.classList.remove('show');
+                        customAlertModal.style.display = 'none';
+                        resolveAlertPromise(true);
+                    };
+                    // Allow clicking outside to close for alerts
+                    customAlertModal.onclick = (e) => {
+                        if (e.target === customAlertModal) {
+                            customAlertModal.classList.remove('show');
+                            customAlertModal.style.display = 'none';
+                            resolveAlertPromise(true);
+                        }
+                    };
+                });
+            }
+
+            function customConfirm(message, title = 'Confirm') {
+                return new Promise(resolve => {
+                    customAlertTitle.textContent = title;
+                    customAlertMessage.textContent = message;
+                    customAlertCancelBtn.style.display = 'inline-block'; // Show cancel button for confirms
+                    customAlertOkBtn.textContent = 'Yes'; // Change text for confirmation
+                    customAlertModal.classList.add('show');
+                    customAlertModal.style.display = 'flex'; // Ensure flex display
+
+                    resolveConfirmPromise = resolve; // Store resolve function
+
+                    customAlertOkBtn.onclick = () => {
+                        customAlertModal.classList.remove('show');
+                        customAlertModal.style.display = 'none';
+                        resolveConfirmPromise(true);
+                    };
+                    customAlertCancelBtn.onclick = () => {
+                        customAlertModal.classList.remove('show');
+                        customAlertModal.style.display = 'none';
+                        resolveConfirmPromise(false);
+                    };
+                    // Prevent clicking outside for confirms
+                    customAlertModal.onclick = (e) => {
+                        if (e.target === customAlertModal) {
+                            // Do nothing, force user to click a button
+                        }
+                    };
+                });
+            }
+
+            // Override window.alert and window.confirm
+            window.alert = customAlert;
+            window.confirm = customConfirm;
+
+            // --- Story Carousel Logic ---
+            const storyImages = [
+                 'images/KesF.gif',
+    'images/latino-man-his-20s-learning-dance_1238364-88079.jpg',
+    'images/low-angle-woman-looking-camera_23-2148312210.avif',
+    'images/medium-shot-woman-with-yellow-suit_23-2149068946.jpg',
+    'images/nigerian-man-dressed-as-construction-worker-site_1238364-43851.jpg',
+    'images/young-man-rocking-urban-rap-style-vector-isolated-illustration_1310786-57769.jpg',
+    'images/young-people-tracksuits_130951-1150.jpg',
+    'images/young-woman-with-shopping-bags-female-person-walking-with-her-purchases_1170970-807.avif',
+    'images/blazer-poster-1.png', 
+    'images/curvaceous-woman-dressed-90s-streetwear-fashion-illustration-vector_893055-22621.avif',    
+    'images/woman.avif',
+    'images/woman-with-purple-shirt-purple-pants-is-carrying-bags_265721-3465.avif',
+    'images/woman-with-purple-bow-purple-dress-with-purple-bow-it_265721-3470.avif',
+    'images/woman-striped-top-is-walking-down-sidewalk_9493-63066.avif',
+    'images/woman-jacket-poster-1.avif',
+    'images/woman-holding-bags-woman-with-shopping-bag-her-hand_265721-3498.jpg',
+    'images/wide-angle-shot-man-ruffled-pants-black-hair_1322560-107567.jpg',
+    'images/what.avif',
+    'images/vector-beautiful-girl-stylish-fashion_1129452-52.avif',
+    'images/two-women-with-shopping-bags-one-has-picture-woman-holding-shopping-bag_265721-3476.jpg',
+    'images/tuybc.avif',
+    'images/trendy-shopaholic-girl-wear-fashionable-clothes-holding-purchases-paper-packs-young-caucasian-woman-holding-bags_1016-13631.avif',
+    'images/trendy-girl-with-pink-sweater-jeans-fashion-portrait-illustration_782253-26.avif',
+    'images/thai-woman-traditional-thai-silk-weavers-gear_1238364-64741.jpg',
+    'images/teenage-boy-sportswear_130951-1149.jpg',
+    'images/sweater-poster-1.png',
+    'images/stylish-woman-shopping-young-fashionista-holding-bags-outdoors_1332469-13211.avif',
+    'images/stylish-woman-dancing-bright-yellow-suit-sunglasses_348404-1580.avif',
+    'images/stylish-simplicity-vector-illustration-black-man-casual-outfit_1168402-2038.jpg',
+    'images/stylish-man-wearing-yellow-trench-coat-sunglasses_1310786-53469.jpg',
+    'images/stylish-man-wearing-yellow-trench-coat-sunglasses_1310786-53033.jpg',
+    'images/stylish-man-sunglasses-bending-with-hands_1120554-57408.jpg',
+    'images/stylish-couple-walking-together-posing-colorful-fashionable-clothing_1266916-388.jpg',
+    'images/stylish-black-man-wearing-suit-elegant-line-art-style-vector_72948-466.jpg',
+    'images/stylish-black-man-elegant-art-style-vector_72948-3461.avif',
+    'images/stylish-african-american-woman-with-waist-bag-fashionable-urban-lifestyle-shot_1310786-81096.jpg',
+    'images/senegalese-man-traditional-wrestlers-outfit_1238364-57450.jpg',
+    'images/portrait-young-woman-neon-light-gradient-backgound_489646-13892.avif',
+    'images/portrait-smiley-teenage-girl_23-2149085854.avif',
+    'images/portrait-beautiful-smiling-woman-city_1157-38040.avif',
+    'images/pmmmk.jpg',
+    'images/nigerian-man-traditional-highlife-musicians-outfit_1238364-58370.jpg',
+    'images/nigerian-man-dressed-as-construction-worker-site_1238364-44096.jpg',
+    'images/nigerian-man-dressed-as-construction-worker-site_1238364-43851.jpg',
+    'images/mozambican-man-traditional-singers-outfit_1238364-67645.jpg',
+    'images/mozambican-man-traditional-mozambican-attire-as-teacher_1238364-45576.avif',
+    'images/minimalist-fashion-vector-illustration-confident-woman-stylish-beige-outfit-with-hearts_874914-3973.avif',
+    'images/medium-shot-woman-with-yellow-suit_23-2149068946.jpg',
+    'images/man-with-beard-sits-purple-background_1140815-4795.jpg',
+    'images/man-face-artwork_961307-52291.jpg',
+    'images/low-angle-woman-looking-camera_23-2148312210.avif',
+    'images/latino-man-his-20s-learning-dance_1238364-88341.jpg',
+    'images/latino-man-his-20s-learning-dance_1238364-88079.jpg',
+    'images/KesF.gif',
+    'images/jacket-poster-1.png',
+    'images/jacket-poster-1 (2).png',
+    'images/illustration-person-jumping-joyfully-wearing-sunglasses-casual-clothes_53876-651389.jpg',
+    'images/illustration-arab-woman-hijab-with-shopping-bags_805465-346.jpg',
+    'images/illustration-arab-woman-hijab-with-shopping-bags_805465-330.jpg',
+    'images/hoffy.jpg',
+    'images/happy-young-woman-jumping_23-2148885425.avif',
+    'images/handsome-guy-stylish-summer-clothes_250538-1173.avif',
+    'images/handsome-guy-stylish-clothes_250538-1115.jpg',
+    'images/handsome-black-skinned-man-casual-clothes_169241-7801.jpg',
+    'images/hand-drawn-black-woman-illustration_23-2149429511.avif',
+    'images/hand-drawn-black-woman-illustration_23-2149429510.avif',
+    'images/hand-drawn-black-man-illustration_23-2149429508.avif',
+    'images/hand-drawn-black-man-illustration_23-2149429506.avif',
+    'images/hand-drawn-abstract-stock-illustration-with-young-happy-beauty-man-portrait-fashion-outfit-white-background_200084-705.avif',
+    'images/hand-drawn-abstract-stock-graphic-illustration-with-young-happy-black-beauty-female-with-piercing-her-face-white-background_200084-524.jpg',
+    'images/group-male_24911-72262.jpg',
+    'images/girl-teenager-athlete-pink-tracksuit-stylish-blue-hairstyle-man-full-length-pose_734900-3.avif',
+    'images/girl-goes-sports_657328-107.avif',
+    'images/gil.avif',
+    'images/free-vector-african-american-people-casual-wear-outfit_1000823-297322.avif','images/free-vector-african-american-people-casual-wear-outfit_1000823-297281.jpg',
+    'images/free-vector-african-american-people-casual-wear-outfit_1000823-297281.jpg',
+    'images/free-vector-african-american-people-casual-wear-outfit_1000823-297172.jpg',
+    'images/flat-illustration-dance-choreographer_9206-28812.avif',
+    'images/flat-grovy-style-man-dancing-party_753224-231.avif',
+    'images/fashionable-young-man-hat-coat-urban-style-vector-illustration_194708-3252.jpg',
+    'images/fashionable-woman-holding-packages-with-clothes_169241-5316.avif',
+    'images/fashionable-black-businessman-elegant-line-art-style-vector-abstract_72948-454.jpg',
+    'images/fashion-illustration-with-male-model_23-2148215964.avif',
+    'images/fashion-boy-listening-music-by-auricular_1196-768.jpg',
+    'images/edm_02.gif',
+    'images/drawing-woman-wearing-purple-outfit-with-purple-belt_1087929-12475.avif',
+    'images/detailed-flat-vector-people-illustration-man-with-casual-outfit_1268604-784.jpg',
+    'images/curvaceous-woman-dressed-90s-streetwear-fashion-illustration-vector_893055-22621.avif',
+    'images/cool-black-hipster-girl-with-sunglasses_88272-7268.avif',
+    'images/c3436f37d12cc1508eeb9c988fdc6ac7.jpg',
+    'images/bshsw.jpg',
+    'images/boy.jpg',
+    'images/bloggerharry-27166142641942253.jpg',
+    'images/blazer-poster-1.png',
+    'images/1Y1A.gif',
+    'images/3d-illustration-handsome-young-man-pink-shirt-white-jacket-pink-background_912214-91174.avif',
+    'images/114d46dd7a1d7632f05fb4ae0ca52f42.gif',
+    'images/4230a631755aab86740d4c444230e789.gif',
+    'images/16908592558aecc95d7bdf620e90d1e62738dc51f7_thumbnail_720x.jpg',
+    'images/170211049195197e5092f022c31c7d0b8f9c8d372b_thumbnail_720x.jpg',
+    'images/aesthetic-pastel-fashion-girl-discord-profile-picture_742173-12686.avif',
+    'images/african-american-boy-his-20s-practicing-parkour_1238364-73676.jpg',
+    'images/african-american-boy-his-40s-running-business_1238364-75371.jpg',
+    'images/african-american-boy-his-teens-practicing-gymnastics_1238364-88211.jpg',
+    'images/african-american-woman-with-prosthetic-arm-sportswear-isolated-white-background_129422-417.avif',
+    'images/african-american-women-taking-selfie-photo-posing-with-background-plant-pot-chair-illustration_664482-374.avif',
+    'images/african-male-pilot-his-50s-flying-airplane_1238364-101857.jpg',
+    'images/african-young-woman-with-braids-pink-background-portrait-red-suit-yellow-pants_242111-23967.avif',
+    'images/african-young-woman-with-braids-pink-background-portrait-red-suit-yellow-pants_242111-23967.avif',
+    'images/beautiful-woman-with-bright-silk-studio-fashion-concept_912214-84447.jpg',
+    
+            ];
+
+            const storyCards = document.getElementById('storyCards');
+            function renderStoryCards(activeIndex) {
+                if (!storyCards) return;
+                storyCards.innerHTML = '';
+                const total = storyImages.length;
+                const visibleCount = 5;
+                let start = Math.max(0, activeIndex - Math.floor(visibleCount / 2));
+                if (start + visibleCount > total) start = Math.max(0, total - visibleCount);
+
+                for (let i = start; i < Math.min(start + visibleCount, total); i++) {
+                    const card = document.createElement('div');
+                    card.className = 'story-card' + (i === activeIndex ? ' active' : '');
+                    card.innerHTML = `<img src="${storyImages[i]}" class="story-img" alt="Story">`;
+                    storyCards.appendChild(card);
+                }
+            }
+
+            let currentStory = 0;
+            renderStoryCards(currentStory);
+
+            setInterval(() => {
+                currentStory = (currentStory + 1) % storyImages.length;
+                renderStoryCards(currentStory);
+            }, 4000);
+
+            // --- DOM Elements ---
+            const mainContent = document.getElementById('mainContent'); // Main content div
+            const profilePageContainer = document.getElementById('profilePageContainer'); // Profile page div
+            const usersListPage = document.getElementById('usersListPage'); // Users List Page
+            const usersGrid = document.getElementById('usersGrid'); // Grid for user cards
+            const adDetailsPage = document.getElementById('adDetailsPage'); // New: Ad Details Page
+            const notificationsModal = document.getElementById('notificationsModal'); // New: Notifications Modal
+            const chatModal = document.getElementById('chatModal'); // New: Chat Modal
+            const adsFullPage = document.getElementById('adsFullPage'); // New: Ads Full Page
+
+            const statusBarProfilePic = document.getElementById('statusBarProfilePic');
+            const statusBarSearchInput = document.getElementById('statusBarSearchInput'); // New search input
+            const fab = document.getElementById('fab');
+
+            // Product Upload Modal Elements
+            const uploadModal = document.getElementById('uploadModal');
+            const closeUploadModal = document.getElementById('closeUploadModal');
+            const uploadForm = document.getElementById('uploadForm');
+            const productImageInput = document.getElementById('productImage');
+            const imagePreview = document.getElementById('imagePreview');
+            const productNameInput = document.getElementById('productName'); // New
+            const productDescriptionInput = document.getElementById('productDescription'); // New
+            const productCategorySelect = document.getElementById('productCategory'); // New
+            const priceNaira = document.getElementById('priceNaira');
+            const convertedPrice = document.getElementById('convertedPrice');
+            const uploadSpinner = document.getElementById('uploadSpinner');
+            const uploadModalTitle = document.getElementById('uploadModalTitle'); // New
+            const uploadProductSubmitBtn = document.getElementById('uploadProductSubmitBtn'); // New
+
+            // Create Ad Modal Elements
+            const createAdModal = document.getElementById('createAdModal');
+            const closeCreateAdModal = document.getElementById('closeCreateAdModal');
+            const createAdForm = document.getElementById('createAdForm');
+            const adImageInput = document.getElementById('adImage');
+            const adImagePreview = document.getElementById('adImagePreview');
+            const adTitleInput = document.getElementById('adTitle');
+            const adDescriptionInput = document.getElementById('adDescription');
+            const adCategorySelect = document.getElementById('adCategory'); // New
+            const adLocationInput = document.getElementById('adLocation');
+            const adDurationInput = document.getElementById('adDuration');
+            const adBudgetInput = document.getElementById('adBudget');
+            const adSpinner = document.getElementById('adSpinner');
+            const createAdModalTitle = document.getElementById('createAdModalTitle'); // New
+            const createAdSubmitBtn = document.getElementById('createAdSubmitBtn'); // New
+
+
+            const productList = document.getElementById('productList');
+            const emptyProductListMessage = document.getElementById('emptyProductListMessage'); // New
+
+            const loginModal = document.getElementById('loginModal');
+            const closeLoginModal = document.getElementById('closeLoginModal');
+            const loginForm = document.getElementById('loginForm');
+            const loginUsernameInput = document.getElementById('loginUsername');
+            const loginPasswordInput = document.getElementById('loginPassword');
+            const goToSignupBtn = document.getElementById('goToSignupBtn');
+
+            const signupModal = document.getElementById('signupModal');
+            const closeSignupModal = document.getElementById('closeSignupModal');
+            const signupForm = document.getElementById('signupForm');
+            const profilePhotoInput = document.getElementById('profilePhoto');
+            const profilePhotoPreview = document.getElementById('profilePhotoPreview');
+            const signupNameInput = document.getElementById('signupName');
+            const signupPhoneInput = document.getElementById('signupPhone');
+            const signupLocationInput = document.getElementById('signupLocation');
+            const signupAccountNumberInput = document.getElementById('signupAccountNumber');
+            const signupAccountNameInput = document.getElementById('signupAccountName');
+            const signupBankNameInput = document.getElementById('signupBankName');
+            const accountNumberSpinner = document.getElementById('accountNumberSpinner'); // New: Spinner for account number lookup
+            const signupUsernameInput = document.getElementById('signupUsername');
+            const signupPasswordInput = document.getElementById('signupPassword');
+            const goToLoginBtn = document.getElementById('goToLoginBtn');
+
+
+            const productDetailsModal = document.getElementById('productDetailsModal');
+            const closeProductDetailsModal = document.getElementById('closeProductDetailsModal');
+            const detailsImage = document.getElementById('detailsImage');
+            const detailsProductName = document.getElementById('detailsProductName'); // Renamed
+            const detailsProductDescription = document.getElementById('detailsProductDescription'); // Renamed
+            const detailsProductCategory = document.getElementById('detailsProductCategory'); // New
+            const detailsPriceNaira = document.getElementById('detailsPriceNaira');
+            const detailsPriceDollar = document.getElementById('detailsPriceDollar');
+            const detailsContactUsername = document.getElementById('detailsContactUsername');
+            const detailsContactPhone = document.getElementById('detailsContactPhone');
+            const detailsUserId = document.getElementById('detailsUserId');
+            const productCommentsList = document.getElementById('productCommentsList'); // New
+            const newProductCommentInput = document.getElementById('newProductCommentInput'); // New
+            const postProductCommentBtn = document.getElementById('postProductCommentBtn'); // New
+
+
+            // Ad Details Page Elements
+            const adDetailsPageHeader = document.getElementById('adDetailsPageHeader'); // New: Header for ad details
+            const adDetailsBackBtn = document.getElementById('adDetailsBackBtn');
+            const adDetailsImage = document.getElementById('adDetailsImage');
+            const adDetailsTitle = document.getElementById('adDetailsTitle');
+            const adDetailsDescription = document.getElementById('adDetailsDescription');
+            const adDetailsCategory = document.getElementById('adDetailsCategory'); // New
+            const adDetailsLocation = document.getElementById('adDetailsLocation');
+            const adDetailsDuration = document.getElementById('adDetailsDuration');
+            const adDetailsBudget = document.getElementById('adDetailsBudget');
+            const adDetailsContactUsername = document.getElementById('adDetailsContactUsername');
+            const adDetailsContactPhone = document.getElementById('adDetailsContactPhone');
+            const adDetailsUserId = document.getElementById('adDetailsUserId');
+            const adCommentsList = document.getElementById('adCommentsList'); // New
+            const newAdCommentInput = document.getElementById('newAdCommentInput'); // New
+            const postAdCommentBtn = document.getElementById('postAdCommentBtn'); // New
+
+
+            // Notifications Modal Elements
+            const notificationsPageHeader = document.getElementById('notificationsPageHeader'); // New: Header for notifications
+            const notificationsBackBtn = document.getElementById('notificationsBackBtn');
+            const notificationsList = document.getElementById('notificationsList');
+            const noNotificationsMessage = document.getElementById('noNotificationsMessage');
+            const addTestNotificationBtn = document.getElementById('addTestNotificationBtn');
+            const markAllReadBtn = document.getElementById('markAllReadBtn'); // New
+            const clearAllNotificationsBtn = document.getElementById('clearAllNotificationsBtn'); // New
+
+            // Chat Modal Elements
+            const chatPageHeader = document.getElementById('chatPageHeader'); // New: Header for chat
+            const chatBackBtn = document.getElementById('chatBackBtn');
+            const chatMessages = document.getElementById('chatMessages');
+            const chatTextInput = document.getElementById('chatTextInput');
+            const sendTextBtn = document.getElementById('sendTextBtn');
+            const sendPhotoBtn = document.getElementById('sendPhotoBtn');
+            const sendVoiceBtn = document.getElementById('sendVoiceBtn');
+
+            // Ads Full Page Elements
+            const adsPageHeader = document.getElementById('adsPageHeader'); // New: Header for ads full page
+            const adsPageBackBtn = document.getElementById('adsPageBackBtn');
+            const adsListContent = document.getElementById('adsListContent'); // Content area for ads
+            const emptyAdsListMessage = document.getElementById('emptyAdsListMessage'); // Empty message for ads page
+            const createAdBtnHeader = document.getElementById('createAdBtnHeader'); // Create ad button in ads header
+
+
+            const timedMessagePopup = document.getElementById('timedMessagePopup');
+
+            // Error message elements for forms
+            const loginUsernameError = document.getElementById('loginUsernameError');
+            const loginPasswordError = document.getElementById('loginPasswordError');
+            const signupNameError = document.getElementById('signupNameError');
+            const signupPhoneError = document.getElementById('signupPhoneError');
+            const signupLocationError = document.getElementById('signupLocationError');
+            const signupAccountNumberError = document.getElementById('signupAccountNumberError');
+            const signupAccountNameError = document.getElementById('signupAccountNameError');
+            const signupBankNameError = document.getElementById('signupBankNameError');
+            const signupUsernameError = document.getElementById('signupUsernameError');
+            const signupPasswordError = document.getElementById('signupPasswordError');
+            const productNameError = document.getElementById('productNameError');
+            const productDescriptionError = document.getElementById('productDescriptionError');
+            const productCategoryError = document.getElementById('productCategoryError');
+            const priceNairaError = document.getElementById('priceNairaError');
+            const adTitleError = document.getElementById('adTitleError');
+            const adDescriptionError = document.getElementById('adDescriptionError');
+            const adCategoryError = document.getElementById('adCategoryError');
+            const adLocationError = document.getElementById('adLocationError');
+            const adDurationError = document.getElementById('adDurationError');
+            const adBudgetError = document.getElementById('adBudgetError');
+
+
+            const addBtn = document.getElementById('addBtn');
+            const searchBtn = document.getElementById('searchBtn'); // This button will now trigger the main search input
+            const chatBtn = document.getElementById('chatBtn');
+            const homeNavBtn = document.getElementById('homeNavBtn');
+            const adsNavBtn = document.getElementById('adsNavBtn'); // Ads Button
+            const usersNavBtn = document.getElementById('usersNavBtn'); // Users Nav Button
+            const notificationsNavBtn = document.getElementById('notificationsNavBtn');
+            const menuNavBtn = document.getElementById('menuNavBtn');
+
+            // Profile Page elements (now within index.html)
+            const profilePageHeader = document.getElementById('profilePageHeader'); // New: Header for profile
+            const profileBackBtn = document.getElementById('profileBackBtn'); // New: Back button
+            const userProfileImageLarge = document.getElementById('userProfileImageLarge');
+            const profileNameDisplay = document.getElementById('profileNameDisplay');
+            const professionalDashboardBtn = document.getElementById('professionalDashboardBtn');
+            const addToStoryBtn = document.getElementById('addToStoryBtn');
+            const moreOptionsBtn = document.getElementById('moreOptionsBtn');
+            const profileTabs = document.querySelectorAll('.profile-tab-item');
+            const postsTabContent = document.getElementById('postsTab');
+            const aboutTabContent = document.getElementById('aboutTab');
+            const reelsTabContent = document.getElementById('reelsTab');
+            const photosTabContent = document.getElementById('photosTab');
+            const videosTabContent = document.getElementById('videosTab');
+            const editPublicDetailsBtn = document.getElementById('editPublicDetailsBtn');
+            const postCreationProfilePic = document.getElementById('postCreationProfilePic');
+            const postStatusInput = document.getElementById('postStatusInput');
+            const myProductsList = document.getElementById('myProductsList');
+            const emptyMyProductsMessage = document.getElementById('emptyMyProductsMessage'); // New
+            const aboutEditProfileBtn = document.getElementById('aboutEditProfileBtn'); // Edit button in About tab
+            const aboutLogoutBtn = document.getElementById('aboutLogoutBtn'); // Logout button in About tab
+
+            // About tab details
+            const aboutUserPhone = document.getElementById('aboutUserPhone');
+            const aboutUserLocation = document.getElementById('aboutUserLocation');
+            const aboutUserBankName = document.getElementById('aboutUserBankName');
+            const aboutUserUsername = document.getElementById('aboutUserUsername');
+            const profileBio = document.getElementById('profileBio'); // New
+            const profileSocialLink = document.getElementById('profileSocialLink'); // New
+
+            // User list empty message
+            const emptyUsersListMessage = document.getElementById('emptyUsersListMessage');
+
+            // Category Filter Bar elements
+            const categoryFilterBar = document.getElementById('categoryFilterBar');
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn'); // New
+            let currentFilterCategory = 'All'; // Default filter
+
+            // Follow/Unfollow buttons on profile
+            const followUserBtn = document.getElementById('followUserBtn');
+            const unfollowUserBtn = document.getElementById('unfollowUserBtn');
+
+
+            const NAIRA_TO_DOLLAR = 0.00067; // Example rate
+
+            let loggedInUser = null; // Stores the currently logged-in user's complete data object
+            let currentViewingUser = null; // Stores the user object whose profile is currently being viewed
+            let previousPage = 'main'; // To track the previous page for back button functionality
+
+            let editingItemId = null; // To store the ID of the item being edited (null for new creation)
+            let editingItemType = null; // To store the type of the item being edited ('product' or 'ad')
+
+            // --- Mock Bank Data (for simulating real-time lookup) ---
+            const mockBankAccounts = [
+                { accountNumber: '0012345678', accountName: 'John Doe', bankName: 'First Bank' },
+                { accountNumber: '0098765432', accountName: 'Jane Smith', bankName: 'Zenith Bank' },
+                { accountNumber: '0055511223', accountName: 'Alice Johnson', bankName: 'GTBank' },
+                { accountNumber: '0077788990', accountName: 'Bob Williams', bankName: 'UBA' },
+                { accountNumber: '0011223344', accountName: 'Charlie Brown', bankName: 'Access Bank' },
+            ];
+
+            // --- Notifications Data (stored in localStorage) ---
+            function getNotifications() {
+                return JSON.parse(localStorage.getItem('notifications') || '[]');
+            }
+
+            function saveNotifications(notifications) {
+                localStorage.setItem('notifications', JSON.stringify(notifications));
+            }
+
+            function addNotification(message) {
+                const notifications = getNotifications();
+                const newNotification = {
+                    id: Date.now().toString(),
+                    message: message,
+                    timestamp: new Date().toISOString(),
+                    read: false
+                };
+                notifications.unshift(newNotification); // Add to the beginning
+                saveNotifications(notifications);
+                renderNotifications(); // Update display
+            }
+
+            function renderNotifications() {
+                const notifications = getNotifications();
+                if (notificationsList) notificationsList.innerHTML = ''; // Clear existing
+                if (noNotificationsMessage) noNotificationsMessage.style.display = notifications.length === 0 ? 'block' : 'none';
+
+                notifications.forEach(notif => {
+                    const notifItem = document.createElement('div');
+                    notifItem.className = `notification-item ${notif.read ? '' : 'unread'}`;
+                    notifItem.innerHTML = `<span class="material-icons">info</span> ${notif.message}`;
+                    // Mark as read on click
+                    notifItem.onclick = () => {
+                        notif.read = true;
+                        saveNotifications(notifications);
+                        renderNotifications(); // Re-render to update read status
+                    };
+                    if (notificationsList) notificationsList.appendChild(notifItem);
+                });
+            }
+
+            // --- Form Validation Helper ---
+            function validateField(inputElement, errorMessageElement, validationFn, errorMessage) {
+                if (!inputElement || !errorMessageElement) return true; // Skip if elements not found
+
+                const isValid = validationFn(inputElement.value.trim());
+                if (!isValid) {
+                    errorMessageElement.textContent = errorMessage;
+                    inputElement.style.borderColor = '#e41e3f';
+                    return false;
+                } else {
+                    errorMessageElement.textContent = '';
+                    inputElement.style.borderColor = '#eee';
+                    return true;
+                }
+            }
+
+            function clearAllErrors() {
+                document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+                document.querySelectorAll('input, textarea, select').forEach(el => el.style.borderColor = '#eee');
+            }
+
+
+            // --- Timed Message Popup Function ---
+            function showTimedPopup(message, duration = 3000) {
+                if (timedMessagePopup) {
+                    timedMessagePopup.textContent = message;
+                    timedMessagePopup.classList.add('show');
+                    setTimeout(() => {
+                        timedMessagePopup.classList.remove('show');
+                    }, duration);
+                }
+            }
+
+            // --- View Management (Show/Hide sections) ---
+            function hideAllContentSections() {
+                document.querySelectorAll('.page-container').forEach(container => {
+                    container.classList.remove('show');
+                    container.style.display = 'none';
+                });
+                document.querySelectorAll('.page-header').forEach(header => {
+                    header.classList.remove('show');
+                    header.style.display = 'none';
+                });
+
+                // Hide modals
+                if (createAdModal) createAdModal.classList.remove('show');
+                if (uploadModal) uploadModal.classList.remove('show');
+                if (loginModal) loginModal.classList.remove('show');
+                if (signupModal) signupModal.classList.remove('show');
+                if (productDetailsModal) productDetailsModal.classList.remove('show');
+            }
+
+            function showPage(pageElement, headerElement = null) {
+                hideAllContentSections();
+                if (pageElement) {
+                    pageElement.classList.add('show');
+                    pageElement.style.display = 'flex'; // Use flex for page containers
+                }
+                if (headerElement) {
+                    headerElement.classList.add('show');
+                    headerElement.style.display = 'flex';
+                }
+            }
+
+            function showMainContent() {
+                showPage(mainContent);
+                renderAdsAndProducts(currentFilterCategory); // Ensure main feed is refreshed with current filter
+                previousPage = 'main';
+            }
+
+            function showUsersListPage() {
+                showPage(usersListPage);
+                renderUserCards();
+                previousPage = 'users';
+            }
+
+            function showProfilePage(user) {
+                showPage(profilePageContainer, profilePageHeader);
+                currentViewingUser = user; // Set the user being viewed
+
+                populateProfileDetails(user); // Populate with the selected user's data
+                renderUserProducts(user.id); // Render products for the selected user
+
+                // Show/hide back button based on whether it's the logged-in user's profile
+                if (profilePageHeader) {
+                    if (loggedInUser && user.id === loggedInUser.id) {
+                        profilePageHeader.classList.remove('show'); // No back button for own profile
+                    } else {
+                        profilePageHeader.classList.add('show'); // Show back button for other users
+                    }
+                }
+
+                // Show/hide edit/logout buttons based on if it's the logged-in user's profile
+                const isMyProfile = loggedInUser && user.id === loggedInUser.id;
+                if (editPublicDetailsBtn) editPublicDetailsBtn.style.display = isMyProfile ? 'block' : 'none';
+                if (postCreationProfilePic) postCreationProfilePic.style.display = isMyProfile ? 'block' : 'none';
+                if (postStatusInput) postStatusInput.style.display = isMyProfile ? 'block' : 'none';
+                document.querySelectorAll('.post-creation-actions .action-item').forEach(item => {
+                    item.style.display = isMyProfile ? 'flex' : 'none';
+                });
+                if (aboutEditProfileBtn) aboutEditProfileBtn.style.display = isMyProfile ? 'block' : 'none';
+                if (aboutLogoutBtn) aboutLogoutBtn.style.display = isMyProfile ? 'block' : 'none';
+
+                // Handle follow/unfollow buttons
+                if (followUserBtn) followUserBtn.style.display = 'none';
+                if (unfollowUserBtn) unfollowUserBtn.style.display = 'none';
+                if (!isMyProfile && loggedInUser) { // If viewing someone else's profile and logged in
+                    // Simulate follow state (not persistent without backend)
+                    const isFollowing = (loggedInUser.following || []).includes(user.id);
+                    if (isFollowing) {
+                        if (unfollowUserBtn) unfollowUserBtn.style.display = 'flex';
+                    } else {
+                        if (followUserBtn) followUserBtn.style.display = 'flex';
+                    }
+                }
+                previousPage = 'profile';
+            }
+
+            function showAdDetailsPage(ad) {
+                showPage(adDetailsPage, adDetailsPageHeader);
+
+                // Populate ad details
+                if (adDetailsImage) adDetailsImage.src = ad.imageUrl;
+                if (adDetailsTitle) adDetailsTitle.textContent = ad.title;
+                if (adDetailsDescription) adDetailsDescription.textContent = ad.description;
+                if (adDetailsCategory) adDetailsCategory.textContent = ad.category;
+                if (adDetailsLocation) adDetailsLocation.textContent = ad.location;
+                if (adDetailsDuration) adDetailsDuration.textContent = ad.durationDays;
+                if (adDetailsBudget) adDetailsBudget.textContent = ad.budgetNaira;
+                if (adDetailsContactUsername) adDetailsContactUsername.textContent = ad.username;
+                if (adDetailsContactPhone) adDetailsContactPhone.textContent = ad.phone;
+                if (adDetailsUserId) adDetailsUserId.textContent = ad.userId;
+
+                // Render comments (simulated)
+                renderComments(ad.id, adCommentsList, 'ad');
+                // Set up comment post button
+                if (postAdCommentBtn) {
+                    postAdCommentBtn.onclick = () => postComment(ad.id, newAdCommentInput, adCommentsList, 'ad');
+                }
+
+                previousPage = 'adDetails';
+            }
+
+            function showNotificationsModal() {
+                showPage(notificationsModal, notificationsPageHeader);
+                renderNotifications();
+                previousPage = 'notifications';
+            }
+
+            function showChatModal() {
+                if (!loggedInUser) {
+                    customAlert('Please log in to use the chat feature.', 'Login Required');
+                    return;
+                }
+                showPage(chatModal, chatPageHeader);
+                renderChatMessages();
+                previousPage = 'chat';
+            }
+
+            function showAdsFullPage() {
+                showPage(adsFullPage, adsPageHeader);
+                renderOnlyAds(); // Render only ads on this page
+                previousPage = 'adsFullPage';
+            }
+
+
+            // --- User Authentication Management ---
+            function loadLoggedInUser() {
+                const userId = localStorage.getItem('loggedInUser');
+                if (userId) {
+                    const allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+                    loggedInUser = allUsers.find(user => user.id === userId);
+                    if (loggedInUser) {
+                        if (statusBarProfilePic) {
+                            statusBarProfilePic.src = loggedInUser.profilePhoto || 'https://placehold.co/40x40/cccccc/333333?text=P';
+                        }
+                    } else {
+                        localStorage.removeItem('loggedInUser');
+                        loggedInUser = null;
+                        if (statusBarProfilePic) {
+                            statusBarProfilePic.src = 'https://placehold.co/40x40/cccccc/333333?text=P';
+                        }
+                    }
+                } else {
+                    loggedInUser = null;
+                    if (statusBarProfilePic) {
+                        statusBarProfilePic.src = 'https://placehold.co/40x40/cccccc/333333?text=P';
+                    }
+                }
+            }
+
+            function setLoggedInUser(user) {
+                loggedInUser = user;
+                localStorage.setItem('loggedInUser', user.id);
+                if (statusBarProfilePic) {
+                    statusBarProfilePic.src = loggedInUser.profilePhoto || 'https://placehold.co/40x40/cccccc/333333?text=P';
+                }
+            }
+
+            function populateProfileDetails(user) {
+                if (!user) return; // Ensure a user object is provided
+
+                if (userProfileImageLarge) userProfileImageLarge.src = user.profilePhoto || 'https://placehold.co/150x150/cccccc/333333?text=P';
+                if (profileNameDisplay) profileNameDisplay.textContent = user.name;
+                if (postCreationProfilePic) postCreationProfilePic.src = user.profilePhoto || 'https://placehold.co/40x40/cccccc/333333?text=P';
+
+                // Populate About tab details
+                if (aboutUserPhone) aboutUserPhone.textContent = user.phone;
+                if (aboutUserLocation) aboutUserLocation.textContent = user.location;
+                if (aboutUserBankName) aboutUserBankName.textContent = user.bankName;
+                if (aboutUserUsername) aboutUserUsername.textContent = user.username;
+
+                // Populate new profile fields (bio, social link)
+                if (profileBio) profileBio.textContent = user.bio || 'No bio yet.';
+                if (profileSocialLink) {
+                    if (user.socialLink && user.socialLink.startsWith('http')) {
+                        profileSocialLink.href = user.socialLink;
+                        profileSocialLink.textContent = user.socialLink;
+                    } else if (user.socialLink) {
+                        profileSocialLink.href = 'http://' + user.socialLink; // Prepend http if missing
+                        profileSocialLink.textContent = user.socialLink;
+                    } else {
+                        profileSocialLink.href = '#';
+                        profileSocialLink.textContent = 'Not set';
+                    }
+                }
+            }
+
+            async function logoutUser() {
+                const confirmed = await customConfirm('Are you sure you want to log out?', 'Logout');
+                if (confirmed) {
+                    loggedInUser = null;
+                    localStorage.removeItem('loggedInUser');
+                    if (statusBarProfilePic) {
+                        statusBarProfilePic.src = 'https://placehold.co/40x40/cccccc/333333?text=P';
+                    }
+                    customAlert('You have been logged out.', 'Logged Out');
+                    showMainContent(); // Go back to main content after logout
+                }
+            }
+
+            // --- Profile Icon Click Handler ---
+            if (statusBarProfilePic) {
+                statusBarProfilePic.onclick = () => {
+                    if (loggedInUser) {
+                        showProfilePage(loggedInUser); // Show logged-in user's profile
+                    } else {
+                        showTimedPopup('Register as a seller');
+                        setTimeout(() => {
+                            if (loginModal) loginModal.classList.add('show');
+                        }, 3000);
+                    }
+                };
+            }
+
+            // --- Profile Page Actions ---
+            if (professionalDashboardBtn) professionalDashboardBtn.onclick = () => customAlert('Professional Dashboard', 'This feature is under development!');
+            if (addToStoryBtn) addToStoryBtn.onclick = () => customAlert('Add to Story', 'You can add to your story here!');
+            if (moreOptionsBtn) moreOptionsBtn.onclick = () => customAlert('More Options', 'More profile options coming soon!');
+            if (postStatusInput) postStatusInput.onclick = () => customAlert('Post Status', 'This will open a new post creation interface!');
+            const photoActionItem = document.querySelector('.action-item.photo');
+            if (photoActionItem) photoActionItem.onclick = () => customAlert('Upload Photo', 'Upload a photo for your post!');
+            const reelsActionItem = document.querySelector('.action-item.reels');
+            if (reelsActionItem) reelsActionItem.onclick = () => customAlert('Create Reel', 'Create a new reel!');
+            const eventActionItem = document.querySelector('.action-item.event');
+            if (eventActionItem) eventActionItem.onclick = () => customAlert('Add Life Event', 'Add a life event!');
+
+            // Follow/Unfollow Button Logic (Simulated)
+            if (followUserBtn) {
+                followUserBtn.onclick = async () => {
+                    if (loggedInUser && currentViewingUser) {
+                        // Simulate adding to following list (not persistent)
+                        if (!loggedInUser.following) loggedInUser.following = [];
+                        if (!loggedInUser.following.includes(currentViewingUser.id)) {
+                            loggedInUser.following.push(currentViewingUser.id);
+                            // Update localStorage for loggedInUser (still not persistent across sessions for following)
+                            let allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+                            const loggedInUserIndex = allUsers.findIndex(u => u.id === loggedInUser.id);
+                            if (loggedInUserIndex !== -1) {
+                                allUsers[loggedInUserIndex] = loggedInUser;
+                                localStorage.setItem('allUsers', JSON.stringify(allUsers));
+                            }
+                            customAlert(`You are now following ${currentViewingUser.name}!`, 'Followed');
+                            showProfilePage(currentViewingUser); // Re-render profile to update button
+                        }
+                    } else {
+                        customAlert('Please log in to follow users.', 'Login Required');
+                    }
+                };
+            }
+            if (unfollowUserBtn) {
+                unfollowUserBtn.onclick = async () => {
+                    if (loggedInUser && currentViewingUser) {
+                        const confirmed = await customConfirm(`Are you sure you want to unfollow ${currentViewingUser.name}?`, 'Unfollow');
+                        if (confirmed) {
+                            if (loggedInUser.following) {
+                                loggedInUser.following = loggedInUser.following.filter(id => id !== currentViewingUser.id);
+                                // Update localStorage for loggedInUser
+                                let allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+                                const loggedInUserIndex = allUsers.findIndex(u => u.id === loggedInUser.id);
+                                if (loggedInUserIndex !== -1) {
+                                    allUsers[loggedInUserIndex] = loggedInUser;
+                                    localStorage.setItem('allUsers', JSON.stringify(allUsers));
+                                }
+                                customAlert(`You have unfollowed ${currentViewingUser.name}.`, 'Unfollowed');
+                                showProfilePage(currentViewingUser); // Re-render profile to update button
+                            }
+                        }
+                    }
+                };
+            }
+
+
+            if (editPublicDetailsBtn) {
+                editPublicDetailsBtn.onclick = () => {
+                    showMainContent(); // Go back to main content
+                    if (signupModal) signupModal.classList.add('show');
+                    // Pre-fill signup form with current user data for editing
+                    if (loggedInUser) {
+                        if (profilePhotoPreview) profilePhotoPreview.src = loggedInUser.profilePhoto || 'https://placehold.co/80x80/cccccc/333333?text=P';
+                        if (signupNameInput) signupNameInput.value = loggedInUser.name || '';
+                        if (signupPhoneInput) signupPhoneInput.value = loggedInUser.phone || '';
+                        if (signupLocationInput) signupLocationInput.value = loggedInUser.location || '';
+                        if (signupAccountNumberInput) signupAccountNumberInput.value = loggedInUser.accountNumber || '';
+                        if (signupAccountNameInput) signupAccountNameInput.value = loggedInUser.accountName || '';
+                        if (signupBankNameInput) signupBankNameInput.value = loggedInUser.bankName || '';
+                        if (signupUsernameInput) signupUsernameInput.value = loggedInUser.username || '';
+                        if (signupPasswordInput) signupPasswordInput.value = loggedInUser.password || '';
+                        // New fields for profile editing
+                        // if (signupBioInput) signupBioInput.value = loggedInUser.bio || ''; // Assuming you add these inputs
+                        // if (signupSocialLinkInput) signupSocialLinkInput.value = loggedInUser.socialLink || '';
+                    }
+                };
+            }
+
+            if (aboutEditProfileBtn) { // New: Edit button in About tab
+                aboutEditProfileBtn.onclick = () => {
+                    showMainContent(); // Go back to main content
+                    if (signupModal) signupModal.classList.add('show');
+                    if (loggedInUser) {
+                        if (profilePhotoPreview) profilePhotoPreview.src = loggedInUser.profilePhoto || 'https://placehold.co/80x80/cccccc/333333?text=P';
+                        if (signupNameInput) signupNameInput.value = loggedInUser.name || '';
+                        if (signupPhoneInput) signupPhoneInput.value = loggedInUser.phone || '';
+                        if (signupLocationInput) signupLocationInput.value = loggedInUser.location || '';
+                        if (signupAccountNumberInput) signupAccountNumberInput.value = loggedInUser.accountNumber || '';
+                        if (signupAccountNameInput) signupAccountNameInput.value = loggedInUser.accountName || '';
+                        if (signupBankNameInput) signupBankNameInput.value = loggedInUser.bankName || '';
+                        if (signupUsernameInput) signupUsernameInput.value = loggedInUser.username || '';
+                        if (signupPasswordInput) signupPasswordInput.value = loggedInUser.password || '';
+                        // New fields for profile editing
+                        // if (signupBioInput) signupBioInput.value = loggedInUser.bio || '';
+                        // if (signupSocialLinkInput) signupSocialLinkInput.value = loggedInUser.socialLink || '';
+                    }
+                };
+            }
+
+            if (aboutLogoutBtn) aboutLogoutBtn.onclick = logoutUser; // New: Logout button in About tab
+
+            // Back button on profile page
+            if (profileBackBtn) {
+                profileBackBtn.onclick = () => {
+                    showUsersListPage(); // Go back to the users list
+                };
+            }
+
+            // Back button on ad details page
+            if (adDetailsBackBtn) {
+                adDetailsBackBtn.onclick = () => {
+                    showAdsFullPage(); // Go back to the full ads page
+                };
+            }
+
+            // Back button on notifications modal
+            if (notificationsBackBtn) {
+                notificationsBackBtn.onclick = () => {
+                    showMainContent(); // Go back to main content from notifications
+                };
+            }
+
+            // Back button on chat modal
+            if (chatBackBtn) {
+                chatBackBtn.onclick = () => {
+                    showMainContent(); // Go back to main content from chat
+                };
+            }
+
+            // Back button on ads full page
+            if (adsPageBackBtn) {
+                adsPageBackBtn.onclick = () => {
+                    console.log('Ads Page Back Button Clicked'); // Debugging log
+                    showMainContent(); // Go back to main content from ads full page
+                };
+            }
+
+            // Profile Tabs functionality
+            profileTabs.forEach(tab => {
+                tab.onclick = function() {
+                    profileTabs.forEach(item => item.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Hide all tab contents
+                    if (postsTabContent) postsTabContent.style.display = 'none';
+                    if (aboutTabContent) aboutTabContent.style.display = 'none';
+                    if (reelsTabContent) reelsTabContent.style.display = 'none';
+                    if (photosTabContent) photosTabContent.style.display = 'none';
+                    if (videosTabContent) videosTabContent.style.display = 'none';
+
+                    // Show active tab content
+                    const targetTab = this.dataset.tab;
+                    if (targetTab === 'posts') {
+                        if (postsTabContent) postsTabContent.style.display = 'block';
+                        renderUserProducts(currentViewingUser ? currentViewingUser.id : null); // Render products for the currently viewed user
+                    } else if (targetTab === 'about') {
+                        if (aboutTabContent) aboutTabContent.style.display = 'block';
+                    } else if (targetTab === 'reels') {
+                        if (reelsTabContent) reelsTabContent.style.display = 'block';
+                    } else if (targetTab === 'photos') {
+                        if (photosTabContent) photosTabContent.style.display = 'block';
+                    } else if (targetTab === 'videos') {
+                        if (videosTabContent) videosTabContent.style.display = 'block';
+                    }
+                };
+            });
+
+
+            // --- Login Modal Logic ---
+            if (closeLoginModal) closeLoginModal.onclick = () => loginModal.classList.remove('show');
+            if (loginModal) loginModal.onclick = e => { if (e.target === loginModal) loginModal.classList.remove('show'); };
+
+            if (goToSignupBtn) {
+                goToSignupBtn.onclick = () => {
+                    if (loginModal) loginModal.classList.remove('show');
+                    if (signupForm) signupForm.reset();
+                    clearAllErrors(); // Clear errors on form switch
+                    if (profilePhotoPreview) profilePhotoPreview.src = 'https://placehold.co/80x80/cccccc/333333?text=P';
+                    // Reset account name/bank name fields on signup form
+                    if (signupAccountNameInput) {
+                        signupAccountNameInput.value = '';
+                        signupAccountNameInput.disabled = false;
+                    }
+                    if (signupBankNameInput) {
+                        signupBankNameInput.value = '';
+                        signupBankNameInput.disabled = false;
+                    }
+                    if (accountNumberSpinner) accountNumberSpinner.style.display = 'none';
+
+                    if (signupModal) signupModal.classList.add('show');
+                };
+            }
+
+            if (loginForm) {
+                loginForm.onsubmit = async function(e) {
+                    e.preventDefault();
+                    clearAllErrors(); // Clear previous errors
+
+                    const username = loginUsernameInput.value.trim();
+                    const password = loginPasswordInput.value.trim();
+
+                    let isValid = true;
+                    isValid = validateField(loginUsernameInput, loginUsernameError, val => val.length > 0, 'Username/Email is required.') && isValid;
+                    isValid = validateField(loginPasswordInput, loginPasswordError, val => val.length >= 6, 'Password is required and must be at least 6 characters.') && isValid;
+
+                    if (!isValid) return;
+
+                    const allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+                    const foundUser = allUsers.find(user => user.username === username && user.password === password);
+
+                    if (foundUser) {
+                        setLoggedInUser(foundUser);
+                        customAlert('Login successful!', 'Success');
+                        if (loginModal) loginModal.classList.remove('show');
+                        showMainContent();
+                    } else {
+                        customAlert('Invalid username/email or password.', 'Login Failed');
+                    }
+                };
+            }
+
+            // --- Signup Modal Logic ---
+            if (closeSignupModal) closeSignupModal.onclick = () => signupModal.classList.remove('show');
+            if (signupModal) signupModal.onclick = e => { if (e.target === signupModal) signupModal.classList.remove('show'); };
+
+            if (goToLoginBtn) {
+                goToLoginBtn.onclick = () => {
+                    if (signupModal) signupModal.classList.remove('show');
+                    if (loginForm) loginForm.reset();
+                    clearAllErrors(); // Clear errors on form switch
+                    if (loginModal) loginModal.classList.add('show');
+                };
+            }
+
+            if (profilePhotoInput) {
+                profilePhotoInput.onchange = function() {
+                    const file = profilePhotoInput.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(evt) {
+                            if (profilePhotoPreview) profilePhotoPreview.src = evt.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        if (profilePhotoPreview) profilePhotoPreview.src = 'https://placehold.co/80x80/cccccc/333333?text=P';
+                    }
+                };
+            }
+
+            // --- Account Number Auto-fill Logic ---
+            if (signupAccountNumberInput) {
+                let lookupTimeout;
+                signupAccountNumberInput.oninput = function() {
+                    clearTimeout(lookupTimeout);
+                    const accountNumber = this.value.trim();
+                    validateField(signupAccountNumberInput, signupAccountNumberError, val => val.length === 10, 'Account number must be 10 digits.');
+
+                    // Clear and enable fields immediately if input is too short
+                    if (accountNumber.length < 10) { // Assuming a 10-digit account number for lookup
+                        signupAccountNameInput.value = '';
+                        signupBankNameInput.value = '';
+                        signupAccountNameInput.disabled = false;
+                        signupBankNameInput.disabled = false;
+                        if (accountNumberSpinner) accountNumberSpinner.style.display = 'none';
+                        return;
+                    }
+
+                    if (accountNumberSpinner) accountNumberSpinner.style.display = 'block';
+                    signupAccountNameInput.value = '';
+                    signupBankNameInput.value = '';
+                    signupAccountNameInput.disabled = true;
+                    signupBankNameInput.disabled = true;
+
+                    lookupTimeout = setTimeout(() => {
+                        const foundAccount = mockBankAccounts.find(acc => acc.accountNumber === accountNumber);
+                        if (foundAccount) {
+                            signupAccountNameInput.value = foundAccount.accountName;
+                            signupBankNameInput.value = foundAccount.bankName;
+                            showTimedPopup('Account details found!');
+                        } else {
+                            signupAccountNameInput.value = '';
+                            signupBankNameInput.value = '';
+                            signupAccountNameInput.disabled = false;
+                            signupBankNameInput.disabled = false;
+                            showTimedPopup('No matching account found. Please enter manually.');
+                        }
+                        if (accountNumberSpinner) accountNumberSpinner.style.display = 'none';
+                    }, 1000); // Simulate network delay
+                };
+            }
+
+
+            if (signupForm) {
+                signupForm.onsubmit = async function(e) {
+                    e.preventDefault();
+                    clearAllErrors(); // Clear previous errors
+
+                    const name = signupNameInput.value.trim();
+                    const phone = signupPhoneInput.value.trim();
+                    const location = signupLocationInput.value.trim();
+                    const accountNumber = signupAccountNumberInput.value.trim();
+                    const accountName = signupAccountNameInput.value.trim(); // Get value even if disabled
+                    const bankName = signupBankNameInput.value.trim();     // Get value even if disabled
+                    const username = signupUsernameInput.value.trim();
+                    const password = signupPasswordInput.value.trim();
+                    const photoFile = profilePhotoInput.files[0];
+
+                    let isValid = true;
+                    isValid = validateField(signupNameInput, signupNameError, val => val.length > 0, 'Full Name is required.') && isValid;
+                    isValid = validateField(signupPhoneInput, signupPhoneError, val => /^\d{10,15}$/.test(val), 'Phone number must be 10-15 digits.') && isValid;
+                    isValid = validateField(signupLocationInput, signupLocationError, val => val.length > 0, 'Location is required.') && isValid;
+                    isValid = validateField(signupAccountNumberInput, signupAccountNumberError, val => val.length === 10 && /^\d+$/.test(val), 'Account number must be 10 digits.') && isValid;
+                    // For account name and bank name, if auto-filled, they are disabled, but if not, they must be filled.
+                    if (!signupAccountNameInput.disabled) {
+                        isValid = validateField(signupAccountNameInput, signupAccountNameError, val => val.length > 0, 'Account Name is required.') && isValid;
+                    }
+                    if (!signupBankNameInput.disabled) {
+                        isValid = validateField(signupBankNameInput, signupBankNameError, val => val.length > 0, 'Bank Name is required.') && isValid;
+                    }
+                    isValid = validateField(signupUsernameInput, signupUsernameError, val => val.length > 0, 'Username/Email is required.') && isValid;
+                    isValid = validateField(signupPasswordInput, signupPasswordError, val => val.length >= 6, 'Password must be at least 6 characters.') && isValid;
+
+
+                    if (!isValid) return;
+
+                    let profilePhotoDataUrl = 'https://placehold.co/80x80/cccccc/333333?text=P';
+                    if (photoFile) {
+                        profilePhotoDataUrl = await new Promise(resolve => {
+                            const reader = new FileReader();
+                            reader.onload = (evt) => resolve(evt.target.result);
+                            reader.readAsDataURL(photoFile); // Use photoFile here
+                        });
+                    } else if (loggedInUser && loggedInUser.profilePhoto) {
+                        profilePhotoDataUrl = loggedInUser.profilePhoto;
+                    }
+
+
+                    let allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+                    const existingUserIndex = allUsers.findIndex(user => user.username === username);
+
+                    if (existingUserIndex !== -1 && (!loggedInUser || allUsers[existingUserIndex].id !== loggedInUser.id)) {
+                        customAlert('Username/Email already exists. Please choose a different one or login.', 'Registration Failed');
+                        return;
+                    }
+
+                    const newUserId = loggedInUser ? loggedInUser.id : 'user_' + Date.now().toString();
+
+                    const newUserData = {
+                        id: newUserId,
+                        profilePhoto: profilePhotoDataUrl,
+                        name: name,
+                        phone: phone,
+                        location: location,
+                        accountNumber: accountNumber,
+                        accountName: accountName,
+                        bankName: bankName,
+                        username: username,
+                        password: password,
+                        bio: loggedInUser ? loggedInUser.bio : '', // Preserve bio if editing
+                        socialLink: loggedInUser ? loggedInUser.socialLink : '', // Preserve socialLink if editing
+                        following: loggedInUser ? loggedInUser.following : [] // Preserve following if editing
+                    };
+
+                    if (loggedInUser && existingUserIndex !== -1) {
+                        allUsers[existingUserIndex] = newUserData;
+                        customAlert('Profile updated successfully!', 'Success');
+                    } else {
+                        allUsers.push(newUserData);
+                        customAlert('Account created successfully! You are now logged in.', 'Success');
+                    }
+
+                    localStorage.setItem('allUsers', JSON.stringify(allUsers));
+                    setLoggedInUser(newUserData);
+                    if (signupModal) signupModal.classList.remove('show');
+                    showMainContent();
+                };
+            }
+
+            // --- Upload Product Modal Logic (using localStorage) ---
+            if (fab) {
+                fab.onclick = () => {
+                    if (!loggedInUser) {
+                        showTimedPopup('Register as a seller');
+                        setTimeout(() => {
+                            if (loginModal) loginModal.classList.add('show');
+                        }, 3000);
+                        return;
+                    }
+                    // Reset for new product creation
+                    editingItemId = null;
+                    editingItemType = null;
+                    if (uploadModalTitle) uploadModalTitle.textContent = 'Upload New Product';
+                    if (uploadProductSubmitBtn) uploadProductSubmitBtn.textContent = 'Upload Product';
+                    if (uploadForm) uploadForm.reset();
+                    clearAllErrors(); // Clear errors on form switch
+                    if (convertedPrice) convertedPrice.textContent = '';
+                    if (imagePreview) {
+                        imagePreview.src = '';
+                        imagePreview.style.display = 'none';
+                    }
+                    if (uploadModal) uploadModal.classList.add('show');
+                };
+            }
+            if (closeUploadModal) closeUploadModal.onclick = () => uploadModal.classList.remove('show');
+            if (uploadModal) uploadModal.onclick = e => { if (e.target === uploadModal) uploadModal.classList.remove('show'); };
+
+            if (priceNaira) {
+                priceNaira.oninput = function() {
+                    const val = parseFloat(priceNaira.value) || 0;
+                    if (convertedPrice) convertedPrice.textContent = val ? `≈ $${(val * NAIRA_TO_DOLLAR).toFixed(2)}` : '';
+                    validateField(priceNaira, priceNairaError, val => val > 0, 'Price must be a positive number.');
+                };
+            }
+            if (productNameInput) productNameInput.oninput = () => validateField(productNameInput, productNameError, val => val.length > 0, 'Product Name is required.');
+            if (productDescriptionInput) productDescriptionInput.oninput = () => validateField(productDescriptionInput, productDescriptionError, val => val.length > 0, 'Description is required.');
+            if (productCategorySelect) productCategorySelect.onchange = () => validateField(productCategorySelect, productCategoryError, val => val.length > 0, 'Category is required.');
+
+
+            if (productImageInput) {
+                productImageInput.onchange = function() {
+                    const file = productImageInput.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(evt) {
+                            if (imagePreview) {
+                                imagePreview.src = evt.target.result;
+                                imagePreview.style.display = 'block';
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        if (imagePreview) {
+                            imagePreview.src = '';
+                            imagePreview.style.display = 'none';
+                        }
+                    }
+                };
+            }
+
+            if (uploadForm) {
+                uploadForm.onsubmit = async function(e) {
+                    e.preventDefault();
+                    clearAllErrors(); // Clear previous errors
+
+                    const file = productImageInput.files[0];
+                    const name = productNameInput.value.trim();
+                    const description = productDescriptionInput.value.trim();
+                    const category = productCategorySelect.value;
+                    const price = parseFloat(priceNaira.value);
+
+                    let isValid = true;
+                    isValid = validateField(productNameInput, productNameError, val => val.length > 0, 'Product Name is required.') && isValid;
+                    isValid = validateField(productDescriptionInput, productDescriptionError, val => val.length > 0, 'Description is required.') && isValid;
+                    isValid = validateField(productCategorySelect, productCategoryError, val => val.length > 0, 'Category is required.');
+                    isValid = validateField(priceNaira, priceNairaError, val => !isNaN(val) && val > 0, 'Price must be a positive number.') && isValid;
+
+                    if (!editingItemId && !file) { // If creating new and no file selected
+                        customAlert('Please select an image for your product.', 'Validation Error');
+                        isValid = false;
+                    }
+
+                    if (!isValid) return;
+
+                    if (uploadSpinner) uploadSpinner.style.display = 'block';
+                    const submitButton = uploadForm.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                    }
+
+                    try {
+                        let imageUrl = imagePreview.src; // Keep existing image if no new file selected
+                        if (file) {
+                             imageUrl = await new Promise(resolve => {
+                                const reader = new FileReader();
+                                reader.onload = (evt) => resolve(evt.target.result);
+                                reader.readAsDataURL(file);
+                            });
+                        }
+
+                        let products = JSON.parse(localStorage.getItem('products') || '[]');
+
+                        if (editingItemId && editingItemType === 'product') {
+                            const itemIndex = products.findIndex(p => p.id === editingItemId);
+                            if (itemIndex !== -1) {
+                                products[itemIndex] = {
+                                    ...products[itemIndex],
+                                    name: name,
+                                    description: description,
+                                    category: category,
+                                    price: price,
+                                    imageUrl: imageUrl, // Update image only if new one provided
+                                    timestamp: new Date().toISOString() // Update timestamp on edit
+                                };
+                                customAlert('Product updated successfully!', 'Success');
+                            }
+                        } else {
+                            const newProduct = {
+                                type: 'product',
+                                id: Date.now().toString(),
+                                name: name,
+                                description: description,
+                                category: category,
+                                price: price,
+                                imageUrl: imageUrl,
+                                likes: 0,
+                                timestamp: new Date().toISOString(),
+                                username: loggedInUser.name,
+                                phone: loggedInUser.phone,
+                                userId: loggedInUser.id
+                            };
+                            products.unshift(newProduct);
+                            customAlert('Product uploaded successfully!', 'Success');
+                        }
+
+                        localStorage.setItem('products', JSON.stringify(products));
+
+                        uploadForm.reset();
+                        if (convertedPrice) convertedPrice.textContent = '';
+                        if (imagePreview) {
+                            imagePreview.src = '';
+                            imagePreview.style.display = 'none';
+                        }
+                        if (uploadModal) uploadModal.classList.remove('show');
+                        renderAdsAndProducts(currentFilterCategory); // Re-render all products and ads on main page
+                        if (profilePageContainer && profilePageContainer.classList.contains('show')) {
+                            renderUserProducts(currentViewingUser ? currentViewingUser.id : null); // Re-render products if on profile page
+                        }
+                    } catch (error) {
+                        console.error("Error saving product:", error);
+                        customAlert('Failed to save product. Please try again.', 'Save Failed');
+                    } finally {
+                        if (uploadSpinner) uploadSpinner.style.display = 'none';
+                        if (submitButton) {
+                            submitButton.disabled = false;
+                        }
+                        editingItemId = null; // Reset editing state
+                        editingItemType = null;
+                    }
+                };
+            }
+
+            // --- Create Ad Modal Logic ---
+            // adsNavBtn now shows the full ads page
+            if (adsNavBtn) {
+                adsNavBtn.onclick = () => {
+                    showAdsFullPage();
+                };
+            }
+            // createAdBtnHeader is the button on the ads full page header
+            if (createAdBtnHeader) {
+                createAdBtnHeader.onclick = () => {
+                    if (!loggedInUser) {
+                        showTimedPopup('Login to create ads');
+                        setTimeout(() => {
+                            if (loginModal) loginModal.classList.add('show');
+                        }, 3000);
+                        return;
+                    }
+                    // Reset for new ad creation
+                    editingItemId = null;
+                    editingItemType = null;
+                    if (createAdModalTitle) createAdModalTitle.textContent = 'Create New Ad';
+                    if (createAdSubmitBtn) createAdSubmitBtn.textContent = 'Post Ad';
+                    if (createAdForm) createAdForm.reset();
+                    clearAllErrors(); // Clear errors on form switch
+                    if (adImagePreview) {
+                        adImagePreview.src = '';
+                        adImagePreview.style.display = 'none';
+                    }
+                    if (createAdModal) createAdModal.classList.add('show');
+                };
+            }
+
+            if (closeCreateAdModal) closeCreateAdModal.onclick = () => createAdModal.classList.remove('show');
+            if (createAdModal) createAdModal.onclick = e => { if (e.target === createAdModal) createAdModal.classList.remove('show'); };
+
+            if (adImageInput) {
+                adImageInput.onchange = function() {
+                    const file = adImageInput.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(evt) {
+                            if (adImagePreview) {
+                                adImagePreview.src = evt.target.result;
+                                adImagePreview.style.display = 'block';
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        if (adImagePreview) {
+                            adImagePreview.src = '';
+                            adImagePreview.style.display = 'none';
+                        }
+                    }
+                };
+            }
+
+            if (adTitleInput) adTitleInput.oninput = () => validateField(adTitleInput, adTitleError, val => val.length > 0, 'Ad Title is required.');
+            if (adDescriptionInput) adDescriptionInput.oninput = () => validateField(adDescriptionInput, adDescriptionError, val => val.length > 0, 'Description is required.');
+            if (adCategorySelect) adCategorySelect.onchange = () => validateField(adCategorySelect, adCategoryError, val => val.length > 0, 'Category is required.');
+            if (adLocationInput) adLocationInput.oninput = () => validateField(adLocationInput, adLocationError, val => val.length > 0, 'Location is required.');
+            if (adDurationInput) adDurationInput.oninput = () => validateField(adDurationInput, adDurationError, val => !isNaN(val) && val > 0, 'Duration must be a positive number.');
+            if (adBudgetInput) adBudgetInput.oninput = () => validateField(adBudgetInput, adBudgetError, val => !isNaN(val) && val >= 100, 'Budget must be at least ₦100.');
+
+
+            if (createAdForm) {
+                createAdForm.onsubmit = async function(e) {
+                    e.preventDefault();
+                    clearAllErrors(); // Clear previous errors
+
+                    const file = adImageInput.files[0];
+                    const title = adTitleInput.value.trim();
+                    const description = adDescriptionInput.value.trim();
+                    const category = adCategorySelect.value;
+                    const location = adLocationInput.value.trim();
+                    const duration = parseInt(adDurationInput.value);
+                    const budget = parseFloat(adBudgetInput.value);
+
+                    let isValid = true;
+                    isValid = validateField(adTitleInput, adTitleError, val => val.length > 0, 'Ad Title is required.') && isValid;
+                    isValid = validateField(adDescriptionInput, adDescriptionError, val => val.length > 0, 'Description is required.') && isValid;
+                    isValid = validateField(adCategorySelect, adCategoryError, val => val.length > 0, 'Category is required.') && isValid;
+                    isValid = validateField(adLocationInput, adLocationError, val => val.length > 0, 'Location is required.') && isValid;
+                    isValid = validateField(adDurationInput, adDurationError, val => !isNaN(val) && val > 0, 'Duration must be a positive number.');
+                    isValid = validateField(adBudgetInput, adBudgetError, val => !isNaN(val) && val >= 100, 'Budget must be at least ₦100.') && isValid;
+
+                    if (!editingItemId && !file) { // If creating new and no file selected
+                        customAlert('Please select an image for your ad.', 'Validation Error');
+                        isValid = false;
+                    }
+
+                    if (!isValid) return;
+
+                    if (adSpinner) adSpinner.style.display = 'block';
+                    const submitButton = createAdForm.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                    }
+
+                    try {
+                        let imageUrl = adImagePreview.src; // Keep existing image if no new file selected
+                        if (file) {
+                            imageUrl = await new Promise(resolve => {
+                                const reader = new FileReader();
+                                reader.onload = (evt) => resolve(evt.target.result);
+                                reader.readAsDataURL(file);
+                            });
+                        }
+
+                        let ads = JSON.parse(localStorage.getItem('ads') || '[]');
+
+                        if (editingItemId && editingItemType === 'ad') {
+                            const itemIndex = ads.findIndex(a => a.id === editingItemId);
+                            if (itemIndex !== -1) {
+                                ads[itemIndex] = {
+                                    ...ads[itemIndex],
+                                    title: title,
+                                    description: description,
+                                    category: category,
+                                    location: location,
+                                    durationDays: duration,
+                                    budgetNaira: budget,
+                                    imageUrl: imageUrl, // Update image only if new one provided
+                                    timestamp: new Date().toISOString() // Update timestamp on edit
+                                };
+                                customAlert('Ad updated successfully!', 'Success');
+                            }
+                        } else {
+                            const newAd = {
+                                type: 'ad',
+                                id: Date.now().toString(),
+                                title: title,
+                                description: description,
+                                category: category,
+                                imageUrl: imageUrl,
+                                location: location,
+                                durationDays: duration,
+                                budgetNaira: budget,
+                                likes: 0,
+                                timestamp: new Date().toISOString(),
+                                username: loggedInUser.name,
+                                phone: loggedInUser.phone,
+                                userId: loggedInUser.id
+                            };
+                            ads.unshift(newAd);
+                            customAlert('Ad posted successfully!', 'Success');
+                        }
+
+                        localStorage.setItem('ads', JSON.stringify(ads));
+
+                        createAdForm.reset();
+                        if (adImagePreview) {
+                            adImagePreview.src = '';
+                            adImagePreview.style.display = 'none';
+                        }
+                        if (createAdModal) createAdModal.classList.remove('show');
+                        renderAdsAndProducts(currentFilterCategory); // Re-render all products and ads on main page
+                        if (adsFullPage && adsFullPage.classList.contains('show')) { // If on ads full page, refresh it
+                             renderOnlyAds();
+                        }
+                    } catch (error) {
+                        console.error("Error saving ad:", error);
+                        customAlert('Failed to save ad. Please try again.', 'Save Failed');
+                    } finally {
+                        if (adSpinner) adSpinner.style.display = 'none';
+                        if (submitButton) {
+                            submitButton.disabled = false;
+                        }
+                        editingItemId = null; // Reset editing state
+                        editingItemType = null;
+                    }
+                };
+            }
+
+
+            // --- Product/Ad Card Display and Details Logic (using localStorage) ---
+            function addCardToDOM(item, targetList) {
+                const card = document.createElement('div');
+                card.className = `product-card ${item.type === 'ad' ? 'ad-card' : ''}`;
+                card.dataset.id = item.id;
+                card.dataset.type = item.type; // Store type in dataset
+
+                let priceHtml = '';
+                if (item.type === 'product') {
+                    priceHtml = `
+                        <div class="prices">
+                            <span>₦${item.price}</span>
+                            <span>$${(item.price * NAIRA_TO_DOLLAR).toFixed(2)}</span>
+                        </div>
+                    `;
+                } else if (item.type === 'ad') {
+                    priceHtml = `<span class="sponsored-tag">Sponsored</span>`;
+                }
+
+                card.innerHTML = `
+                    <img src="${item.imageUrl}" class="product-img" alt="${item.type === 'product' ? item.name : item.title}">
+                    ${priceHtml}
+                    <div class="product-info">
+                        <h4>${item.type === 'product' ? item.name : item.title}</h4>
+                        <p>${item.description ? item.description.substring(0, 70) + (item.description.length > 70 ? '...' : '') : ''}</p>
+                        <p class="seller-info">Category: ${item.category || 'N/A'}</p>
+                        <p class="seller-info">Seller: ${item.username} (${item.phone})</p>
+                    </div>
+                    <div class="like-order">
+                        <button class="like-btn" data-item-id="${item.id}" data-likes="${item.likes || 0}" data-item-type="${item.type}"><span class="material-icons">${item.likes > 0 ? 'favorite' : 'favorite_border'}</span><span class="like-count">${item.likes || 0}</span></button>
+                        ${item.type === 'product' ? '<button class="order-btn">Order</button>' : ''}
+                    </div>
+                    <button class="view-details-btn">View Details</button>
+                    <div class="product-actions" style="display: none;">
+                        <button class="action-icon-btn edit-btn" data-item-id="${item.id}" data-item-type="${item.type}"><span class="material-icons">edit</span></button>
+                        <button class="action-icon-btn delete-btn" data-item-id="${item.id}" data-item-type="${item.type}"><span class="material-icons">delete</span></button>
+                    </div>
+                `;
+
+                // Show edit/delete buttons if logged-in user is the owner
+                const productActions = card.querySelector('.product-actions');
+                if (loggedInUser && item.userId === loggedInUser.id && productActions) {
+                    productActions.style.display = 'flex';
+                }
+
+                const viewDetailsBtn = card.querySelector('.view-details-btn');
+                if (viewDetailsBtn) {
+                    viewDetailsBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        if (item.type === 'product') {
+                            if (detailsImage) detailsImage.src = item.imageUrl;
+                            if (detailsProductName) detailsProductName.textContent = item.name;
+                            if (detailsProductDescription) detailsProductDescription.textContent = item.description;
+                            if (detailsProductCategory) detailsProductCategory.textContent = item.category || 'N/A';
+                            if (detailsPriceNaira) detailsPriceNaira.textContent = `₦${item.price}`;
+                            if (detailsPriceDollar) detailsPriceDollar.textContent = `$${(item.price * NAIRA_TO_DOLLAR).toFixed(2)}`;
+                            if (detailsContactUsername) detailsContactUsername.textContent = item.username;
+                            if (detailsContactPhone) detailsContactPhone.textContent = item.phone;
+                            if (detailsUserId) detailsUserId.textContent = item.userId;
+                            if (productDetailsModal) productDetailsModal.classList.add('show');
+
+                            // Render comments (simulated)
+                            renderComments(item.id, productCommentsList, 'product');
+                            // Set up comment post button
+                            if (postProductCommentBtn) {
+                                postProductCommentBtn.onclick = () => postComment(item.id, newProductCommentInput, productCommentsList, 'product');
+                            }
+
+                        } else if (item.type === 'ad') {
+                            showAdDetailsPage(item);
+                        }
+                    };
+                }
+
+                const likeBtn = card.querySelector('.like-btn');
+                const likeIcon = likeBtn ? likeBtn.querySelector('.material-icons') : null;
+                const likeCount = likeBtn ? likeBtn.querySelector('.like-count') : null;
+
+                if (likeBtn) {
+                    likeBtn.onclick = function(e) {
+                        e.stopPropagation();
+                        if (!loggedInUser) {
+                            showTimedPopup('Register or Login to like items.');
+                            setTimeout(() => {
+                                if (loginModal) loginModal.classList.add('show');
+                            }, 3000);
+                            return;
+                        }
+
+                        let currentLikes = parseInt(likeBtn.dataset.likes);
+                        const itemId = likeBtn.dataset.itemId;
+                        const itemType = likeBtn.dataset.itemType;
+                        let items = JSON.parse(localStorage.getItem(itemType === 'product' ? 'products' : 'ads') || '[]');
+                        const itemIndex = items.findIndex(p => p.id === itemId);
+
+                        if (itemIndex !== -1) {
+                            if (likeBtn.classList.contains('liked')) {
+                                currentLikes = Math.max(0, currentLikes - 1);
+                                likeBtn.classList.remove('liked');
+                                if (likeIcon) likeIcon.textContent = 'favorite_border';
+                            } else {
+                                currentLikes++;
+                                likeBtn.classList.add('liked');
+                                if (likeIcon) likeIcon.textContent = 'favorite';
+                                addNotification(`Your ${itemType} "${item.type === 'product' ? item.name : item.title}" was liked!`);
+                            }
+                            if (likeCount) likeCount.textContent = currentLikes;
+                            likeBtn.dataset.likes = currentLikes;
+
+                            items[itemIndex].likes = currentLikes;
+                            localStorage.setItem(itemType === 'product' ? 'products' : 'ads', JSON.stringify(items));
+                        }
+                    };
+                }
+
+                const orderBtn = card.querySelector('.order-btn');
+                if (orderBtn) {
+                    orderBtn.onclick = async function(e) {
+                        e.stopPropagation();
+                        if (!loggedInUser) {
+                            showTimedPopup('Register or Login to order products.');
+                            setTimeout(() => {
+                                if (loginModal) loginModal.classList.add('show');
+                            }, 3000);
+                            return;
+                        }
+                        const confirmed = await customConfirm('Are you sure you want to order this product?', 'Confirm Order');
+                        if (confirmed) {
+                            customAlert('Your order has been placed successfully! (This is a demo order and not actually processed.)', 'Order Placed');
+                            // Add a notification for the seller
+                            addNotification(`New order for your product "${item.name}" from ${loggedInUser.name}!`);
+                        }
+                    };
+                }
+
+                // Edit Button Handler
+                const editBtn = card.querySelector('.edit-btn');
+                if (editBtn) {
+                    editBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        editingItemId = item.id;
+                        editingItemType = item.type;
+                        clearAllErrors(); // Clear errors when opening edit modal
+
+                        if (item.type === 'product') {
+                            if (uploadModalTitle) uploadModalTitle.textContent = 'Edit Product';
+                            if (uploadProductSubmitBtn) uploadProductSubmitBtn.textContent = 'Update Product';
+                            if (productImageInput) productImageInput.value = ''; // Clear file input
+                            if (imagePreview) {
+                                imagePreview.src = item.imageUrl;
+                                imagePreview.style.display = 'block';
+                            }
+                            if (productNameInput) productNameInput.value = item.name;
+                            if (productDescriptionInput) productDescriptionInput.value = item.description;
+                            if (productCategorySelect) productCategorySelect.value = item.category;
+                            if (priceNaira) priceNaira.value = item.price;
+                            if (convertedPrice) convertedPrice.textContent = `≈ $${(item.price * NAIRA_TO_DOLLAR).toFixed(2)}`;
+                            if (uploadModal) uploadModal.classList.add('show');
+                        } else if (item.type === 'ad') {
+                            if (createAdModalTitle) createAdModalTitle.textContent = 'Edit Ad';
+                            if (createAdSubmitBtn) createAdSubmitBtn.textContent = 'Update Ad';
+                            if (adImageInput) adImageInput.value = ''; // Clear file input
+                            if (adImagePreview) {
+                                adImagePreview.src = item.imageUrl;
+                                adImagePreview.style.display = 'block';
+                            }
+                            if (adTitleInput) adTitleInput.value = item.title;
+                            if (adDescriptionInput) adDescriptionInput.value = item.description;
+                            if (adCategorySelect) adCategorySelect.value = item.category;
+                            if (adLocationInput) adLocationInput.value = item.location;
+                            if (adDurationInput) adDurationInput.value = item.durationDays;
+                            if (adBudgetInput) adBudgetInput.value = item.budgetNaira;
+                            if (createAdModal) createAdModal.classList.add('show');
+                        }
+                    };
+                }
+
+                // Delete Button Handler
+                const deleteBtn = card.querySelector('.delete-btn');
+                if (deleteBtn) {
+                    deleteBtn.onclick = async (e) => {
+                        e.stopPropagation();
+                        const confirmed = await customConfirm(`Are you sure you want to delete this ${item.type}: "${item.type === 'product' ? item.name : item.title}"?`, 'Delete Confirmation');
+                        if (confirmed) {
+                            let items = JSON.parse(localStorage.getItem(item.type === 'product' ? 'products' : 'ads') || '[]');
+                            items = items.filter(i => i.id !== item.id);
+                            localStorage.setItem(item.type === 'product' ? 'products' : 'ads', JSON.stringify(items));
+                            customAlert(`${item.type === 'product' ? 'Product' : 'Ad'} deleted successfully!`, 'Deleted');
+                            renderAdsAndProducts(currentFilterCategory); // Re-render main feed
+                            if (profilePageContainer && profilePageContainer.classList.contains('show')) {
+                                renderUserProducts(currentViewingUser ? currentViewingUser.id : null); // Re-render profile products
+                            }
+                            if (adsFullPage && adsFullPage.classList.contains('show')) { // If on ads full page, refresh it
+                                renderOnlyAds();
+                            }
+                        }
+                    };
+                }
+
+                if (targetList) targetList.prepend(card);
+            }
+
+            if (closeProductDetailsModal) closeProductDetailsModal.onclick = () => productDetailsModal.classList.remove('show');
+            if (productDetailsModal) productDetailsModal.onclick = e => { if (e.target === productDetailsModal) productDetailsModal.classList.remove('show'); };
+
+            // --- Commenting System (UI Only) ---
+            function renderComments(itemId, commentsListElement, itemType) {
+                // In a real app, you would fetch comments from a backend database
+                // For this frontend-only demo, comments are not persistent.
+                // We'll just display what's entered for the current session.
+                const comments = JSON.parse(sessionStorage.getItem(`comments_${itemType}_${itemId}`) || '[]');
+
+                if (commentsListElement) commentsListElement.innerHTML = '';
+                const noCommentsMessageDiv = commentsListElement.querySelector('div[style*="No comments yet"]');
+
+                if (comments.length === 0) {
+                     if (commentsListElement) commentsListElement.innerHTML = '<div style="text-align: center; color: #888;">No comments yet.</div>';
+                } else {
+                    comments.forEach(comment => {
+                        const commentItem = document.createElement('div');
+                        commentItem.className = 'comment-item';
+                        commentItem.innerHTML = `<strong>${comment.username}:</strong> ${comment.text}`;
+                        if (commentsListElement) commentsListElement.appendChild(commentItem);
+                    });
+                }
+            }
+
+            function postComment(itemId, commentInput, commentsListElement, itemType) {
+                if (!loggedInUser) {
+                    customAlert('Please log in to post comments.', 'Login Required');
+                    return;
+                }
+                const commentText = commentInput.value.trim();
+                if (commentText.length === 0) {
+                    customAlert('Comment cannot be empty.', 'Validation Error');
+                    return;
+                }
+
+                const newComment = {
+                    username: loggedInUser.name,
+                    text: commentText,
+                    timestamp: new Date().toISOString()
+                };
+
+                const comments = JSON.parse(sessionStorage.getItem(`comments_${itemType}_${itemId}`) || '[]');
+                comments.push(newComment);
+                sessionStorage.setItem(`comments_${itemType}_${itemId}`, JSON.stringify(comments)); // Use sessionStorage for non-persistent comments
+
+                commentInput.value = ''; // Clear input
+                renderComments(itemId, commentsListElement, itemType); // Re-render comments
+                // Find the item to get its name/title for the notification
+                let itemTitle = "";
+                if (itemType === 'product') {
+                    const products = JSON.parse(localStorage.getItem('products') || '[]');
+                    const product = products.find(p => p.id === itemId);
+                    if (product) itemTitle = product.name;
+                } else if (itemType === 'ad') {
+                    const ads = JSON.parse(localStorage.getItem('ads') || '[]');
+                    const ad = ads.find(a => a.id === itemId);
+                    if (ad) itemTitle = ad.title;
+                }
+                addNotification(`New comment on your ${itemType} "${itemTitle}" from ${loggedInUser.name}!`);
+            }
+
+
+            // --- Load All Products and Ads for Main Feed with Optional Category Filter ---
+            function renderAdsAndProducts(category = 'All') {
+                const products = JSON.parse(localStorage.getItem('products') || '[]');
+                const ads = JSON.parse(localStorage.getItem('ads') || '[]');
+
+                let combinedFeed = [...products, ...ads];
+
+                if (category !== 'All') {
+                    combinedFeed = combinedFeed.filter(item => item.category === category);
+                }
+
+                // Sort by timestamp (most recent first)
+                combinedFeed.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                if (productList) productList.innerHTML = ''; // Clear main product list
+                if (emptyProductListMessage) emptyProductListMessage.style.display = combinedFeed.length === 0 ? 'block' : 'none';
+
+                combinedFeed.forEach(item => {
+                    addCardToDOM(item, productList);
+                });
+            }
+
+            // --- Load ONLY Ads for the Ads Full Page ---
+            function renderOnlyAds() {
+                if (adsListContent) adsListContent.innerHTML = ''; // Clear ads list content
+                const ads = JSON.parse(localStorage.getItem('ads') || '[]');
+
+                if (emptyAdsListMessage) emptyAdsListMessage.style.display = ads.length === 0 ? 'block' : 'none';
+
+                ads.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Sort by most recent
+                ads.forEach(ad => {
+                    addCardToDOM(ad, adsListContent);
+                });
+            }
+
+
+            // --- Load Products for a Specific User (for Profile Page) ---
+            function renderUserProducts(targetUserId) {
+                if (myProductsList) myProductsList.innerHTML = ''; // Clear my products list
+                if (!targetUserId) {
+                    if (emptyMyProductsMessage) emptyMyProductsMessage.style.display = 'block';
+                    return;
+                }
+
+                const allProducts = JSON.parse(localStorage.getItem('products') || '[]');
+                const allAds = JSON.parse(localStorage.getItem('ads') || '[]');
+
+                const userUploadedItems = [...allProducts, ...allAds].filter(item => item.userId === targetUserId);
+                userUploadedItems.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Sort by most recent
+
+                if (emptyMyProductsMessage) emptyMyProductsMessage.style.display = userUploadedItems.length === 0 ? 'block' : 'none';
+
+                userUploadedItems.forEach(item => {
+                    addCardToDOM(item, myProductsList);
+                });
+            }
+
+            // --- Render All User Cards for the Users List Page ---
+            function renderUserCards() {
+                if (usersGrid) usersGrid.innerHTML = ''; // Clear previous user cards
+                const allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+
+                if (emptyUsersListMessage) emptyUsersListMessage.style.display = allUsers.length === 0 ? 'block' : 'none';
+
+                allUsers.forEach(user => {
+                    const userCard = document.createElement('div');
+                    userCard.className = 'user-card';
+                    userCard.innerHTML = `
+                        <img src="${user.profilePhoto || 'https://placehold.co/80x80/cccccc/333333?text=P'}" alt="${user.name}" class="user-profile-pic">
+                        <p class="user-name">${user.name}</p>
+                    `;
+                    userCard.onclick = () => showProfilePage(user); // Click to view user's profile
+                    if (usersGrid) usersGrid.appendChild(userCard);
+                });
+            }
+
+
+            // --- Default User Creation ---
+            function createDefaultUser() {
+                let allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+                const defaultUsername = 'remarkablesamuel1@gmail.com';
+                const defaultPassword = 'schoolmate';
+
+                const defaultUserExists = allUsers.some(user => user.username === defaultUsername);
+
+                if (!defaultUserExists) {
+                    const defaultUser = {
+                        id: 'user_default_samuel',
+                        profilePhoto: 'https://placehold.co/80x80/9b23ea/ffffff?text=RS',
+                        name: 'Remarkable Samuel',
+                        phone: '08012345678',
+                        location: 'Lagos, Nigeria',
+                        accountNumber: '0012345678',
+                        accountName: 'Remarkable Samuel',
+                        bankName: 'First Bank',
+                        username: defaultUsername,
+                        password: defaultPassword,
+                        bio: 'Official support and test user for KnowEmpire Marketplace.',
+                        socialLink: 'https://twitter.com/RemarkableSamuel',
+                        following: []
+                    };
+                    allUsers.push(defaultUser);
+                    localStorage.setItem('allUsers', JSON.stringify(allUsers));
+                    console.log('Default user "Remarkable Samuel" created.');
+                }
+            }
+
+            // Call to create default user on load
+            createDefaultUser();
+
+            // Initial load of products and user when the page loads
+            loadLoggedInUser();
+            showMainContent(); // Initial render of combined feed with default filter
+
+            // Check for editProfile action from URL param (if coming back from profile page edit)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('action') === 'editProfile' && loggedInUser) {
+                if (signupModal) signupModal.classList.add('show');
+                if (profilePhotoPreview) profilePhotoPreview.src = loggedInUser.profilePhoto || 'https://placehold.co/80x80/cccccc/333333?text=P';
+                if (signupNameInput) signupNameInput.value = loggedInUser.name || '';
+                if (signupPhoneInput) signupPhoneInput.value = loggedInUser.phone || '';
+                if (signupLocationInput) signupLocationInput.value = loggedInUser.location || '';
+                if (signupAccountNumberInput) signupAccountNumberInput.value = loggedInUser.accountNumber || '';
+                if (signupAccountNameInput) signupAccountNameInput.value = loggedInUser.accountName || '';
+                if (signupBankNameInput) signupBankNameInput.value = loggedInUser.bankName || '';
+                if (signupUsernameInput) signupUsernameInput.value = loggedInUser.username || '';
+                if (signupPasswordInput) signupPasswordInput.value = loggedInUser.password || '';
+                window.history.replaceState({}, document.title, window.location.pathname); // Clear the URL parameter
+            }
+
+
+            // --- Search Functionality (integrated into status bar) ---
+            if (statusBarSearchInput) {
+                statusBarSearchInput.oninput = function() {
+                    renderSearchResults(statusBarSearchInput.value.trim().toLowerCase());
+                };
+            }
+
+            // This button now just focuses the search input
+            if (searchBtn) {
+                searchBtn.onclick = function() {
+                    if (statusBarSearchInput) statusBarSearchInput.focus();
+                };
+            }
+
+            function renderSearchResults(queryText) {
+                if (productList) productList.innerHTML = '';
+                if (queryText === '') {
+                    renderAdsAndProducts(currentFilterCategory); // Show all if query is empty
+                    return;
+                }
+
+                const products = JSON.parse(localStorage.getItem('products') || '[]');
+                const ads = JSON.parse(localStorage.getItem('ads') || '[]');
+                const combinedItems = [...products, ...ads];
+
+                const filteredItems = combinedItems.filter(item => {
+                    const itemName = item.type === 'product' ? item.name : item.title;
+                    return (itemName && itemName.toLowerCase().includes(queryText)) ||
+                           (item.description && item.description.toLowerCase().includes(queryText)) ||
+                           (item.username && item.username.toLowerCase().includes(queryText)) ||
+                           (item.phone && item.phone.toLowerCase().includes(queryText)) ||
+                           (item.price && item.price.toString().includes(queryText)) ||
+                           (item.location && item.location.toLowerCase().includes(queryText)) || // Search ad location
+                           (item.category && item.category.toLowerCase().includes(queryText)); // Search by category
+                });
+
+                if (emptyProductListMessage) emptyProductListMessage.style.display = filteredItems.length === 0 ? 'block' : 'none';
+
+                filteredItems.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Sort by most recent
+                filteredItems.forEach(item => {
+                    addCardToDOM(item, productList);
+                });
+            }
+
+            // --- Category Filter Bar Logic ---
+            if (categoryFilterBar) {
+                categoryFilterBar.querySelectorAll('button').forEach(button => {
+                    button.onclick = function() {
+                        categoryFilterBar.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+                        currentFilterCategory = this.dataset.category;
+                        renderAdsAndProducts(currentFilterCategory); // Re-render with new filter
+                    };
+                });
+            }
+
+            // Clear Filters Button
+            if (clearFiltersBtn) {
+                clearFiltersBtn.onclick = () => {
+                    categoryFilterBar.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                    const allCategoryBtn = categoryFilterBar.querySelector('[data-category="All"]');
+                    if (allCategoryBtn) allCategoryBtn.classList.add('active');
+                    currentFilterCategory = 'All';
+                    statusBarSearchInput.value = ''; // Clear search input as well
+                    renderAdsAndProducts('All');
+                };
+            }
+
+
+            // --- Header and Navigation Button Placeholders ---
+            if (addBtn) addBtn.onclick = () => customAlert('Add Content', 'This button will allow you to add various types of content soon!');
+            if (chatBtn) chatBtn.onclick = () => showChatModal(); // Open chat modal
+            if (homeNavBtn) {
+                homeNavBtn.onclick = () => {
+                    showMainContent();
+                };
+            }
+            // adsNavBtn is now handled above for opening the ads full page
+            if (usersNavBtn) usersNavBtn.onclick = () => showUsersListPage(); // Show users list when this button is clicked
+            if (notificationsNavBtn) notificationsNavBtn.onclick = () => showNotificationsModal(); // Show notifications modal
+            if (menuNavBtn) menuNavBtn.onclick = () => customAlert('Menu', 'The main menu with more options is under development!');
+
+            // Test Notification Button
+            if (addTestNotificationBtn) {
+                addTestNotificationBtn.onclick = () => {
+                    addNotification(`A new product was added to the marketplace!`);
+                    addNotification(`Someone liked your post!`);
+                    addNotification(`You have a new message!`);
+                };
+            }
+
+            // Mark All Read Notifications
+            if (markAllReadBtn) {
+                markAllReadBtn.onclick = () => {
+                    const notifications = getNotifications();
+                    notifications.forEach(notif => notif.read = true);
+                    saveNotifications(notifications);
+                    renderNotifications();
+                    showTimedPopup('All notifications marked as read.');
+                };
+            }
+
+            // Clear All Notifications
+            if (clearAllNotificationsBtn) {
+                clearAllNotificationsBtn.onclick = async () => {
+                    const confirmed = await customConfirm('Are you sure you want to clear all notifications?', 'Clear Notifications');
+                    if (confirmed) {
+                        localStorage.removeItem('notifications');
+                        renderNotifications();
+                        showTimedPopup('All notifications cleared.');
+                    }
+                };
+            }
+
+            // --- Chat Functionality (Simulated) ---
+            const defaultBotUser = {
+                username: "KnowEmpire Support",
+                profilePic: "https://placehold.co/36x36/9b23ea/ffffff?text=S"
+            };
+
+            function getChatHistory() {
+                return JSON.parse(sessionStorage.getItem('chatHistory') || '[]');
+            }
+
+            function saveChatHistory(history) {
+                sessionStorage.setItem('chatHistory', JSON.stringify(history));
+            }
+
+            function addChatMessage(sender, message, type = 'text') {
+                const chatHistory = getChatHistory();
+                const newMessage = {
+                    sender: sender,
+                    message: message,
+                    type: type,
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+                chatHistory.push(newMessage);
+                saveChatHistory(chatHistory);
+                renderChatMessages();
+            }
+
+            function renderChatMessages() {
+                if (!chatMessages) return;
+                chatMessages.innerHTML = '';
+                const history = getChatHistory();
+
+                history.forEach(msg => {
+                    const messageBubble = document.createElement('div');
+                    messageBubble.classList.add('message-bubble');
+                    messageBubble.classList.add(msg.sender === (loggedInUser ? loggedInUser.username : '') ? 'sent' : 'received');
+
+                    let content = '';
+                    if (msg.type === 'text') {
+                        content = msg.message;
+                    } else if (msg.type === 'photo') {
+                        content = `📸 Photo: ${msg.message}`;
+                    } else if (msg.type === 'voice') {
+                        content = `🎤 Voice Message: ${msg.message}`;
+                    }
+
+                    messageBubble.innerHTML = `
+                        <span class="sender-name">${msg.sender}</span>
+                        ${content}
+                        <span class="timestamp">${msg.timestamp}</span>
+                    `;
+                    chatMessages.appendChild(messageBubble);
+                });
+                // Scroll to the bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function botReply(userMessage) {
+                let reply = "I'm sorry, I don't understand that.";
+                const lowerCaseMessage = userMessage.toLowerCase();
+
+                if (lowerCaseMessage.includes("hello") || lowerCaseMessage.includes("hi")) {
+                    reply = "Hello there! How can I assist you today?";
+                } else if (lowerCaseMessage.includes("product") || lowerCaseMessage.includes("item")) {
+                    reply = "Are you looking for a specific product? You can use the search bar on the main page.";
+                } else if (lowerCaseMessage.includes("ad") || lowerCaseMessage.includes("advertise")) {
+                    reply = "You can create an ad by clicking the 'Storefront' icon in the navigation bar.";
+                } else if (lowerCaseMessage.includes("help") || lowerCaseMessage.includes("support")) {
+                    reply = "I'm here to help! What specific issue are you facing?";
+                } else if (lowerCaseMessage.includes("photo sent")) {
+                    reply = "Got it! I received your photo. What would you like to discuss about it?";
+                } else if (lowerCaseMessage.includes("voice message sent")) {
+                    reply = "Thanks for the voice message! How can I help with that?";
+                } else if (lowerCaseMessage.includes("thank you") || lowerCaseMessage.includes("thanks")) {
+                    reply = "You're welcome! Feel to ask if you have more questions.";
+                } else {
+                    const genericReplies = [
+                        "I'm still learning, please ask me something else.",
+                        "Could you please rephrase that?",
+                        "I'm a bot, but I'll do my best to help!",
+                        "Is there anything else I can assist you with?"
+                    ];
+                    reply = genericReplies[Math.floor(Math.random() * genericReplies.length)];
+                }
+
+                setTimeout(() => {
+                    addChatMessage(defaultBotUser.username, reply);
+                }, 1000); // Simulate bot typing delay
+            }
+
+            if (sendTextBtn) {
+                sendTextBtn.onclick = () => {
+                    const message = chatTextInput.value.trim();
+                    if (message && loggedInUser) {
+                        addChatMessage(loggedInUser.username, message);
+                        botReply(message);
+                        chatTextInput.value = '';
+                    } else if (!loggedInUser) {
+                        customAlert('Please log in to send messages.', 'Login Required');
+                    }
+                };
+                chatTextInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendTextBtn.click();
+                    }
+                });
+            }
+
+            if (sendPhotoBtn) {
+                sendPhotoBtn.onclick = () => {
+                    if (loggedInUser) {
+                        addChatMessage(loggedInUser.username, "Photo sent!", 'photo');
+                        botReply("Photo sent"); // Trigger bot reply for photo
+                    } else {
+                        customAlert('Please log in to send photos.', 'Login Required');
+                    }
+                };
+            }
+
+            if (sendVoiceBtn) {
+                sendVoiceBtn.onclick = () => {
+                    if (loggedInUser) {
+                        addChatMessage(loggedInUser.username, "Voice message sent!", 'voice');
+                        botReply("Voice message sent"); // Trigger bot reply for voice
+                    } else {
+                        customAlert('Please log in to send voice messages.', 'Login Required');
+                    }
+                };
+            }
+
+            // Initialize chat history if empty (add initial bot message)
+            if (getChatHistory().length === 0) {
+                addChatMessage(defaultBotUser.username, "Welcome to KnowEmpire chat! How can I help you today?", 'text');
+            }
+        });
+    </script>
+</body>
+</html>
