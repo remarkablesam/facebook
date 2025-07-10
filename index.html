@@ -77,18 +77,21 @@
         .photo-btn {
             background: #f0f2f5;
             border: none;
-            border-radius: 20px;
-            padding: 8px 14px;
+            border-radius: 50%; /* Make it circular */
+            width: 40px; /* Fixed width for circular button */
+            height: 40px; /* Fixed height for circular button */
             display: flex;
             align-items: center;
+            justify-content: center; /* Center icon */
             color: #9b23ea;
             font-weight: 500;
             cursor: pointer;
+            padding: 0; /* Remove padding to center icon better */
         }
 
         .photo-btn .material-icons {
-            font-size: 1.2rem;
-            margin-right: 4px;
+            font-size: 1.8rem; /* Slightly larger icon */
+            margin-right: 0; /* Remove margin */
         }
 
         .stories {
@@ -1663,11 +1666,11 @@
                 padding: 8px 12px; /* Smaller padding for input */
             }
             .photo-btn {
-                padding: 6px 10px; /* Smaller padding for button */
-                font-size: 0.9rem;
+                width: 36px; /* Smaller for mobile */
+                height: 36px; /* Smaller for mobile */
             }
             .photo-btn .material-icons {
-                font-size: 1rem;
+                font-size: 1.5rem; /* Smaller icon for mobile */
             }
             .chat-input-area {
                 padding: 8px 10px; /* Reduce padding */
@@ -1726,7 +1729,7 @@
         <div class="status-bar">
             <img src="https://placehold.co/40x40/cccccc/333333?text=P" alt="Profile" class="profile-pic" id="statusBarProfilePic">
             <input type="text" placeholder="Search products..." id="statusBarSearchInput">
-            <button class="photo-btn"><span class="material-icons">photo_library</span> Photo</button>
+            <button class="photo-btn"><span class="material-icons">photo_library</span></button> <!-- Removed "Photo" label -->
         </div>
 
         <div class="stories">
@@ -2228,8 +2231,8 @@
     'images/young-man-rocking-urban-rap-style-vector-isolated-illustration_1310786-57769.jpg',
     'images/young-people-tracksuits_130951-1150.jpg',
     'images/young-woman-with-shopping-bags-female-person-walking-with-her-purchases_1170970-807.avif',
-    'images/blazer-poster-1.png', 
-    'images/curvaceous-woman-dressed-90s-streetwear-fashion-illustration-vector_893055-22621.avif',    
+    'images/blazer-poster-1.png',
+    'images/curvaceous-woman-dressed-90s-streetwear-fashion-illustration-vector_893055-22621.avif',
     'images/woman.avif',
     'images/woman-with-purple-shirt-purple-pants-is-carrying-bags_265721-3465.avif',
     'images/woman-with-purple-bow-purple-dress-with-purple-bow-it_265721-3470.avif',
