@@ -16,7 +16,7 @@
             background-color: #f3f4f6;
             display: flex;
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevent horizontal scroll on desktop */
         }
         .sidebar {
             width: 250px;
@@ -88,13 +88,18 @@
         .logout-btn:hover {
             background-color: #dc2626;
         }
+        .data-table-container { /* New container for responsive tables */
+            overflow-x: auto; /* Allows horizontal scrolling for tables */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            background-color: #ffffff;
+        }
         .data-table {
             width: 100%;
+            min-width: 600px; /* Ensure table doesn't shrink too much, forcing scroll */
             border-collapse: collapse;
             background-color: #ffffff;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .data-table th, .data-table td {
             padding: 0.75rem 1rem;
@@ -123,6 +128,7 @@
             transition: background-color 0.2s;
             font-size: 0.875rem;
             margin-right: 0.5rem;
+            white-space: nowrap; /* Prevent buttons from wrapping */
         }
         .action-btn:hover {
             background-color: #2563eb;
@@ -174,10 +180,10 @@
             padding: 2rem;
             border-radius: 0.75rem;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            width: 90%;
+            width: 90%; /* Default width for modals */
             max-width: 500px;
             max-height: 90vh;
-            overflow-y: auto;
+            overflow-y: auto; /* Allow scrolling for long forms */
             position: relative;
             transform: translateY(-20px);
             transition: transform 0.3s ease-in-out;
@@ -344,30 +350,41 @@
         /* Responsive adjustments */
         @media (max-width: 768px) {
             body {
+                flex-direction: column; /* Stack sidebar and main content */
+            }
+            .admin-panel-layout { /* New class for the main panel div */
                 flex-direction: column;
             }
             .sidebar {
                 width: 100%;
                 height: auto;
                 padding: 1rem;
-                flex-direction: row;
-                justify-content: space-around;
+                flex-direction: row; /* Arrange nav items horizontally */
+                justify-content: space-around; /* Distribute items evenly */
                 align-items: center;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                position: fixed; /* Fix sidebar to top or bottom */
+                bottom: 0; /* Or top: 0; */
+                z-index: 999; /* Ensure it's above other content */
+                border-top-left-radius: 0.75rem;
+                border-top-right-radius: 0.75rem;
             }
             .sidebar-header {
                 display: none; /* Hide header on small screens */
             }
             .sidebar nav {
                 display: flex;
-                flex-wrap: wrap;
+                flex-wrap: wrap; /* Allow nav links to wrap */
                 justify-content: center;
-                gap: 0.5rem;
+                gap: 0.5rem; /* Space between nav items */
             }
             .nav-link {
                 padding: 0.5rem 0.75rem;
-                margin-bottom: 0;
+                margin-bottom: 0; /* Remove bottom margin for horizontal layout */
                 font-size: 0.875rem;
+                flex-grow: 1; /* Allow links to grow and fill space */
+                text-align: center;
+                justify-content: center; /* Center content within link */
             }
             .nav-link .material-icons {
                 margin-right: 0.5rem;
@@ -375,15 +392,17 @@
             }
             .main-content {
                 padding: 1rem;
+                margin-bottom: 70px; /* Add margin to prevent content from being hidden by fixed sidebar */
             }
             .header {
-                flex-direction: column;
+                flex-direction: column; /* Stack title and button */
                 align-items: flex-start;
                 gap: 0.5rem;
             }
             .header h1 {
                 font-size: 1.5rem;
             }
+            /* Data table adjustments handled by .data-table-container */
             .data-table th, .data-table td {
                 padding: 0.5rem 0.75rem;
                 font-size: 0.8rem;
@@ -396,9 +415,12 @@
             .add-new-btn {
                 padding: 0.5rem 1rem;
                 font-size: 0.875rem;
+                width: 100%; /* Make add button full width */
+                justify-content: center;
             }
             .modal-content {
                 padding: 1.5rem;
+                width: calc(100% - 2rem); /* Take up more width */
             }
             .modal-content h2 {
                 font-size: 1.25rem;
@@ -411,6 +433,13 @@
             .form-submit-btn, .form-cancel-btn {
                 padding: 0.6rem 1rem;
                 font-size: 0.9rem;
+            }
+            .login-box {
+                padding: 1.5rem;
+            }
+            .login-box h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
             }
         }
     </style>
@@ -433,7 +462,8 @@
     </div>
 
     <!-- Admin Panel Layout -->
-    <div id="adminPanel" class="hidden w-full flex">
+    <!-- Added admin-panel-layout class for better mobile stacking -->
+    <div id="adminPanel" class="hidden w-full flex admin-panel-layout">
         <aside class="sidebar">
             <div class="sidebar-header">Admin Panel</div>
             <nav>
@@ -463,80 +493,88 @@
 
             <!-- Content Sections -->
             <section id="usersSection" class="content-section">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Username</th>
-                            <th>Phone</th>
-                            <th>Location</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="usersTableBody">
-                        <!-- User rows will be injected here -->
-                    </tbody>
-                </table>
+                <div class="data-table-container"> <!-- Wrapper for responsive table -->
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Phone</th>
+                                <th>Location</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- User rows will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
             <section id="productsSection" class="content-section hidden">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Image</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Category</th>
-                            <th>Price (₦)</th>
-                            <th>Seller ID</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="productsTableBody">
-                        <!-- Product rows will be injected here -->
-                    </tbody>
-                </table>
+                <div class="data-table-container"> <!-- Wrapper for responsive table -->
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Price (₦)</th>
+                                <th>Seller ID</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <!-- Product rows will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
             <section id="adsSection" class="content-section hidden">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Image</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Category</th>
-                            <th>Location</th>
-                            <th>Budget (₦)</th>
-                            <th>Advertiser ID</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adsTableBody">
-                        <!-- Ad rows will be injected here -->
-                    </tbody>
-                </table>
+                <div class="data-table-container"> <!-- Wrapper for responsive table -->
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Location</th>
+                                <th>Budget (₦)</th>
+                                <th>Advertiser ID</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adsTableBody">
+                            <!-- Ad rows will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
             <section id="textPostsSection" class="content-section hidden">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Content</th>
-                            <th>Theme Color</th>
-                            <th>Likes</th>
-                            <th>Author ID</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="textPostsTableBody">
-                        <!-- Text Post rows will be injected here -->
-                    </tbody>
-                </table>
+                <div class="data-table-container"> <!-- Wrapper for responsive table -->
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Content</th>
+                                <th>Theme Color</th>
+                                <th>Likes</th>
+                                <th>Author ID</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="textPostsTableBody">
+                            <!-- Text Post rows will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
             </section>
         </main>
     </div>
@@ -1088,8 +1126,8 @@
                 isValid = validateField(userPhoneInput, userPhoneError, val => /^\d{10,15}$/.test(val), 'Phone number must be 10-15 digits.') && isValid;
                 isValid = validateField(userLocationInput, userLocationError, val => val.length > 0, 'Location is required.') && isValid;
                 isValid = validateField(userAccountNumberInput, userAccountNumberError, val => val.length === 0 || (val.length === 10 && /^\d+$/.test(val)), 'Account number must be 10 digits or empty.') && isValid;
-                isValid = validateField(userAccountNameInput, userAccountNameError, val => val.length === 0 || val.length > 0, 'Account Name is required if account number is provided.') && isValid;
-                isValid = validateField(userBankNameInput, userBankNameError, val => val.length === 0 || val.length > 0, 'Bank Name is required if account number is provided.') && isValid;
+                isValid = validateField(userAccountNameInput, userAccountNameError, val => val.length === 0 || (val.length > 0 && accountNumber.length > 0), 'Account Name is required if account number is provided.') && isValid;
+                isValid = validateField(userBankNameInput, userBankNameError, val => val.length === 0 || (val.length > 0 && accountNumber.length > 0), 'Bank Name is required if account number is provided.') && isValid;
 
 
                 if (!isValid) return;
@@ -1098,7 +1136,7 @@
                 let profilePhotoDataUrl = userProfilePhotoPreview.src; // Keep existing if no new file
 
                 if (profilePhotoFile) {
-                    profilePhotoDataUrl = await fileToBase64(profilePhotoFile);
+                    profilePhotoDataUrl = await fileToBase66(profilePhotoFile);
                 } else if (!editingItemId) { // If adding new user and no file, use placeholder
                     profilePhotoDataUrl = 'https://placehold.co/80x80/cccccc/333333?text=P';
                 }
@@ -1200,7 +1238,7 @@
                 let imageUrl = productImagePreview.src; // Keep existing if no new file
 
                 if (productImageFile) {
-                    imageUrl = await fileToBase64(productImageFile);
+                    imageUrl = await fileToBase66(productImageFile);
                 } else if (!editingItemId) { // If adding new product and no file, use placeholder
                     imageUrl = 'https://placehold.co/150x150';
                 }
@@ -1311,7 +1349,7 @@
                 let imageUrl = adImagePreview.src; // Keep existing if no new file
 
                 if (adImageFile) {
-                    imageUrl = await fileToBase64(adImageFile);
+                    imageUrl = await fileToBase66(adImageFile);
                 } else if (!editingItemId) { // If adding new ad and no file, use placeholder
                     imageUrl = 'https://placehold.co/150x150';
                 }
