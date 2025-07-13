@@ -7,7 +7,7 @@
     <!-- Google Fonts - Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Google Fonts - Inter (from previous versions, keeping for consistency if desired) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght400;500;600;700&display=swap" rel="stylesheet">
     <style>
         html, body {
             overflow-x: hidden; /* Prevent horizontal scrolling */
@@ -53,13 +53,14 @@
             margin-top: 8px;
             border-radius: 8px;
             box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            gap: 10px; /* Added gap for better spacing between elements */
         }
 
         .profile-pic {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            margin-right: 12px;
+            margin-right: 0; /* Adjusted from 12px */
             object-fit: cover;
             cursor: pointer; /* Make it clickable */
         }
@@ -71,9 +72,10 @@
             border-radius: 20px;
             padding: 10px 16px;
             font-size: 1rem;
-            margin-right: 10px;
+            margin-right: 0; /* Adjusted from 10px */
         }
 
+        /* Removed .text-post-btn from here, it's now in header-actions */
         .photo-btn {
             background: #f0f2f5;
             border: none;
@@ -84,14 +86,14 @@
             align-items: center;
             justify-content: center; /* Center icon */
             color: #9b23ea;
-            font-weight: 500;
             cursor: pointer;
             padding: 0; /* Remove padding to center icon better */
+            flex-shrink: 0; /* Prevent shrinking on smaller screens */
         }
 
         .photo-btn .material-icons {
             font-size: 1.8rem; /* Slightly larger icon */
-            margin-right: 0; /* Remove margin */
+            margin: 0; /* Remove margin */
         }
 
         .stories {
@@ -314,28 +316,55 @@
             }
         }
 
-        /* Floating Action Button */
-        .fab {
+        /* Floating Action Buttons Container */
+        .fab-container {
             position: fixed;
             bottom: 32px;
             right: 24px;
+            display: flex;
+            flex-direction: column; /* Stack buttons vertically */
+            align-items: center;
+            gap: 10px; /* Space between the two buttons */
+            z-index: 3000;
+        }
+
+        .fab {
             width: 56px;
             height: 56px;
             background: #1877f2;
             color: #fff;
             border-radius: 50%;
             box-shadow: 0 4px 16px rgba(24,119,242,0.18);
-            display: flex; /* Changed from block to flex to center icon */
+            display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2.5rem;
             cursor: pointer;
-            z-index: 3000;
             transition: background 0.2s;
         }
         .fab:hover {
             background: #9b23ea;
         }
+
+        /* New Text Post FAB */
+        .text-post-fab {
+            width: 48px; /* Slightly smaller than main FAB */
+            height: 48px;
+            background: #9b23ea; /* A distinct color for text posts */
+            color: #fff;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(155, 35, 234, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem; /* Adjusted icon size */
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .text-post-fab:hover {
+            background: #6a0dad;
+        }
+
 
         /* Modals (General Styling) */
         .modal {
@@ -695,34 +724,34 @@
             gap: 10px;
         }
 
-        /* Product Details Modal */
-        #productDetailsModal .modal-content {
+        /* Item Details Modal (Generalized from Product Details) */
+        #itemDetailsModal .modal-content {
             max-width: 400px;
             padding: 20px;
             text-align: center;
         }
-        #productDetailsModal img {
+        #itemDetailsModal img {
             max-width: 100%;
             height: auto;
             border-radius: 10px;
             margin-bottom: 15px;
         }
-        #productDetailsModal h3 {
+        #itemDetailsModal h3 {
             margin-top: 0;
             color: #333;
             font-size: 1.8rem;
         }
-        #productDetailsModal p {
+        #itemDetailsModal p {
             color: #555;
             font-size: 1.1rem;
             margin-bottom: 10px;
         }
-        #productDetailsModal .user-id-display {
+        #itemDetailsModal .user-id-display {
             font-size: 0.9rem;
             color: #777;
             word-break: break-all;
         }
-        /* Comments Section in Product Details */
+        /* Comments Section in Item Details */
         .comments-section {
             margin-top: 20px;
             border-top: 1px solid #eee;
@@ -1225,6 +1254,80 @@
             z-index: 3;
         }
 
+        /* Text Post Card Specific Styles */
+        .product-card.text-post-card {
+            aspect-ratio: 1/1; /* Square shape for text posts */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 15px;
+            box-sizing: border-box;
+            color: #fff; /* Default text color for dark backgrounds */
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .text-post-card .post-content {
+            font-size: 1.1rem;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            flex-grow: 1; /* Allows content to take available space */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 5; /* Limit lines for preview */
+            -webkit-box-orient: vertical;
+        }
+        .text-post-card .post-author {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: auto; /* Push to bottom */
+        }
+        .text-post-card .like-order { /* Re-use like-order for text posts */
+            position: static; /* Override absolute positioning */
+            width: 100%;
+            padding: 0;
+            margin-top: 10px; /* Space from content */
+            justify-content: flex-end; /* Align to right */
+            gap: 10px; /* Space between like and comment */
+        }
+        .text-post-card .like-btn {
+            background: rgba(255,255,255,0.2); /* Lighter background for like button */
+            color: #fff; /* White icon/text */
+        }
+        .text-post-card .like-btn.liked {
+            background: #e41e3f; /* Red when liked */
+            color: #fff;
+        }
+        .text-post-card .like-btn .like-count {
+            color: #fff; /* Ensure like count is white */
+        }
+        .text-post-card .comment-btn { /* New style for comment button on text posts */
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 7px;
+            transition: background 0.2s;
+        }
+        .text-post-card .comment-btn:hover {
+            background: rgba(255,255,255,0.4);
+        }
+        .text-post-card .comment-btn .comment-count {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #fff;
+        }
+        .text-post-card .view-details-btn {
+            display: none; /* Hide for text posts as content is directly visible */
+        }
+
+
         /* Standalone Ad Details Page Styling */
         .ad-details-page {
             background: #f0f2f5;
@@ -1536,6 +1639,9 @@
             font-size: 0.95rem;
             line-height: 1.4;
             word-wrap: break-word; /* Ensure long words wrap */
+            display: flex; /* Added for internal layout */
+            flex-direction: column; /* Added for internal layout */
+            position: relative; /* For status icon positioning */
         }
         .message-bubble.sent {
             background: #dcf8c6; /* Green for sent messages */
@@ -1547,22 +1653,63 @@
             align-self: flex-start;
             border-bottom-left-radius: 2px;
         }
+        .message-bubble .sender-info { /* New container for profile pic and name */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+        .message-bubble .sender-profile-pic {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
         .message-bubble .sender-name {
             font-weight: bold;
             font-size: 0.85rem;
             color: #128c7e; /* Darker green for sender name */
-            margin-bottom: 4px;
+            margin-bottom: 0; /* Adjusted */
             display: block;
         }
         .message-bubble.received .sender-name {
             color: #333;
         }
-        .message-bubble .timestamp {
+        .message-bubble .message-content {
+            margin-bottom: 5px;
+        }
+        .message-bubble .timestamp-and-status { /* New container for timestamp and status */
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 5px;
             font-size: 0.7rem;
             color: #777;
-            text-align: right;
             margin-top: 5px;
-            display: block;
+        }
+        .message-bubble .status-icon .material-icons {
+            font-size: 0.9rem; /* Smaller icon for status */
+            color: #777;
+        }
+        .message-bubble .status-icon.delivered .material-icons {
+            color: #1877f2; /* Blue for delivered */
+        }
+        .message-bubble .status-icon.read .material-icons {
+            color: #1877f2; /* Blue for read */
+        }
+
+        /* Styles for image messages */
+        .message-bubble .message-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+
+        /* Styles for audio messages */
+        .message-bubble .message-audio {
+            width: 100%;
+            margin-top: 5px;
         }
 
         .chat-input-area {
@@ -1604,6 +1751,16 @@
             width: auto;
             padding: 0 15px;
         }
+        .chat-input-area #sendVoiceBtn.recording {
+            background-color: #e41e3f; /* Red when recording */
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(228, 30, 63, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(228, 30, 63, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(228, 30, 63, 0); }
+        }
+
 
         /* Ads Page Specific Styles */
         .ads-page-container {
@@ -1661,10 +1818,12 @@
             }
             .status-bar {
                 padding: 10px 8px; /* Reduce padding */
+                gap: 6px; /* Smaller gap */
             }
             .status-bar input {
                 padding: 8px 12px; /* Smaller padding for input */
             }
+            /* Removed .text-post-btn from here */
             .photo-btn {
                 width: 36px; /* Smaller for mobile */
                 height: 36px; /* Smaller for mobile */
@@ -1704,12 +1863,57 @@
                 padding: 8px;
             }
         }
+
+        /* Text Post Modal Specific Styles */
+        #textPostModal .color-palette {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        #textPostModal .color-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s, transform 0.1s;
+        }
+        #textPostModal .color-swatch.selected {
+            border-color: #9b23ea;
+            transform: scale(1.1);
+        }
+        /* New style for AI button */
+        .ai-button {
+            background: #9b23ea;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            width: fit-content; /* Adjust width to content */
+        }
+        .ai-button:hover {
+            background: #1877f2;
+        }
+        .ai-button .material-icons {
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
     <header class="topbar">
         <a href="#" class="logo fb-blue">KnowEmpire</a>
         <div class="header-actions">
+            <!-- Removed textPostBtn from here -->
             <button class="header-btn" id="addBtn"><span class="material-icons">add</span></button>
             <button class="header-btn" id="searchBtn"><span class="material-icons">search</span></button>
             <button class="header-btn" id="chatBtn"><span class="material-icons">chat_bubble_outline</span></button>
@@ -1752,8 +1956,8 @@
         </div>
 
         <div class="product-grid" id="productList">
-            <!-- Product and Ad cards will be injected here by JavaScript -->
-            <div style="text-align: center; padding: 20px; color: #666; width: 100%; display: none;" id="emptyProductListMessage">No products or ads available. Be the first to post!</div>
+            <!-- Product, Ad, and Text Post cards will be injected here by JavaScript -->
+            <div style="text-align: center; padding: 20px; color: #666; width: 100%; display: none;" id="emptyProductListMessage">No products, ads, or posts available. Be the first to post!</div>
         </div>
     </main>
 
@@ -1839,8 +2043,8 @@
 
                 <!-- User's Products will be displayed here -->
                 <div class="product-grid" id="myProductsList">
-                    <!-- Products posted by the logged-in user will be injected here -->
-                    <div style="text-align: center; padding: 20px; color: #666; width: 100%; display: none;" id="emptyMyProductsMessage">This user has not posted any products or ads yet.</div>
+                    <!-- Products, Ads, and Text Posts posted by the logged-in user will be injected here -->
+                    <div style="text-align: center; padding: 20px; color: #666; width: 100%; display: none;" id="emptyMyProductsMessage">This user has not posted any products, ads, or text posts yet.</div>
                 </div>
             </div>
 
@@ -1941,15 +2145,12 @@
         </div>
         <div class="chat-messages" id="chatMessages">
             <!-- Chat messages will be injected here -->
-            <div class="message-bubble received">
-                <span class="sender-name">KnowEmpire Support</span>
-                Welcome to KnowEmpire chat! How can I help you today?
-                <span class="timestamp">Just now</span>
-            </div>
+            <!-- Initial bot message is added by JS -->
         </div>
         <div class="chat-input-area">
             <input type="text" id="chatTextInput" placeholder="Type a message...">
             <button id="sendTextBtn"><span class="material-icons">send</span></button>
+            <input type="file" id="chatPhotoInput" accept="image/*" style="display: none;">
             <button id="sendPhotoBtn"><span class="material-icons">image</span></button>
             <button id="sendVoiceBtn"><span class="material-icons">mic</span></button>
         </div>
@@ -1970,10 +2171,14 @@
         </div>
     </div>
 
-
-    <div class="fab" id="fab">
-        <span class="material-icons">add</span>
+    <!-- Floating Action Buttons Container -->
+    <div class="fab-container">
+        <button class="text-post-fab" id="textPostBtn"><span class="material-icons">text_fields</span></button>
+        <div class="fab" id="fab">
+            <span class="material-icons">add</span>
+        </div>
     </div>
+
 
     <!-- Upload Product Modal -->
     <div id="uploadModal" class="modal">
@@ -1991,6 +2196,7 @@
                 <input type="text" id="productName" placeholder="Product Name" required>
                 <span class="error-message" id="productNameError"></span>
                 <textarea id="productDescription" placeholder="Product Description" rows="3" required></textarea>
+                <button type="button" class="ai-button" id="enhanceDescriptionBtn">✨ Enhance Description</button>
                 <span class="error-message" id="productDescriptionError"></span>
                 <select id="productCategory" required>
                     <option value="">Select Category</option>
@@ -2050,6 +2256,31 @@
         </div>
     </div>
 
+    <!-- Create Text Post Modal -->
+    <div id="textPostModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeTextPostModal">&times;</span>
+            <h3 style="margin-bottom: 15px; font-size: 1.5rem; text-align: center; color: #333;">Create Text Post</h3>
+            <form id="textPostForm">
+                <textarea id="textPostContent" placeholder="What's on your mind?" rows="5" required></textarea>
+                <span class="error-message" id="textPostContentError"></span>
+                <p style="margin-top: 10px; margin-bottom: 8px; font-size: 0.95rem; color: #555;">Choose a theme color:</p>
+                <div class="color-palette" id="colorPalette">
+                    <div class="color-swatch selected" data-color="#9b23ea" style="background-color: #9b23ea;"></div>
+                    <div class="color-swatch" data-color="#1877f2" style="background-color: #1877f2;"></div>
+                    <div class="color-swatch" data-color="#42b72a" style="background-color: #42b72a;"></div>
+                    <div class="color-swatch" data-color="#f02849" style="background-color: #f02849;"></div>
+                    <div class="color-swatch" data-color="#f7b928" style="background-color: #f7b928;"></div>
+                    <div class="color-swatch" data-color="#00bcd4" style="background-color: #00bcd4;"></div>
+                    <div class="color-swatch" data-color="#ff9800" style="background-color: #ff9800;"></div>
+                    <div class="color-swatch" data-color="#795548" style="background-color: #795548;"></div>
+                </div>
+                <div class="loading-spinner" id="textPostSpinner"></div>
+                <button type="submit" class="action-btn" id="postTextBtn">Post Text</button>
+            </form>
+        </div>
+    </div>
+
 
     <!-- Login Modal -->
     <div id="loginModal" class="modal">
@@ -2104,30 +2335,45 @@
         </div>
     </div>
 
-    <!-- Product Details Modal (now only for products) -->
-    <div id="productDetailsModal" class="modal">
+    <!-- Item Details Modal (Generalized from Product Details) -->
+    <div id="itemDetailsModal" class="modal">
         <div class="modal-content">
-            <span class="close" id="closeProductDetailsModal">&times;</span>
-            <img id="detailsImage" src="" alt="Product Image">
-            <h3 id="detailsProductName"></h3>
-            <p id="detailsProductDescription"></p>
-            <div class="detail-row">
+            <span class="close" id="closeItemDetailsModal">&times;</span>
+            <img id="detailsImage" src="" alt="Item Image" style="display: none;"> <!-- Hidden for text posts -->
+            <h3 id="detailsTitle"></h3>
+            <p id="detailsDescription"></p>
+            <div class="detail-row" id="detailsCategoryRow">
                 <span>Category:</span>
-                <strong id="detailsProductCategory"></strong>
+                <strong id="detailsCategory"></strong>
             </div>
-            <p style="font-weight: bold; font-size: 1.2rem;">Price: <span id="detailsPriceNaira"></span> (<span id="detailsPriceDollar"></span>)</p>
-            <p class="user-id-display">Seller: <span id="detailsContactUsername"></span> (<span id="detailsContactPhone"></span>)</p>
-            <p class="user-id-display">Uploaded by User ID: <span id="detailsUserId"></span></p>
+            <div class="detail-row" id="detailsPriceRow">
+                <span>Price:</span>
+                <strong id="detailsPriceNaira"></strong> (<span id="detailsPriceDollar"></span>)
+            </div>
+            <div class="detail-row" id="detailsLocationRow" style="display: none;">
+                <span>Location:</span>
+                <strong id="detailsLocation"></strong>
+            </div>
+            <div class="detail-row" id="detailsDurationRow" style="display: none;">
+                <span>Duration:</span>
+                <strong id="detailsDuration"></strong> days
+            </div>
+            <div class="detail-row" id="detailsBudgetRow" style="display: none;">
+                <span>Budget:</span>
+                <strong id="detailsBudget"></strong>
+            </div>
+            <p class="user-id-display">Posted by: <span id="detailsContactUsername"></span> (<span id="detailsContactPhone"></span>)</p>
+            <p class="user-id-display">User ID: <span id="detailsUserId"></span></p>
 
             <div class="comments-section">
                 <h4>Comments</h4>
-                <div class="comments-list" id="productCommentsList">
-                    <!-- Product comments will be injected here -->
+                <div class="comments-list" id="itemCommentsList">
+                    <!-- Item comments will be injected here -->
                     <div style="text-align: center; color: #888;">No comments yet.</div>
                 </div>
                 <div class="comment-input-container">
-                    <input type="text" id="newProductCommentInput" placeholder="Add a comment...">
-                    <button id="postProductCommentBtn">Post</button>
+                    <input type="text" id="newItemCommentInput" placeholder="Add a comment...">
+                    <button id="postItemCommentBtn">Post</button>
                 </div>
             </div>
         </div>
@@ -2373,7 +2619,8 @@
 
             const statusBarProfilePic = document.getElementById('statusBarProfilePic');
             const statusBarSearchInput = document.getElementById('statusBarSearchInput'); // New search input
-            const fab = document.getElementById('fab');
+            const fab = document.getElementById('fab'); // Main FAB
+            const textPostFab = document.getElementById('textPostBtn'); // New Text Post FAB
 
             // Product Upload Modal Elements
             const uploadModal = document.getElementById('uploadModal');
@@ -2389,6 +2636,7 @@
             const uploadSpinner = document.getElementById('uploadSpinner');
             const uploadModalTitle = document.getElementById('uploadModalTitle'); // New
             const uploadProductSubmitBtn = document.getElementById('uploadProductSubmitBtn'); // New
+            const enhanceDescriptionBtn = document.getElementById('enhanceDescriptionBtn'); // New AI button
 
             // Create Ad Modal Elements
             const createAdModal = document.getElementById('createAdModal');
@@ -2405,6 +2653,16 @@
             const adSpinner = document.getElementById('adSpinner');
             const createAdModalTitle = document.getElementById('createAdModalTitle'); // New
             const createAdSubmitBtn = document.getElementById('createAdSubmitBtn'); // New
+
+            // Text Post Modal Elements
+            const textPostModal = document.getElementById('textPostModal');
+            const closeTextPostModal = document.getElementById('closeTextPostModal');
+            const textPostForm = document.getElementById('textPostForm');
+            const textPostContentInput = document.getElementById('textPostContent');
+            const colorPalette = document.getElementById('colorPalette');
+            const textPostSpinner = document.getElementById('textPostSpinner');
+            const postTextBtn = document.getElementById('postTextBtn');
+            let selectedThemeColor = '#9b23ea'; // Default color
 
 
             const productList = document.getElementById('productList');
@@ -2434,38 +2692,34 @@
             const goToLoginBtn = document.getElementById('goToLoginBtn');
 
 
-            const productDetailsModal = document.getElementById('productDetailsModal');
-            const closeProductDetailsModal = document.getElementById('closeProductDetailsModal');
+            // Generalized Item Details Modal Elements
+            const itemDetailsModal = document.getElementById('itemDetailsModal');
+            const closeItemDetailsModal = document.getElementById('closeItemDetailsModal');
             const detailsImage = document.getElementById('detailsImage');
-            const detailsProductName = document.getElementById('detailsProductName'); // Renamed
-            const detailsProductDescription = document.getElementById('detailsProductDescription'); // Renamed
-            const detailsProductCategory = document.getElementById('detailsProductCategory'); // New
+            const detailsTitle = document.getElementById('detailsTitle'); // Renamed from detailsProductName
+            const detailsDescription = document.getElementById('detailsDescription'); // Renamed from detailsProductDescription
+            const detailsCategoryRow = document.getElementById('detailsCategoryRow'); // New
+            const detailsCategory = document.getElementById('detailsCategory'); // Renamed from detailsProductCategory
+            const detailsPriceRow = document.getElementById('detailsPriceRow'); // New
             const detailsPriceNaira = document.getElementById('detailsPriceNaira');
             const detailsPriceDollar = document.getElementById('detailsPriceDollar');
+            const detailsLocationRow = document.getElementById('detailsLocationRow'); // New
+            const detailsLocation = document.getElementById('detailsLocation');
+            const detailsDurationRow = document.getElementById('detailsDurationRow'); // New
+            const detailsDuration = document.getElementById('detailsDuration');
+            const detailsBudgetRow = document.getElementById('detailsBudgetRow'); // New
+            const detailsBudget = document.getElementById('detailsBudget');
             const detailsContactUsername = document.getElementById('detailsContactUsername');
             const detailsContactPhone = document.getElementById('detailsContactPhone');
             const detailsUserId = document.getElementById('detailsUserId');
-            const productCommentsList = document.getElementById('productCommentsList'); // New
-            const newProductCommentInput = document.getElementById('newProductCommentInput'); // New
-            const postProductCommentBtn = document.getElementById('postProductCommentBtn'); // New
+            const itemCommentsList = document.getElementById('itemCommentsList'); // Renamed from productCommentsList
+            const newItemCommentInput = document.getElementById('newItemCommentInput'); // Renamed from newProductCommentInput
+            const postItemCommentBtn = document.getElementById('postItemCommentBtn'); // Renamed from postProductCommentBtn
 
 
-            // Ad Details Page Elements
-            const adDetailsPageHeader = document.getElementById('adDetailsPageHeader'); // New: Header for ad details
-            const adDetailsBackBtn = document.getElementById('adDetailsBackBtn');
-            const adDetailsImage = document.getElementById('adDetailsImage');
-            const adDetailsTitle = document.getElementById('adDetailsTitle');
-            const adDetailsDescription = document.getElementById('adDetailsDescription');
-            const adDetailsCategory = document.getElementById('adDetailsCategory'); // New
-            const adDetailsLocation = document.getElementById('adDetailsLocation');
-            const adDetailsDuration = document.getElementById('adDetailsDuration');
-            const adDetailsBudget = document.getElementById('adDetailsBudget');
-            const adDetailsContactUsername = document.getElementById('adDetailsContactUsername');
-            const adDetailsContactPhone = document.getElementById('adDetailsContactPhone');
-            const adDetailsUserId = document.getElementById('adDetailsUserId');
-            const adCommentsList = document.getElementById('adCommentsList'); // New
-            const newAdCommentInput = document.getElementById('newAdCommentInput'); // New
-            const postAdCommentBtn = document.getElementById('postAdCommentBtn'); // New
+            // Ad Details Page Elements (now just a container, logic moved to itemDetailsModal)
+            // const adDetailsPageHeader = document.getElementById('adDetailsPageHeader'); // Not needed if using generic modal
+            // const adDetailsBackBtn = document.getElementById('adDetailsBackBtn');
 
 
             // Notifications Modal Elements
@@ -2483,6 +2737,7 @@
             const chatMessages = document.getElementById('chatMessages');
             const chatTextInput = document.getElementById('chatTextInput');
             const sendTextBtn = document.getElementById('sendTextBtn');
+            const chatPhotoInput = document.getElementById('chatPhotoInput'); // Hidden input for photo selection
             const sendPhotoBtn = document.getElementById('sendPhotoBtn');
             const sendVoiceBtn = document.getElementById('sendVoiceBtn');
 
@@ -2517,6 +2772,7 @@
             const adLocationError = document.getElementById('adLocationError');
             const adDurationError = document.getElementById('adDurationError');
             const adBudgetError = document.getElementById('adBudgetError');
+            const textPostContentError = document.getElementById('textPostContentError'); // New
 
 
             const addBtn = document.getElementById('addBtn');
@@ -2578,7 +2834,7 @@
             let previousPage = 'main'; // To track the previous page for back button functionality
 
             let editingItemId = null; // To store the ID of the item being edited (null for new creation)
-            let editingItemType = null; // To store the type of the item being edited ('product' or 'ad')
+            let editingItemType = null; // To store the type of the item being edited ('product' or 'ad' or 'textPost')
 
             // --- Mock Bank Data (for simulating real-time lookup) ---
             const mockBankAccounts = [
@@ -2679,7 +2935,8 @@
                 if (uploadModal) uploadModal.classList.remove('show');
                 if (loginModal) loginModal.classList.remove('show');
                 if (signupModal) signupModal.classList.remove('show');
-                if (productDetailsModal) productDetailsModal.classList.remove('show');
+                if (itemDetailsModal) itemDetailsModal.classList.remove('show'); // Changed from productDetailsModal
+                if (textPostModal) textPostModal.classList.remove('show'); // New
             }
 
             function showPage(pageElement, headerElement = null) {
@@ -2694,11 +2951,12 @@
                 }
 
                 // Control FAB visibility
-                if (fab) {
+                const fabContainer = document.querySelector('.fab-container');
+                if (fabContainer) {
                     if (pageElement === mainContent) {
-                        fab.style.display = 'flex'; // Show FAB on main content
+                        fabContainer.style.display = 'flex'; // Show FAB container on main content
                     } else {
-                        fab.style.display = 'none'; // Hide FAB on other pages
+                        fabContainer.style.display = 'none'; // Hide FAB container on other pages
                     }
                 }
             }
@@ -2757,30 +3015,73 @@
                 previousPage = 'profile';
             }
 
-            function showAdDetailsPage(ad) {
-                showPage(adDetailsPage, adDetailsPageHeader);
+            // Generalized function to show item details
+            function showItemDetailsModal(item) {
+                if (!itemDetailsModal) return;
 
-                // Populate ad details
-                if (adDetailsImage) adDetailsImage.src = ad.imageUrl;
-                if (adDetailsTitle) adDetailsTitle.textContent = ad.title;
-                if (adDetailsDescription) adDetailsDescription.textContent = ad.description;
-                if (adDetailsCategory) adDetailsCategory.textContent = ad.category;
-                if (adDetailsLocation) adDetailsLocation.textContent = ad.location;
-                if (adDetailsDuration) adDetailsDuration.textContent = ad.durationDays;
-                if (adDetailsBudget) adDetailsBudget.textContent = ad.budgetNaira;
-                if (adDetailsContactUsername) adDetailsContactUsername.textContent = ad.username;
-                if (adDetailsContactPhone) adDetailsContactPhone.textContent = ad.phone;
-                if (adDetailsUserId) adDetailsUserId.textContent = ad.userId;
+                // Reset visibility of all detail rows
+                detailsImage.style.display = 'none';
+                detailsCategoryRow.style.display = 'none';
+                detailsPriceRow.style.display = 'none';
+                detailsLocationRow.style.display = 'none';
+                detailsDurationRow.style.display = 'none';
+                detailsBudgetRow.style.display = 'none';
 
-                // Render comments (simulated)
-                renderComments(ad.id, adCommentsList, 'ad');
-                // Set up comment post button
-                if (postAdCommentBtn) {
-                    postAdCommentBtn.onclick = () => postComment(ad.id, newAdCommentInput, adCommentsList, 'ad');
+                // Populate common details
+                detailsTitle.textContent = item.type === 'product' ? item.name : item.title || item.content;
+                detailsDescription.textContent = item.description || item.content;
+                detailsContactUsername.textContent = item.username;
+                detailsContactPhone.textContent = item.phone;
+                detailsUserId.textContent = item.userId;
+
+                // Populate type-specific details
+                if (item.type === 'product') {
+                    detailsImage.src = item.imageUrl;
+                    detailsImage.style.display = 'block';
+                    detailsCategory.textContent = item.category || 'N/A';
+                    detailsPriceNaira.textContent = `₦${item.price}`;
+                    detailsPriceDollar.textContent = `$${(item.price * NAIRA_TO_DOLLAR).toFixed(2)}`;
+                    detailsCategoryRow.style.display = 'flex';
+                    detailsPriceRow.style.display = 'flex';
+                    itemDetailsModal.querySelector('.modal-content').style.backgroundColor = '#fff'; // Reset background
+                    itemDetailsModal.querySelector('.modal-content').style.color = '#000'; // Reset text color
+                } else if (item.type === 'ad') {
+                    detailsImage.src = item.imageUrl;
+                    detailsImage.style.display = 'block';
+                    detailsCategory.textContent = item.category || 'N/A';
+                    detailsLocation.textContent = item.location;
+                    detailsDuration.textContent = item.durationDays;
+                    detailsBudget.textContent = `₦${item.budgetNaira}`;
+                    detailsCategoryRow.style.display = 'flex';
+                    detailsLocationRow.style.display = 'flex';
+                    detailsDurationRow.style.display = 'flex';
+                    detailsBudgetRow.style.display = 'flex';
+                    itemDetailsModal.querySelector('.modal-content').style.backgroundColor = '#fff'; // Reset background
+                    itemDetailsModal.querySelector('.modal-content').style.color = '#000'; // Reset text color
+                } else if (item.type === 'textPost') {
+                    detailsImage.style.display = 'none'; // No image for text posts
+                    // Set modal content background to theme color
+                    itemDetailsModal.querySelector('.modal-content').style.backgroundColor = item.themeColor;
+                    itemDetailsModal.querySelector('.modal-content').style.color = '#fff'; // Assuming dark theme colors, white text
+                    // Hide category, price, location, duration, budget rows
+                    detailsCategoryRow.style.display = 'none';
+                    detailsPriceRow.style.display = 'none';
+                    detailsLocationRow.style.display = 'none';
+                    detailsDurationRow.style.display = 'none';
+                    detailsBudgetRow.style.display = 'none';
                 }
 
-                previousPage = 'adDetails';
+
+                // Render comments
+                renderComments(item.id, itemCommentsList, item.type);
+                // Set up comment post button
+                if (postItemCommentBtn) {
+                    postItemCommentBtn.onclick = () => postComment(item.id, newItemCommentInput, itemCommentsList, item.type);
+                }
+
+                itemDetailsModal.classList.add('show');
             }
+
 
             function showNotificationsModal() {
                 showPage(notificationsModal, notificationsPageHeader);
@@ -3004,12 +3305,12 @@
                 };
             }
 
-            // Back button on ad details page
-            if (adDetailsBackBtn) {
-                adDetailsBackBtn.onclick = () => {
-                    showAdsFullPage(); // Go back to the full ads page
-                };
-            }
+            // Back button on ad details page (now handled by generic item details modal)
+            // if (adDetailsBackBtn) {
+            //     adDetailsBackBtn.onclick = () => {
+            //         showAdsFullPage(); // Go back to the full ads page
+            //     };
+            // }
 
             // Back button on notifications modal
             if (notificationsBackBtn) {
@@ -3207,7 +3508,7 @@
                     isValid = validateField(signupNameInput, signupNameError, val => val.length > 0, 'Full Name is required.') && isValid;
                     isValid = validateField(signupPhoneInput, signupPhoneError, val => /^\d{10,15}$/.test(val), 'Phone number must be 10-15 digits.') && isValid;
                     isValid = validateField(signupLocationInput, signupLocationError, val => val.length > 0, 'Location is required.') && isValid;
-                    isValid = validateField(signupAccountNumberInput, signupAccountNumberError, val => val.length === 10 && /^\d+$/.test(val), 'Account number must be 10 digits.') && isValid;
+                    isValid = validateField(signupAccountNumberInput, signupAccountNumberError, val => val.length === 10 && /^\d+$/.test(val), 'Account number must be 10 digits.');
                     // For account name and bank name, if auto-filled, they are disabled, but if not, they must be filled.
                     if (!signupAccountNameInput.disabled) {
                         isValid = validateField(signupAccountNameInput, signupAccountNameError, val => val.length > 0, 'Account Name is required.') && isValid;
@@ -3335,6 +3636,62 @@
                 };
             }
 
+            // New: Enhance Description Button Logic
+            if (enhanceDescriptionBtn) {
+                enhanceDescriptionBtn.onclick = async () => {
+                    const productName = productNameInput.value.trim();
+                    const currentDescription = productDescriptionInput.value.trim();
+
+                    if (!productName && !currentDescription) {
+                        customAlert('Please enter a Product Name or some Description to enhance.', 'Input Required');
+                        return;
+                    }
+
+                    if (uploadSpinner) uploadSpinner.style.display = 'block';
+                    enhanceDescriptionBtn.disabled = true;
+                    productDescriptionInput.disabled = true;
+
+                    try {
+                        const prompt = `Generate a compelling and detailed product description for a marketplace.
+                        Product Name: ${productName}
+                        ${currentDescription ? `Current Description/Keywords: ${currentDescription}` : ''}
+                        
+                        Focus on benefits, features, and appeal to potential buyers. Keep it concise but informative.`;
+
+                        let chatHistory = [];
+                        chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                        const payload = { contents: chatHistory };
+                        const apiKey = ""; // Canvas will provide this at runtime
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        const result = await response.json();
+
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            const generatedText = result.candidates[0].content.parts[0].text;
+                            productDescriptionInput.value = generatedText.trim();
+                            customAlert('Description enhanced successfully!', 'AI Generated');
+                        } else {
+                            customAlert('Failed to generate description. Please try again.', 'AI Error');
+                        }
+                    } catch (error) {
+                        console.error("Error calling Gemini API:", error);
+                        customAlert('An error occurred while enhancing the description. Please try again.', 'Error');
+                    } finally {
+                        if (uploadSpinner) uploadSpinner.style.display = 'none';
+                        enhanceDescriptionBtn.disabled = false;
+                        productDescriptionInput.disabled = false;
+                    }
+                };
+            }
+
+
             if (uploadForm) {
                 uploadForm.onsubmit = async function(e) {
                     e.preventDefault();
@@ -3401,6 +3758,7 @@
                                 price: price,
                                 imageUrl: imageUrl,
                                 likes: 0,
+                                commentsCount: 0, // Initialize comments count
                                 timestamp: new Date().toISOString(),
                                 username: loggedInUser.name,
                                 phone: loggedInUser.phone,
@@ -3575,6 +3933,7 @@
                                 durationDays: duration,
                                 budgetNaira: budget,
                                 likes: 0,
+                                commentsCount: 0, // Initialize comments count
                                 timestamp: new Date().toISOString(),
                                 username: loggedInUser.name,
                                 phone: loggedInUser.phone,
@@ -3610,40 +3969,174 @@
                 };
             }
 
+            // --- New: Text Post Modal Logic ---
+            if (textPostFab) { // Changed from textPostBtn to textPostFab
+                textPostFab.onclick = () => {
+                    if (!loggedInUser) {
+                        showTimedPopup('Login to create text posts');
+                        setTimeout(() => {
+                            if (loginModal) loginModal.classList.add('show');
+                        }, 3000);
+                        return;
+                    }
+                    // Reset for new text post creation
+                    editingItemId = null;
+                    editingItemType = null;
+                    if (textPostForm) textPostForm.reset();
+                    clearAllErrors(); // Clear errors on form switch
+                    // Reset selected color to default
+                    colorPalette.querySelectorAll('.color-swatch').forEach(swatch => {
+                        swatch.classList.remove('selected');
+                        if (swatch.dataset.color === '#9b23ea') { // Default color
+                            swatch.classList.add('selected');
+                            selectedThemeColor = '#9b23ea';
+                        }
+                    });
+                    if (textPostModal) textPostModal.classList.add('show');
+                };
+            }
 
-            // --- Product/Ad Card Display and Details Logic (using localStorage) ---
+            if (closeTextPostModal) closeTextPostModal.onclick = () => textPostModal.classList.remove('show');
+            if (textPostModal) textPostModal.onclick = e => { if (e.target === textPostModal) textPostModal.classList.remove('show'); };
+
+            if (colorPalette) {
+                colorPalette.onclick = function(e) {
+                    if (e.target.classList.contains('color-swatch')) {
+                        colorPalette.querySelectorAll('.color-swatch').forEach(swatch => {
+                            swatch.classList.remove('selected');
+                        });
+                        e.target.classList.add('selected');
+                        selectedThemeColor = e.target.dataset.color;
+                    }
+                };
+            }
+
+            if (textPostContentInput) textPostContentInput.oninput = () => validateField(textPostContentInput, textPostContentError, val => val.length > 0, 'Post content cannot be empty.');
+
+
+            if (textPostForm) {
+                textPostForm.onsubmit = async function(e) {
+                    e.preventDefault();
+                    clearAllErrors();
+
+                    const content = textPostContentInput.value.trim();
+
+                    let isValid = validateField(textPostContentInput, textPostContentError, val => val.length > 0, 'Post content cannot be empty.');
+
+                    if (!isValid) return;
+
+                    if (textPostSpinner) textPostSpinner.style.display = 'block';
+                    if (postTextBtn) postTextBtn.disabled = true;
+
+                    try {
+                        let textPosts = JSON.parse(localStorage.getItem('textPosts') || '[]');
+
+                        if (editingItemId && editingItemType === 'textPost') {
+                            const itemIndex = textPosts.findIndex(p => p.id === editingItemId);
+                            if (itemIndex !== -1) {
+                                textPosts[itemIndex] = {
+                                    ...textPosts[itemIndex],
+                                    content: content,
+                                    themeColor: selectedThemeColor,
+                                    timestamp: new Date().toISOString() // Update timestamp on edit
+                                };
+                                customAlert('Text post updated successfully!', 'Success');
+                            }
+                        } else {
+                            const newTextPost = {
+                                type: 'textPost',
+                                id: Date.now().toString(),
+                                content: content,
+                                themeColor: selectedThemeColor,
+                                likes: 0,
+                                commentsCount: 0, // Initialize comments count
+                                timestamp: new Date().toISOString(),
+                                username: loggedInUser.name,
+                                phone: loggedInUser.phone,
+                                userId: loggedInUser.id
+                            };
+                            textPosts.unshift(newTextPost);
+                            customAlert('Text post created successfully!', 'Success');
+                        }
+
+                        localStorage.setItem('textPosts', JSON.stringify(textPosts));
+
+                        textPostForm.reset();
+                        if (textPostModal) textPostModal.classList.remove('show');
+                        renderAdsAndProducts(currentFilterCategory); // Re-render main feed
+                        if (profilePageContainer && profilePageContainer.classList.contains('show')) {
+                            renderUserProducts(currentViewingUser ? currentViewingUser.id : null); // Re-render products if on profile page
+                        }
+                    } catch (error) {
+                        console.error("Error saving text post:", error);
+                        customAlert('Failed to save text post. Please try again.', 'Save Failed');
+                    } finally {
+                        if (textPostSpinner) textPostSpinner.style.display = 'none';
+                        if (postTextBtn) postTextBtn.disabled = false;
+                        editingItemId = null; // Reset editing state
+                        editingItemType = null;
+                    }
+                };
+            }
+
+
+            // --- Product/Ad/Text Post Card Display and Details Logic (using localStorage) ---
             function addCardToDOM(item, targetList) {
                 const card = document.createElement('div');
-                card.className = `product-card ${item.type === 'ad' ? 'ad-card' : ''}`;
+                card.className = `product-card ${item.type === 'ad' ? 'ad-card' : ''} ${item.type === 'textPost' ? 'text-post-card' : ''}`;
                 card.dataset.id = item.id;
                 card.dataset.type = item.type; // Store type in dataset
 
-                let priceHtml = '';
+                let innerHtmlContent = '';
                 if (item.type === 'product') {
-                    priceHtml = `
+                    innerHtmlContent = `
+                        <img src="${item.imageUrl}" class="product-img" alt="${item.name}">
                         <div class="prices">
                             <span>₦${item.price}</span>
                             <span>$${(item.price * NAIRA_TO_DOLLAR).toFixed(2)}</span>
                         </div>
+                        <div class="product-info">
+                            <h4>${item.name}</h4>
+                            <p>${item.description ? item.description.substring(0, 70) + (item.description.length > 70 ? '...' : '') : ''}</p>
+                            <p class="seller-info">Category: ${item.category || 'N/A'}</p>
+                            <p class="seller-info">Seller: ${item.username} (${item.phone})</p>
+                        </div>
+                        <div class="like-order">
+                            <button class="like-btn" data-item-id="${item.id}" data-likes="${item.likes || 0}" data-item-type="${item.type}"><span class="material-icons">${item.likes > 0 ? 'favorite' : 'favorite_border'}</span><span class="like-count">${item.likes || 0}</span></button>
+                            <button class="order-btn">Order</button>
+                        </div>
+                        <button class="view-details-btn">View Details</button>
                     `;
                 } else if (item.type === 'ad') {
-                    priceHtml = `<span class="sponsored-tag">Sponsored</span>`;
+                    innerHtmlContent = `
+                        <img src="${item.imageUrl}" class="product-img" alt="${item.title}">
+                        <span class="sponsored-tag">Sponsored</span>
+                        <div class="product-info">
+                            <h4>${item.title}</h4>
+                            <p>${item.description ? item.description.substring(0, 70) + (item.description.length > 70 ? '...' : '') : ''}</p>
+                            <p class="seller-info">Category: ${item.category || 'N/A'}</p>
+                            <p class="seller-info">Advertiser: ${item.username} (${item.phone})</p>
+                        </div>
+                        <div class="like-order">
+                            <button class="like-btn" data-item-id="${item.id}" data-likes="${item.likes || 0}" data-item-type="${item.type}"><span class="material-icons">${item.likes > 0 ? 'favorite' : 'favorite_border'}</span><span class="like-count">${item.likes || 0}</span></button>
+                        </div>
+                        <button class="view-details-btn">View Details</button>
+                    `;
+                } else if (item.type === 'textPost') {
+                    card.style.backgroundColor = item.themeColor; // Apply theme color to card
+                    innerHtmlContent = `
+                        <p class="post-content">${item.content}</p>
+                        <p class="post-author">By: ${item.username}</p>
+                        <div class="like-order">
+                            <button class="like-btn" data-item-id="${item.id}" data-likes="${item.likes || 0}" data-item-type="${item.type}"><span class="material-icons">${item.likes > 0 ? 'favorite' : 'favorite_border'}</span><span class="like-count">${item.likes || 0}</span></button>
+                            <button class="comment-btn" data-item-id="${item.id}" data-item-type="${item.type}"><span class="material-icons">comment</span><span class="comment-count">${item.commentsCount || 0}</span></button>
+                        </div>
+                        <button class="view-details-btn" style="display: none;">View Details</button>
+                    `;
                 }
 
                 card.innerHTML = `
-                    <img src="${item.imageUrl}" class="product-img" alt="${item.type === 'product' ? item.name : item.title}">
-                    ${priceHtml}
-                    <div class="product-info">
-                        <h4>${item.type === 'product' ? item.name : item.title}</h4>
-                        <p>${item.description ? item.description.substring(0, 70) + (item.description.length > 70 ? '...' : '') : ''}</p>
-                        <p class="seller-info">Category: ${item.category || 'N/A'}</p>
-                        <p class="seller-info">Seller: ${item.username} (${item.phone})</p>
-                    </div>
-                    <div class="like-order">
-                        <button class="like-btn" data-item-id="${item.id}" data-likes="${item.likes || 0}" data-item-type="${item.type}"><span class="material-icons">${item.likes > 0 ? 'favorite' : 'favorite_border'}</span><span class="like-count">${item.likes || 0}</span></button>
-                        ${item.type === 'product' ? '<button class="order-btn">Order</button>' : ''}
-                    </div>
-                    <button class="view-details-btn">View Details</button>
+                    ${innerHtmlContent}
                     <div class="product-actions" style="display: none;">
                         <button class="action-icon-btn edit-btn" data-item-id="${item.id}" data-item-type="${item.type}"><span class="material-icons">edit</span></button>
                         <button class="action-icon-btn delete-btn" data-item-id="${item.id}" data-item-type="${item.type}"><span class="material-icons">delete</span></button>
@@ -3660,28 +4153,7 @@
                 if (viewDetailsBtn) {
                     viewDetailsBtn.onclick = (e) => {
                         e.stopPropagation();
-                        if (item.type === 'product') {
-                            if (detailsImage) detailsImage.src = item.imageUrl;
-                            if (detailsProductName) detailsProductName.textContent = item.name;
-                            if (detailsProductDescription) detailsProductDescription.textContent = item.description;
-                            if (detailsProductCategory) detailsProductCategory.textContent = item.category || 'N/A';
-                            if (detailsPriceNaira) detailsPriceNaira.textContent = `₦${item.price}`;
-                            if (detailsPriceDollar) detailsPriceDollar.textContent = `$${(item.price * NAIRA_TO_DOLLAR).toFixed(2)}`;
-                            if (detailsContactUsername) detailsContactUsername.textContent = item.username;
-                            if (detailsContactPhone) detailsContactPhone.textContent = item.phone;
-                            if (detailsUserId) detailsUserId.textContent = item.userId;
-                            if (productDetailsModal) productDetailsModal.classList.add('show');
-
-                            // Render comments (simulated)
-                            renderComments(item.id, productCommentsList, 'product');
-                            // Set up comment post button
-                            if (postProductCommentBtn) {
-                                postProductCommentBtn.onclick = () => postComment(item.id, newProductCommentInput, productCommentsList, 'product');
-                            }
-
-                        } else if (item.type === 'ad') {
-                            showAdDetailsPage(item);
-                        }
+                        showItemDetailsModal(item);
                     };
                 }
 
@@ -3703,7 +4175,11 @@
                         let currentLikes = parseInt(likeBtn.dataset.likes);
                         const itemId = likeBtn.dataset.itemId;
                         const itemType = likeBtn.dataset.itemType;
-                        let items = JSON.parse(localStorage.getItem(itemType === 'product' ? 'products' : 'ads') || '[]');
+                        let items;
+                        if (itemType === 'product') items = JSON.parse(localStorage.getItem('products') || '[]');
+                        else if (itemType === 'ad') items = JSON.parse(localStorage.getItem('ads') || '[]');
+                        else if (itemType === 'textPost') items = JSON.parse(localStorage.getItem('textPosts') || '[]');
+
                         const itemIndex = items.findIndex(p => p.id === itemId);
 
                         if (itemIndex !== -1) {
@@ -3715,16 +4191,28 @@
                                 currentLikes++;
                                 likeBtn.classList.add('liked');
                                 if (likeIcon) likeIcon.textContent = 'favorite';
-                                addNotification(`Your ${itemType} "${item.type === 'product' ? item.name : item.title}" was liked!`);
+                                addNotification(`Your ${itemType} "${item.type === 'product' ? item.name : item.type === 'ad' ? item.title : item.content.substring(0,20) + '...'}" was liked!`);
                             }
                             if (likeCount) likeCount.textContent = currentLikes;
                             likeBtn.dataset.likes = currentLikes;
 
                             items[itemIndex].likes = currentLikes;
-                            localStorage.setItem(itemType === 'product' ? 'products' : 'ads', JSON.stringify(items));
+                            if (itemType === 'product') localStorage.setItem('products', JSON.stringify(items));
+                            else if (itemType === 'ad') localStorage.setItem('ads', JSON.stringify(items));
+                            else if (itemType === 'textPost') localStorage.setItem('textPosts', JSON.stringify(items));
                         }
                     };
                 }
+
+                // New: Comment Button Handler for text posts
+                const commentBtn = card.querySelector('.comment-btn');
+                if (commentBtn) {
+                    commentBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        showItemDetailsModal(item); // Open details modal to view/add comments
+                    };
+                }
+
 
                 const orderBtn = card.querySelector('.order-btn');
                 if (orderBtn) {
@@ -3781,9 +4269,20 @@
                             if (adDescriptionInput) adDescriptionInput.value = item.description;
                             if (adCategorySelect) adCategorySelect.value = item.category;
                             if (adLocationInput) adLocationInput.value = item.location;
-                            if (adDurationInput) adDurationInput.value = item.durationDays;
+                            if (adDurationInput) adAdDurationInput.value = item.durationDays;
                             if (adBudgetInput) adBudgetInput.value = item.budgetNaira;
                             if (createAdModal) createAdModal.classList.add('show');
+                        } else if (item.type === 'textPost') {
+                            if (textPostContentInput) textPostContentInput.value = item.content;
+                            // Select the correct color swatch
+                            colorPalette.querySelectorAll('.color-swatch').forEach(swatch => {
+                                swatch.classList.remove('selected');
+                                if (swatch.dataset.color === item.themeColor) {
+                                    swatch.classList.add('selected');
+                                    selectedThemeColor = item.themeColor;
+                                }
+                            });
+                            if (textPostModal) textPostModal.classList.add('show');
                         }
                     };
                 }
@@ -3793,12 +4292,20 @@
                 if (deleteBtn) {
                     deleteBtn.onclick = async (e) => {
                         e.stopPropagation();
-                        const confirmed = await customConfirm(`Are you sure you want to delete this ${item.type}: "${item.type === 'product' ? item.name : item.title}"?`, 'Delete Confirmation');
+                        const confirmed = await customConfirm(`Are you sure you want to delete this ${item.type}: "${item.type === 'product' ? item.name : item.type === 'ad' ? item.title : item.content.substring(0,20) + '...'}"?`, 'Delete Confirmation');
                         if (confirmed) {
-                            let items = JSON.parse(localStorage.getItem(item.type === 'product' ? 'products' : 'ads') || '[]');
+                            let items;
+                            if (item.type === 'product') items = JSON.parse(localStorage.getItem('products') || '[]');
+                            else if (item.type === 'ad') items = JSON.parse(localStorage.getItem('ads') || '[]');
+                            else if (item.type === 'textPost') items = JSON.parse(localStorage.getItem('textPosts') || '[]');
+
                             items = items.filter(i => i.id !== item.id);
-                            localStorage.setItem(item.type === 'product' ? 'products' : 'ads', JSON.stringify(items));
-                            customAlert(`${item.type === 'product' ? 'Product' : 'Ad'} deleted successfully!`, 'Deleted');
+
+                            if (item.type === 'product') localStorage.setItem('products', JSON.stringify(items));
+                            else if (item.type === 'ad') localStorage.setItem('ads', JSON.stringify(items));
+                            else if (item.type === 'textPost') localStorage.setItem('textPosts', JSON.stringify(items));
+
+                            customAlert(`${item.type === 'product' ? 'Product' : item.type === 'ad' ? 'Ad' : 'Text Post'} deleted successfully!`, 'Deleted');
                             renderAdsAndProducts(currentFilterCategory); // Re-render main feed
                             if (profilePageContainer && profilePageContainer.classList.contains('show')) {
                                 renderUserProducts(currentViewingUser ? currentViewingUser.id : null); // Re-render profile products
@@ -3813,8 +4320,8 @@
                 if (targetList) targetList.prepend(card);
             }
 
-            if (closeProductDetailsModal) closeProductDetailsModal.onclick = () => productDetailsModal.classList.remove('show');
-            if (productDetailsModal) productDetailsModal.onclick = e => { if (e.target === productDetailsModal) productDetailsModal.classList.remove('show'); };
+            if (closeItemDetailsModal) closeItemDetailsModal.onclick = () => itemDetailsModal.classList.remove('show');
+            if (itemDetailsModal) itemDetailsModal.onclick = e => { if (e.target === itemDetailsModal) itemDetailsModal.classList.remove('show'); };
 
             // --- Commenting System (UI Only) ---
             function renderComments(itemId, commentsListElement, itemType) {
@@ -3836,7 +4343,33 @@
                         if (commentsListElement) commentsListElement.appendChild(commentItem);
                     });
                 }
+                // Update comments count on the card
+                updateCommentCountOnCard(itemId, itemType, comments.length);
             }
+
+            function updateCommentCountOnCard(itemId, itemType, count) {
+                const card = document.querySelector(`.product-card[data-id="${itemId}"][data-type="${itemType}"]`);
+                if (card) {
+                    const commentCountSpan = card.querySelector('.comment-count');
+                    if (commentCountSpan) {
+                        commentCountSpan.textContent = count;
+                    }
+                    // Also update the commentsCount in localStorage for persistence
+                    let items;
+                    if (itemType === 'product') items = JSON.parse(localStorage.getItem('products') || '[]');
+                    else if (itemType === 'ad') items = JSON.parse(localStorage.getItem('ads') || '[]');
+                    else if (itemType === 'textPost') items = JSON.parse(localStorage.getItem('textPosts') || '[]');
+
+                    const itemIndex = items.findIndex(p => p.id === itemId);
+                    if (itemIndex !== -1) {
+                        items[itemIndex].commentsCount = count;
+                        if (itemType === 'product') localStorage.setItem('products', JSON.stringify(items));
+                        else if (itemType === 'ad') localStorage.setItem('ads', JSON.stringify(items));
+                        else if (itemType === 'textPost') localStorage.setItem('textPosts', JSON.stringify(items));
+                    }
+                }
+            }
+
 
             function postComment(itemId, commentInput, commentsListElement, itemType) {
                 if (!loggedInUser) {
@@ -3871,20 +4404,25 @@
                     const ads = JSON.parse(localStorage.getItem('ads') || '[]');
                     const ad = ads.find(a => a.id === itemId);
                     if (ad) itemTitle = ad.title;
+                } else if (itemType === 'textPost') {
+                    const textPosts = JSON.parse(localStorage.getItem('textPosts') || '[]');
+                    const textPost = textPosts.find(t => t.id === itemId);
+                    if (textPost) itemTitle = textPost.content.substring(0, 20) + '...';
                 }
                 addNotification(`New comment on your ${itemType} "${itemTitle}" from ${loggedInUser.name}!`);
             }
 
 
-            // --- Load All Products and Ads for Main Feed with Optional Category Filter ---
+            // --- Load All Products, Ads, and Text Posts for Main Feed with Optional Category Filter ---
             function renderAdsAndProducts(category = 'All') {
                 const products = JSON.parse(localStorage.getItem('products') || '[]');
                 const ads = JSON.parse(localStorage.getItem('ads') || '[]');
+                const textPosts = JSON.parse(localStorage.getItem('textPosts') || '[]'); // New: Get text posts
 
-                let combinedFeed = [...products, ...ads];
+                let combinedFeed = [...products, ...ads, ...textPosts]; // Combine all types
 
                 if (category !== 'All') {
-                    combinedFeed = combinedFeed.filter(item => item.category === category);
+                    combinedFeed = combinedFeed.filter(item => item.category === category || (item.type === 'textPost' && category === 'Other')); // Text posts can be filtered by 'Other' or 'All'
                 }
 
                 // Sort by timestamp (most recent first)
@@ -3912,7 +4450,7 @@
             }
 
 
-            // --- Load Products for a Specific User (for Profile Page) ---
+            // --- Load Products, Ads, and Text Posts for a Specific User (for Profile Page) ---
             function renderUserProducts(targetUserId) {
                 if (myProductsList) myProductsList.innerHTML = ''; // Clear my products list
                 if (!targetUserId) {
@@ -3922,8 +4460,9 @@
 
                 const allProducts = JSON.parse(localStorage.getItem('products') || '[]');
                 const allAds = JSON.parse(localStorage.getItem('ads') || '[]');
+                const allTextPosts = JSON.parse(localStorage.getItem('textPosts') || '[]'); // New
 
-                const userUploadedItems = [...allProducts, ...allAds].filter(item => item.userId === targetUserId);
+                const userUploadedItems = [...allProducts, ...allAds, ...allTextPosts].filter(item => item.userId === targetUserId);
                 userUploadedItems.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Sort by most recent
 
                 if (emptyMyProductsMessage) emptyMyProductsMessage.style.display = userUploadedItems.length === 0 ? 'block' : 'none';
@@ -4030,10 +4569,12 @@
 
                 const products = JSON.parse(localStorage.getItem('products') || '[]');
                 const ads = JSON.parse(localStorage.getItem('ads') || '[]');
-                const combinedItems = [...products, ...ads];
+                const textPosts = JSON.parse(localStorage.getItem('textPosts') || '[]'); // New
+
+                const combinedItems = [...products, ...ads, ...textPosts]; // Combine all types
 
                 const filteredItems = combinedItems.filter(item => {
-                    const itemName = item.type === 'product' ? item.name : item.title;
+                    const itemName = item.type === 'product' ? item.name : item.type === 'ad' ? item.title : item.content;
                     return (itemName && itemName.toLowerCase().includes(queryText)) ||
                            (item.description && item.description.toLowerCase().includes(queryText)) ||
                            (item.username && item.username.toLowerCase().includes(queryText)) ||
@@ -4121,31 +4662,55 @@
                 };
             }
 
-            // --- Chat Functionality (Simulated) ---
+            // --- Chat Functionality ---
             const defaultBotUser = {
-                username: "KnowEmpire Support",
-                profilePic: "https://placehold.co/36x36/9b23ea/ffffff?text=S"
+                id: 'bot_support',
+                name: "KnowEmpire Support",
+                profilePhoto: "https://placehold.co/36x36/9b23ea/ffffff?text=S"
             };
 
             function getChatHistory() {
-                return JSON.parse(sessionStorage.getItem('chatHistory') || '[]');
+                return JSON.parse(localStorage.getItem('chatHistory') || '[]');
             }
 
             function saveChatHistory(history) {
-                sessionStorage.setItem('chatHistory', JSON.stringify(history));
+                localStorage.setItem('chatHistory', JSON.stringify(history));
             }
 
-            function addChatMessage(sender, message, type = 'text') {
+            function addChatMessage(senderUser, message, type = 'text', status = 'sent') {
                 const chatHistory = getChatHistory();
                 const newMessage = {
-                    sender: sender,
+                    senderId: senderUser.id,
+                    senderName: senderUser.name,
+                    senderPhoto: senderUser.profilePhoto,
                     message: message,
                     type: type,
-                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    status: status // 'sent', 'delivered', 'read'
                 };
                 chatHistory.push(newMessage);
                 saveChatHistory(chatHistory);
                 renderChatMessages();
+
+                // Simulate status updates for sent messages
+                if (senderUser.id === (loggedInUser ? loggedInUser.id : null)) {
+                    setTimeout(() => {
+                        updateMessageStatus(newMessage, 'delivered');
+                    }, 1500); // Simulate delivery
+                    setTimeout(() => {
+                        updateMessageStatus(newMessage, 'read');
+                    }, 3000); // Simulate read
+                }
+            }
+
+            function updateMessageStatus(messageToUpdate, newStatus) {
+                const chatHistory = getChatHistory();
+                const index = chatHistory.findIndex(msg => msg === messageToUpdate); // Find by reference
+                if (index !== -1) {
+                    chatHistory[index].status = newStatus;
+                    saveChatHistory(chatHistory);
+                    renderChatMessages(); // Re-render to show updated status
+                }
             }
 
             function renderChatMessages() {
@@ -4156,21 +4721,30 @@
                 history.forEach(msg => {
                     const messageBubble = document.createElement('div');
                     messageBubble.classList.add('message-bubble');
-                    messageBubble.classList.add(msg.sender === (loggedInUser ? loggedInUser.username : '') ? 'sent' : 'received');
+                    messageBubble.classList.add(msg.senderId === (loggedInUser ? loggedInUser.id : '') ? 'sent' : 'received');
 
-                    let content = '';
+                    let contentHtml = '';
                     if (msg.type === 'text') {
-                        content = msg.message;
+                        contentHtml = `<div class="message-content">${msg.message}</div>`;
                     } else if (msg.type === 'photo') {
-                        content = `📸 Photo: ${msg.message}`;
+                        contentHtml = `<img src="${msg.message}" alt="Sent Image" class="message-image">`;
                     } else if (msg.type === 'voice') {
-                        content = `🎤 Voice Message: ${msg.message}`;
+                        contentHtml = `<audio controls src="${msg.message}" class="message-audio"></audio>`;
                     }
 
+                    const statusIconHtml = msg.senderId === (loggedInUser ? loggedInUser.id : '') ?
+                        `<span class="status-icon ${msg.status}"><span class="material-icons">${msg.status === 'read' ? 'done_all' : msg.status === 'delivered' ? 'done_all' : 'done'}</span></span>` : '';
+
                     messageBubble.innerHTML = `
-                        <span class="sender-name">${msg.sender}</span>
-                        ${content}
-                        <span class="timestamp">${msg.timestamp}</span>
+                        <div class="sender-info">
+                            <img src="${msg.senderPhoto || 'https://placehold.co/30x30/cccccc/333333?text=P'}" alt="Profile" class="sender-profile-pic">
+                            <span class="sender-name">${msg.senderName}</span>
+                        </div>
+                        ${contentHtml}
+                        <div class="timestamp-and-status">
+                            <span class="timestamp">${msg.timestamp}</span>
+                            ${statusIconHtml}
+                        </div>
                     `;
                     chatMessages.appendChild(messageBubble);
                 });
@@ -4190,12 +4764,12 @@
                     reply = "You can create an ad by clicking the 'Storefront' icon in the navigation bar.";
                 } else if (lowerCaseMessage.includes("help") || lowerCaseMessage.includes("support")) {
                     reply = "I'm here to help! What specific issue are you facing?";
-                } else if (lowerCaseMessage.includes("photo sent")) {
+                } else if (lowerCaseMessage.includes("photo")) { // Simplified check for photo
                     reply = "Got it! I received your photo. What would you like to discuss about it?";
-                } else if (lowerCaseMessage.includes("voice message sent")) {
+                } else if (lowerCaseMessage.includes("voice message")) { // Simplified check for voice
                     reply = "Thanks for the voice message! How can I help with that?";
                 } else if (lowerCaseMessage.includes("thank you") || lowerCaseMessage.includes("thanks")) {
-                    reply = "You're welcome! Feel to ask if you have more questions.";
+                    reply = "You're welcome! Feel free to ask if you have more questions.";
                 } else {
                     const genericReplies = [
                         "I'm still learning, please ask me something else.",
@@ -4207,7 +4781,7 @@
                 }
 
                 setTimeout(() => {
-                    addChatMessage(defaultBotUser.username, reply);
+                    addChatMessage(defaultBotUser, reply);
                 }, 1000); // Simulate bot typing delay
             }
 
@@ -4215,7 +4789,7 @@
                 sendTextBtn.onclick = () => {
                     const message = chatTextInput.value.trim();
                     if (message && loggedInUser) {
-                        addChatMessage(loggedInUser.username, message);
+                        addChatMessage(loggedInUser, message, 'text', 'sent');
                         botReply(message);
                         chatTextInput.value = '';
                     } else if (!loggedInUser) {
@@ -4229,31 +4803,91 @@
                 });
             }
 
+            // Photo sending logic
             if (sendPhotoBtn) {
                 sendPhotoBtn.onclick = () => {
-                    if (loggedInUser) {
-                        addChatMessage(loggedInUser.username, "Photo sent!", 'photo');
-                        botReply("Photo sent"); // Trigger bot reply for photo
-                    } else {
+                    if (!loggedInUser) {
                         customAlert('Please log in to send photos.', 'Login Required');
+                        return;
+                    }
+                    chatPhotoInput.click(); // Trigger hidden file input
+                };
+            }
+
+            if (chatPhotoInput) {
+                chatPhotoInput.onchange = function() {
+                    const file = chatPhotoInput.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            addChatMessage(loggedInUser, e.target.result, 'photo', 'sent');
+                            botReply("photo"); // Trigger bot reply for photo
+                            chatPhotoInput.value = ''; // Clear input
+                        };
+                        reader.readAsDataURL(file);
                     }
                 };
             }
 
+            // Voice message recording logic
+            let mediaRecorder;
+            let audioChunks = [];
+            let isRecording = false;
+
             if (sendVoiceBtn) {
-                sendVoiceBtn.onclick = () => {
-                    if (loggedInUser) {
-                        addChatMessage(loggedInUser.username, "Voice message sent!", 'voice');
-                        botReply("Voice message sent"); // Trigger bot reply for voice
-                    } else {
+                sendVoiceBtn.addEventListener('mousedown', startRecording);
+                sendVoiceBtn.addEventListener('mouseup', stopRecording);
+                sendVoiceBtn.addEventListener('touchstart', startRecording); // For touch devices
+                sendVoiceBtn.addEventListener('touchend', stopRecording);   // For touch devices
+
+                function startRecording(e) {
+                    e.preventDefault(); // Prevent default touch behavior (e.g., scrolling)
+                    if (!loggedInUser) {
                         customAlert('Please log in to send voice messages.', 'Login Required');
+                        return;
                     }
-                };
+                    if (isRecording) return;
+                    isRecording = true;
+                    sendVoiceBtn.classList.add('recording');
+                    audioChunks = [];
+
+                    navigator.mediaDevices.getUserMedia({ audio: true })
+                        .then(stream => {
+                            mediaRecorder = new MediaRecorder(stream);
+                            mediaRecorder.ondataavailable = event => {
+                                audioChunks.push(event.data);
+                            };
+                            mediaRecorder.onstop = () => {
+                                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                                const audioUrl = URL.createObjectURL(audioBlob);
+                                addChatMessage(loggedInUser, audioUrl, 'voice', 'sent');
+                                botReply("voice message"); // Trigger bot reply for voice
+                                stream.getTracks().forEach(track => track.stop()); // Stop microphone access
+                            };
+                            mediaRecorder.start();
+                            showTimedPopup('Recording voice message...', 2000);
+                        })
+                        .catch(err => {
+                            console.error('Error accessing microphone:', err);
+                            customAlert('Could not access microphone. Please ensure permissions are granted.', 'Microphone Error');
+                            isRecording = false;
+                            sendVoiceBtn.classList.remove('recording');
+                        });
+                }
+
+                function stopRecording() {
+                    if (mediaRecorder && mediaRecorder.state === 'recording') {
+                        mediaRecorder.stop();
+                        isRecording = false;
+                        sendVoiceBtn.classList.remove('recording');
+                    }
+                }
             }
+
 
             // Initialize chat history if empty (add initial bot message)
             if (getChatHistory().length === 0) {
-                addChatMessage(defaultBotUser.username, "Welcome to KnowEmpire chat! How can I help you today?", 'text');
+                addChatMessage(defaultBotUser, "Welcome to KnowEmpire chat! How can I help you today?", 'text');
             }
         });
     </script>
