@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <style>
+        body {
+            background: #f7f7fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .menu-container {
+            max-width: 400px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 32px 24px;
+        }
+        .menu-title {
+            text-align: center;
+            color: #9b23ea;
+            margin-bottom: 32px;
+            font-size: 2rem;
+        }
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .menu-list li {
+            margin-bottom: 20px;
+        }
+        .menu-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #9b23ea;
+            color: #fff;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .menu-btn:hover {
+            background: #7a1bb7;
+        }
+        .back-btn {
+            display: block;
+            margin: 0 auto 24px auto;
+            background: none;
+            border: none;
+            color: #9b23ea;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-container">
+        <button class="back-btn" onclick="window.history.back()">&larr; Back</button>
+        <div class="menu-title">Menu</div>
+        <ul class="menu-list">
+            <li><button class="menu-btn" id="logoutBtn">Logout</button></li>
+            <li><button class="menu-btn" id="faqBtn">FAQ</button></li>
+            <li><button class="menu-btn" id="supportBtn">Support</button></li>
+            <li><button class="menu-btn" id="contactBtn">Contact Developer</button></li>
+            <li><button class="menu-btn" id="dedicationBtn">Dedication</button></li>
+        </ul>
+    </div>
+    <script>
+        document.getElementById('logoutBtn').onclick = function() {
+            localStorage.removeItem('loggedInUser');
+            alert('You have been logged out.');
+            window.location.href = 'index.html';
+        };
+        document.getElementById('faqBtn').onclick = function() {
+            alert('FAQ: \n\n1. How do I use KnowEmpire?\n2. How do I post a product?\n3. How do I contact support?\n\nMore coming soon!');
+        };
+        document.getElementById('supportBtn').onclick = function() {
+            alert('Support: \n\nFor support, please email support@knowempire.com or use the in-app chat.');
+        };
+        document.getElementById('contactBtn').onclick = function() {
+            alert('Contact Developer: \n\nEmail: remarkable.samuel1@gmail.com\nTwitter: @RemarkableSamuel');
+        };
+        document.getElementById('dedicationBtn').onclick = function() {
+            alert('Dedication: \n\nThis project is dedicated to all passionate learners and creators.');
+        };
+    </script>
+</body>
+</html>
