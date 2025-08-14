@@ -1,5 +1,78 @@
-const storyImages = [
-     'images/KesF.gif',
+document.addEventListener('DOMContentLoaded', (event) => {
+            // --- Custom Alert/Confirm System ---
+            const customAlertModal = document.getElementById('customAlertModal');
+            const customAlertTitle = document.getElementById('customAlertTitle');
+            const customAlertMessage = document.getElementById('customAlertMessage');
+            const customAlertOkBtn = document.getElementById('customAlertOkBtn');
+            const customAlertCancelBtn = document.getElementById('customAlertCancelBtn');
+
+            let resolveAlertPromise; // Used for customAlert
+            let resolveConfirmPromise; // Used for customConfirm
+
+            function customAlert(message, title = 'Alert') {
+                return new Promise(resolve => {
+                    customAlertTitle.textContent = title;
+                    customAlertMessage.textContent = message;
+                    customAlertCancelBtn.style.display = 'none'; // Hide cancel button for alerts
+                    customAlertOkBtn.textContent = 'OK';
+                    customAlertModal.classList.add('show');
+                    customAlertModal.style.display = 'flex'; // Ensure flex display
+
+                    resolveAlertPromise = resolve; // Store resolve function
+
+                    customAlertOkBtn.onclick = () => {
+                        customAlertModal.classList.remove('show');
+                        customAlertModal.style.display = 'none';
+                        resolveAlertPromise(true);
+                    };
+                    // Allow clicking outside to close for alerts
+                    customAlertModal.onclick = (e) => {
+                        if (e.target === customAlertModal) {
+                            customAlertModal.classList.remove('show');
+                            customAlertModal.style.display = 'none';
+                            resolveAlertPromise(true);
+                        }
+                    };
+                });
+            }
+
+            function customConfirm(message, title = 'Confirm') {
+                return new Promise(resolve => {
+                    customAlertTitle.textContent = title;
+                    customAlertMessage.textContent = message;
+                    customAlertCancelBtn.style.display = 'inline-block'; // Show cancel button for confirms
+                    customAlertOkBtn.textContent = 'Yes'; // Change text for confirmation
+                    customAlertModal.classList.add('show');
+                    customAlertModal.style.display = 'flex'; // Ensure flex display
+
+                    resolveConfirmPromise = resolve; // Store resolve function
+
+                    customAlertOkBtn.onclick = () => {
+                        customAlertModal.classList.remove('show');
+                        customAlertModal.style.display = 'none';
+                        resolveConfirmPromise(true);
+                    };
+                    customAlertCancelBtn.onclick = () => {
+                        customAlertModal.classList.remove('show');
+                        customAlertModal.style.display = 'none';
+                        resolveConfirmPromise(false);
+                    };
+                    // Prevent clicking outside for confirms
+                    customAlertModal.onclick = (e) => {
+                        if (e.target === customAlertModal) {
+                            // Do nothing, force user to click a button
+                        }
+                    };
+                });
+            }
+
+            // Override window.alert and window.confirm
+            window.alert = customAlert;
+            window.confirm = customConfirm;
+
+            // --- Story Carousel Logic ---
+            const storyImages = [
+                 'images/KesF.gif',
     'images/latino-man-his-20s-learning-dance_1238364-88079.jpg',
     'images/low-angle-woman-looking-camera_23-2148312210.avif',
     'images/medium-shot-woman-with-yellow-suit_23-2149068946.jpg',
@@ -7,8 +80,8 @@ const storyImages = [
     'images/young-man-rocking-urban-rap-style-vector-isolated-illustration_1310786-57769.jpg',
     'images/young-people-tracksuits_130951-1150.jpg',
     'images/young-woman-with-shopping-bags-female-person-walking-with-her-purchases_1170970-807.avif',
-    'images/blazer-poster-1.png', 
-    'images/curvaceous-woman-dressed-90s-streetwear-fashion-illustration-vector_893055-22621.avif',    
+    'images/blazer-poster-1.png',
+    'images/curvaceous-woman-dressed-90s-streetwear-fashion-illustration-vector_893055-22621.avif',
     'images/woman.avif',
     'images/woman-with-purple-shirt-purple-pants-is-carrying-bags_265721-3465.avif',
     'images/woman-with-purple-bow-purple-dress-with-purple-bow-it_265721-3470.avif',
@@ -43,7 +116,7 @@ const storyImages = [
     'images/nigerian-man-traditional-highlife-musicians-outfit_1238364-58370.jpg',
     'images/nigerian-man-dressed-as-construction-worker-site_1238364-44096.jpg',
     'images/nigerian-man-dressed-as-construction-worker-site_1238364-43851.jpg',
-    'images/mozambican-man-traditional-singers-outfit_1238364-67645.jpg',
+    'images/mozambican-man-traditional-wrestlers-outfit_1238364-67645.jpg',
     'images/mozambican-man-traditional-mozambican-attire-as-teacher_1238364-45576.avif',
     'images/minimalist-fashion-vector-illustration-confident-woman-stylish-beige-outfit-with-hearts_874914-3973.avif',
     'images/medium-shot-woman-with-yellow-suit_23-2149068946.jpg',
@@ -109,174 +182,2314 @@ const storyImages = [
     'images/african-young-woman-with-braids-pink-background-portrait-red-suit-yellow-pants_242111-23967.avif',
     'images/african-young-woman-with-braids-pink-background-portrait-red-suit-yellow-pants_242111-23967.avif',
     'images/beautiful-woman-with-bright-silk-studio-fashion-concept_912214-84447.jpg',
-    
 
-  ];
+            ];
 
-const storyCards = document.getElementById('storyCards');
-function renderStoryCards(activeIndex) {
-    storyCards.innerHTML = '';
-    // Show up to 5 story cards at a time, centered on the active one if possible
-    const total = storyImages.length;
-    const visibleCount = 5;
-    let start = Math.max(0, activeIndex - Math.floor(visibleCount / 2));
-    if (start + visibleCount > total) start = Math.max(0, total - visibleCount);
+            const storyCards = document.getElementById('storyCards');
+            function renderStoryCards(activeIndex) {
+                if (!storyCards) return;
+                storyCards.innerHTML = '';
+                const total = storyImages.length;
+                const visibleCount = 5;
+                let start = Math.max(0, activeIndex - Math.floor(visibleCount / 2));
+                if (start + visibleCount > total) start = Math.max(0, total - visibleCount);
 
-    for (let i = start; i < Math.min(start + visibleCount, total); i++) {
-        const card = document.createElement('div');
-        card.className = 'story-card' + (i === activeIndex ? ' active' : '');
-        card.innerHTML = `
-            <img src="${storyImages[i]}" class="story-img" alt="Story">
-        `;
-        storyCards.appendChild(card);
-    }
-}
+                for (let i = start; i < Math.min(start + visibleCount, total); i++) {
+                    const card = document.createElement('div');
+                    card.className = 'story-card' + (i === activeIndex ? ' active' : '');
+                    card.innerHTML = `<img src="${storyImages[i]}" class="story-img" alt="Story">`;
+                    storyCards.appendChild(card);
+                }
+            }
 
-let currentStory = 0;
-renderStoryCards(currentStory);
+            let currentStory = 0;
+            renderStoryCards(currentStory);
 
-setInterval(() => {
-    currentStory = (currentStory + 1) % storyImages.length;
-    renderStoryCards(currentStory);
-}, 4000);
+            setInterval(() => {
+                currentStory = (currentStory + 1) % storyImages.length;
+                renderStoryCards(currentStory);
+            }, 4000);
 
-const fab = document.getElementById('fab');
-const modal = document.getElementById('uploadModal');
-const closeModal = document.getElementById('closeModal');
-const uploadForm = document.getElementById('uploadForm');
-const productList = document.getElementById('productList');
-const priceNaira = document.getElementById('priceNaira');
-const convertedPrice = document.getElementById('convertedPrice');
-const productImageInput = document.getElementById('productImage');
-const imagePreview = document.getElementById('imagePreview');
+            // --- DOM Elements ---
+            const mainContent = document.getElementById('mainContent'); // Main content div
+            const profilePageContainer = document.getElementById('profilePageContainer'); // Profile page div
+            const usersListPage = document.getElementById('usersListPage'); // Users List Page
+            const usersGrid = document.getElementById('usersGrid'); // Grid for user cards
+            const adDetailsPage = document.getElementById('adDetailsPage'); // New: Ad Details Page
+            const notificationsModal = document.getElementById('notificationsModal'); // New: Notifications Modal
+            const chatModal = document.getElementById('chatModal'); // New: Chat Modal
+            const adsFullPage = document.getElementById('adsFullPage'); // New: Ads Full Page
 
-const NAIRA_TO_DOLLAR = 0.00067; // Example rate
+            const statusBarProfilePic = document.getElementById('statusBarProfilePic');
+            const statusBarSearchInput = document.getElementById('statusBarSearchInput'); // New search input
+            const fab = document.getElementById('fab'); // Main FAB
+            const textPostFab = document.getElementById('textPostBtn'); // New Text Post FAB
 
-fab.onclick = () => modal.classList.add('show');
-closeModal.onclick = () => modal.classList.remove('show');
-modal.onclick = e => { if (e.target === modal) modal.classList.remove('show'); };
+            // Product Upload Modal Elements
+            const uploadModal = document.getElementById('uploadModal');
+            const closeUploadModal = document.getElementById('closeUploadModal');
+            const uploadForm = document.getElementById('uploadForm');
+            const productImageInput = document.getElementById('productImage');
+            const imagePreview = document.getElementById('imagePreview');
+            const productNameInput = document.getElementById('productName'); // New
+            const productDescriptionInput = document.getElementById('productDescription'); // New
+            const productCategorySelect = document.getElementById('productCategory'); // New
+            const priceNaira = document.getElementById('priceNaira');
+            const convertedPrice = document.getElementById('convertedPrice');
+            const uploadSpinner = document.getElementById('uploadSpinner');
+            const uploadModalTitle = document.getElementById('uploadModalTitle'); // New
+            const uploadProductSubmitBtn = document.getElementById('uploadProductSubmitBtn'); // New
+            const enhanceDescriptionBtn = document.getElementById('enhanceDescriptionBtn'); // New AI button
 
-priceNaira.oninput = function() {
-    const val = parseFloat(priceNaira.value) || 0;
-    convertedPrice.textContent = val ? `≈ $${(val * NAIRA_TO_DOLLAR).toFixed(2)}` : '';
-};
+            // Create Ad Modal Elements
+            const createAdModal = document.getElementById('createAdModal');
+            const closeCreateAdModal = document.getElementById('closeCreateAdModal');
+            const createAdForm = document.getElementById('createAdForm');
+            const adImageInput = document.getElementById('adImage');
+            const adImagePreview = document.getElementById('adImagePreview');
+            const adTitleInput = document.getElementById('adTitle');
+            const adDescriptionInput = document.getElementById('adDescription');
+            const adCategorySelect = document.getElementById('adCategory'); // New
+            const adLocationInput = document.getElementById('adLocation');
+            const adDurationInput = document.getElementById('adDuration');
+            const adBudgetInput = document.getElementById('adBudget');
+            const adSpinner = document.getElementById('adSpinner');
+            const createAdModalTitle = document.getElementById('createAdModalTitle'); // New
+            const createAdSubmitBtn = document.getElementById('createAdSubmitBtn'); // New
 
-// Show image preview before upload
-productImageInput.onchange = function() {
-    const file = productImageInput.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-            imagePreview.src = evt.target.result;
-            imagePreview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-    } else {
-        imagePreview.src = '';
-        imagePreview.style.display = 'none';
-    }
-};
-
-uploadForm.onsubmit = function(e) {
-    e.preventDefault();
-    const file = productImageInput.files[0];
-    const price = parseFloat(priceNaira.value);
-    if (!file || !price) return;
-
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-        addProductCard(evt.target.result, price);
-        uploadForm.reset();
-        convertedPrice.textContent = '';
-        imagePreview.src = '';
-        imagePreview.style.display = 'none';
-        modal.classList.remove('show');
-    };
-    reader.readAsDataURL(file);
-};
-
-function addProductCard(imgSrc, price) {
-    const card = document.createElement('div');
-    card.className = 'product-card';
-    card.innerHTML = `
-        <img src="${imgSrc}" class="product-img" alt="Product">
-        <div class="prices">
-            <span>₦${price}</span>
-            <span>$${(price * NAIRA_TO_DOLLAR).toFixed(2)}</span>
-        </div>
-        <div class="like-order">
-            <button class="like-btn"><span class="material-icons">favorite_border</span><span class="like-count">0</span></button>
-            <button class="order-btn">Order</button>
-        </div>
-    `;
-    // Like button toggle and counter
-    const likeBtn = card.querySelector('.like-btn');
-    const likeIcon = likeBtn.querySelector('.material-icons');
-    const likeCount = card.querySelector('.like-count');
-    let count = 0;
-    likeBtn.onclick = function() {
-        if (likeBtn.classList.toggle('liked')) {
-            count++;
-            likeIcon.textContent = 'favorite';
-        } else {
-            count = Math.max(0, count - 1);
-            likeIcon.textContent = 'favorite_border';
-        }
-        likeCount.textContent = count;
-    };
-    productList.prepend(card);
-}
+            // Text Post Modal Elements
+            const textPostModal = document.getElementById('textPostModal');
+            const closeTextPostModal = document.getElementById('closeTextPostModal');
+            const textPostForm = document.getElementById('textPostForm');
+            const textPostContentInput = document.getElementById('textPostContent');
+            const colorPalette = document.getElementById('colorPalette');
+            const textPostSpinner = document.getElementById('textPostSpinner');
+            const postTextBtn = document.getElementById('postTextBtn');
+            let selectedThemeColor = '#9b23ea'; // Default color
 
 
-const searchPage = document.getElementById('searchPage');
-const searchInput = document.getElementById('searchInput');
-const closeSearchPage = document.getElementById('closeSearchPage');
-const searchResults = document.getElementById('searchResults');
+            const productList = document.getElementById('productList');
+            const emptyProductListMessage = document.getElementById('emptyProductListMessage'); // New
 
-// Show search page when search icon is clicked (second header-btn)
-document.querySelectorAll('.header-btn')[1].onclick = function() {
-    searchPage.style.display = 'flex';
-    searchInput.value = '';
-    searchInput.focus();
-    renderSearchResults('');
-};
+            const loginModal = document.getElementById('loginModal');
+            const closeLoginModal = document.getElementById('closeLoginModal');
+            const loginForm = document.getElementById('loginForm');
+            const loginUsernameInput = document.getElementById('loginUsername');
+            const loginPasswordInput = document.getElementById('loginPassword');
+            const goToSignupBtn = document.getElementById('goToSignupBtn');
 
-// Hide search page
-closeSearchPage.onclick = function() {
-    searchPage.style.display = 'none';
-};
-
-// Filter products as user types
-searchInput.oninput = function() {
-    renderSearchResults(searchInput.value.trim().toLowerCase());
-};
-
-// Example renderSearchResults function (customize as needed)
-function renderSearchResults(query) {
-    const products = JSON.parse(localStorage.getItem('products') || '[]');
-    if (!query) {
-        searchResults.innerHTML = '<div>No results found.</div>';
-        return;
-    }
-    const filtered = products.filter(product =>
-        (product.username && product.username.toLowerCase().includes(query)) ||
-        (product.phone && product.phone.toLowerCase().includes(query)) ||
-        (product.price && product.price.toString().includes(query))
-    );
-    searchResults.innerHTML = filtered.length
-        ? filtered.map(product => `
-            <div class="product-card">
-                <img src="${product.image}" class="product-img" alt="Product">
-                <div class="prices">
-                    <span>₦${product.price}</span>
-                </div>
-                <div class="meta">
-                    <span>${product.username || ''}</span>
-                    <span>${product.phone || ''}</span>
-                </div>
-            </div>
-        `).join('')
-        : '<div>search for ussers.</div>';
-}
+            const signupModal = document.getElementById('signupModal');
+            const closeSignupModal = document.getElementById('closeSignupModal');
+            const signupForm = document.getElementById('signupForm');
+            const profilePhotoInput = document.getElementById('profilePhoto');
+            const profilePhotoPreview = document.getElementById('profilePhotoPreview');
+            const signupNameInput = document.getElementById('signupName');
+            const signupPhoneInput = document.getElementById('signupPhone');
+            const signupLocationInput = document.getElementById('signupLocation');
+            const signupAccountNumberInput = document.getElementById('signupAccountNumber');
+            const signupAccountNameInput = document.getElementById('signupAccountName');
+            const signupBankNameInput = document.getElementById('signupBankName');
+            const accountNumberSpinner = document.getElementById('accountNumberSpinner'); // New: Spinner for account number lookup
+            const signupUsernameInput = document.getElementById('signupUsername');
+            const signupPasswordInput = document.getElementById('signupPassword');
+            const goToLoginBtn = document.getElementById('goToLoginBtn');
 
 
+            // Generalized Item Details Modal Elements
+            const itemDetailsModal = document.getElementById('itemDetailsModal');
+            const closeItemDetailsModal = document.getElementById('closeItemDetailsModal');
+            const detailsImage = document.getElementById('detailsImage');
+            const detailsTitle = document.getElementById('detailsTitle'); // Renamed from detailsProductName
+            const detailsDescription = document.getElementById('detailsDescription'); // Renamed from detailsProductDescription
+            const detailsCategoryRow = document.getElementById('detailsCategoryRow'); // New
+            const detailsCategory = document.getElementById('detailsCategory'); // Renamed from detailsProductCategory
+            const detailsPriceRow = document.getElementById('detailsPriceRow'); // New
+            const detailsPriceNaira = document.getElementById('detailsPriceNaira');
+            const detailsPriceDollar = document.getElementById('detailsPriceDollar');
+            const detailsLocationRow = document.getElementById('detailsLocationRow'); // New
+            const detailsLocation = document.getElementById('detailsLocation');
+            const detailsDurationRow = document.getElementById('detailsDurationRow'); // New
+            const detailsDuration = document.getElementById('detailsDuration');
+            const detailsBudgetRow = document.getElementById('detailsBudgetRow'); // New
+            const detailsBudget = document.getElementById('detailsBudget');
+            const detailsContactUsername = document.getElementById('detailsContactUsername');
+            const detailsContactPhone = document.getElementById('detailsContactPhone');
+            const detailsUserId = document.getElementById('detailsUserId');
+            const itemCommentsList = document.getElementById('itemCommentsList'); // Renamed from productCommentsList
+            const newItemCommentInput = document.getElementById('newItemCommentInput'); // Renamed from newProductCommentInput
+            const postItemCommentBtn = document.getElementById('postItemCommentBtn'); // Renamed from postProductCommentBtn
+
+
+            // Ad Details Page Elements (now just a container, logic moved to itemDetailsModal)
+            // const adDetailsPageHeader = document.getElementById('adDetailsPageHeader'); // Not needed if using generic modal
+            // const adDetailsBackBtn = document.getElementById('adDetailsBackBtn');
+
+
+            // Notifications Modal Elements
+            const notificationsPageHeader = document.getElementById('notificationsPageHeader'); // New: Header for notifications
+            const notificationsBackBtn = document.getElementById('notificationsBackBtn');
+            const notificationsList = document.getElementById('notificationsList');
+            const noNotificationsMessage = document.getElementById('noNotificationsMessage');
+            const addTestNotificationBtn = document.getElementById('addTestNotificationBtn');
+            const markAllReadBtn = document.getElementById('markAllReadBtn'); // New
+            const clearAllNotificationsBtn = document.getElementById('clearAllNotificationsBtn'); // New
+
+            // Chat Modal Elements
+            const chatPageHeader = document.getElementById('chatPageHeader'); // New: Header for chat
+            const chatBackBtn = document.getElementById('chatBackBtn');
+            const chatMessages = document.getElementById('chatMessages');
+            const chatTextInput = document.getElementById('chatTextInput');
+            const sendTextBtn = document.getElementById('sendTextBtn');
+            const chatPhotoInput = document.getElementById('chatPhotoInput'); // Hidden input for photo selection
+            const sendPhotoBtn = document.getElementById('sendPhotoBtn');
+            const sendVoiceBtn = document.getElementById('sendVoiceBtn');
+
+            // Ads Full Page Elements
+            const adsPageHeader = document.getElementById('adsPageHeader'); // New: Header for ads full page
+            const adsPageBackBtn = document.getElementById('adsPageBackBtn');
+            const adsListContent = document.getElementById('adsListContent'); // Content area for ads
+            const emptyAdsListMessage = document.getElementById('emptyAdsListMessage'); // Empty message for ads page
+            const createAdBtnHeader = document.getElementById('createAdBtnHeader'); // Create ad button in ads header
+
+
+            const timedMessagePopup = document.getElementById('timedMessagePopup');
+
+            // Error message elements for forms
+            const loginUsernameError = document.getElementById('loginUsernameError');
+            const loginPasswordError = document.getElementById('loginPasswordError');
+            const signupNameError = document.getElementById('signupNameError');
+            const signupPhoneError = document.getElementById('signupPhoneError');
+            const signupLocationError = document.getElementById('signupLocationError');
+            const signupAccountNumberError = document.getElementById('signupAccountNumberError');
+            const signupAccountNameError = document.getElementById('signupAccountNameError');
+            const signupBankNameError = document.getElementById('signupBankNameError');
+            const signupUsernameError = document.getElementById('signupUsernameError');
+            const signupPasswordError = document.getElementById('signupPasswordError');
+            const productNameError = document.getElementById('productNameError');
+            const productDescriptionError = document.getElementById('productDescriptionError');
+            const productCategoryError = document.getElementById('productCategoryError');
+            const priceNairaError = document.getElementById('priceNairaError');
+            const adTitleError = document.getElementById('adTitleError');
+            const adDescriptionError = document.getElementById('adDescriptionError');
+            const adCategoryError = document.getElementById('adCategoryError');
+            const adLocationError = document.getElementById('adLocationError');
+            const adDurationError = document.getElementById('adDurationError');
+            const adBudgetError = document.getElementById('adBudgetError');
+            const textPostContentError = document.getElementById('textPostContentError'); // New
+
+
+            const addBtn = document.getElementById('addBtn');
+            const searchBtn = document.getElementById('searchBtn'); // This button will now trigger the main search input
+            const chatBtn = document.getElementById('chatBtn');
+            const homeNavBtn = document.getElementById('homeNavBtn');
+            const adsNavBtn = document.getElementById('adsNavBtn'); // Ads Button
+            const usersNavBtn = document.getElementById('usersNavBtn'); // Users Nav Button
+            const notificationsNavBtn = document.getElementById('notificationsNavBtn');
+            const menuNavBtn = document.getElementById('menuNavBtn');
+
+            // Profile Page elements (now within index.html)
+            const profilePageHeader = document.getElementById('profilePageHeader'); // New: Header for profile
+            const profileBackBtn = document.getElementById('profileBackBtn'); // New: Back button
+            const userProfileImageLarge = document.getElementById('userProfileImageLarge');
+            const profileNameDisplay = document.getElementById('profileNameDisplay');
+            const professionalDashboardBtn = document.getElementById('professionalDashboardBtn');
+            const addToStoryBtn = document.getElementById('addToStoryBtn');
+            const moreOptionsBtn = document.getElementById('moreOptionsBtn');
+            const profileTabs = document.querySelectorAll('.profile-tab-item');
+            const postsTabContent = document.getElementById('postsTab');
+            const aboutTabContent = document.getElementById('aboutTab');
+            const reelsTabContent = document.getElementById('reelsTab');
+            const photosTabContent = document.getElementById('photosTab');
+            const videosTabContent = document.getElementById('videosTab');
+            const editPublicDetailsBtn = document.getElementById('editPublicDetailsBtn');
+            const postCreationProfilePic = document.getElementById('postCreationProfilePic');
+            const postStatusInput = document.getElementById('postStatusInput');
+            const myProductsList = document.getElementById('myProductsList');
+            const emptyMyProductsMessage = document.getElementById('emptyMyProductsMessage'); // New
+            const aboutEditProfileBtn = document.getElementById('aboutEditProfileBtn'); // Edit button in About tab
+            const aboutLogoutBtn = document.getElementById('aboutLogoutBtn'); // Logout button in About tab
+
+            // About tab details
+            const aboutUserPhone = document.getElementById('aboutUserPhone');
+            const aboutUserLocation = document.getElementById('aboutUserLocation');
+            const aboutUserBankName = document.getElementById('aboutUserBankName');
+            const aboutUserUsername = document.getElementById('aboutUserUsername');
+            const profileBio = document.getElementById('profileBio'); // New
+            const profileSocialLink = document.getElementById('profileSocialLink'); // New
+
+            // User list empty message
+            const emptyUsersListMessage = document.getElementById('emptyUsersListMessage');
+
+            // Category Filter Bar elements
+            const categoryFilterBar = document.getElementById('categoryFilterBar');
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn'); // New
+            let currentFilterCategory = 'All'; // Default filter
+
+            // Follow/Unfollow buttons on profile
+            const followUserBtn = document.getElementById('followUserBtn');
+            const unfollowUserBtn = document.getElementById('unfollowUserBtn');
+
+
+            const NAIRA_TO_DOLLAR = 0.00067; // Example rate
+
+            let loggedInUser = null; // Stores the currently logged-in user's complete data object
+            let currentViewingUser = null; // Stores the user object whose profile is currently being viewed
+            let previousPage = 'main'; // To track the previous page for back button functionality
+
+            let editingItemId = null; // To store the ID of the item being edited (null for new creation)
+            let editingItemType = null; // To store the type of the item being edited ('product' or 'ad' or 'textPost')
+
+            // --- Mock Bank Data (for simulating real-time lookup) ---
+            const mockBankAccounts = [
+                { accountNumber: '0012345678', accountName: 'John Doe', bankName: 'First Bank' },
+                { accountNumber: '0098765432', accountName: 'Jane Smith', bankName: 'Zenith Bank' },
+                { accountNumber: '0055511223', accountName: 'Alice Johnson', bankName: 'GTBank' },
+                { accountNumber: '0077788990', accountName: 'Bob Williams', bankName: 'UBA' },
+                { accountNumber: '0011223344', accountName: 'Charlie Brown', bankName: 'Access Bank' },
+            ];
+
+            // --- Notifications Data (stored in localStorage) ---
+            function getNotifications() {
+                return JSON.parse(localStorage.getItem('notifications') || '[]');
+            }
+
+            function saveNotifications(notifications) {
+                localStorage.setItem('notifications', JSON.stringify(notifications));
+            }
+
+            function addNotification(message) {
+                const notifications = getNotifications();
+                const newNotification = {
+                    id: Date.now().toString(),
+                    message: message,
+                    timestamp: new Date().toISOString(),
+                    read: false
+                };
+                notifications.unshift(newNotification); // Add to the beginning
+                saveNotifications(notifications);
+                renderNotifications(); // Update display
+            }
+
+            function renderNotifications() {
+                const notifications = getNotifications();
+                if (notificationsList) notificationsList.innerHTML = ''; // Clear existing
+                if (noNotificationsMessage) noNotificationsMessage.style.display = notifications.length === 0 ? 'block' : 'none';
+
+                notifications.forEach(notif => {
+                    const notifItem = document.createElement('div');
+                    notifItem.className = `notification-item ${notif.read ? '' : 'unread'}`;
+                    notifItem.innerHTML = `<span class="material-icons">info</span> ${notif.message}`;
+                    // Mark as read on click
+                    notifItem.onclick = () => {
+                        notif.read = true;
+                        saveNotifications(notifications);
+                        renderNotifications(); // Re-render to update read status
+                    };
+                    if (notificationsList) notificationsList.appendChild(notifItem);
+                });
+            }
+
+            // --- Form Validation Helper ---
+            function validateField(inputElement, errorMessageElement, validationFn, errorMessage) {
+                if (!inputElement || !errorMessageElement) return true; // Skip if elements not found
+
+                const isValid = validationFn(inputElement.value.trim());
+                if (!isValid) {
+                    errorMessageElement.textContent = errorMessage;
+                    inputElement.style.borderColor = '#e41e3f';
+                    return false;
+                } else {
+                    errorMessageElement.textContent = '';
+                    inputElement.style.borderColor = '#eee';
+                    return true;
+                }
+            }
+
+            function clearAllErrors() {
+                document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+                document.querySelectorAll('input, textarea, select').forEach(el => el.style.borderColor = '#eee');
+            }
+
+
+            // --- Timed Message Popup Function ---
+            function showTimedPopup(message, duration = 3000) {
+                if (timedMessagePopup) {
+                    timedMessagePopup.textContent = message;
+                    timedMessagePopup.classList.add('show');
+                    setTimeout(() => {
+                        timedMessagePopup.classList.remove('show');
+                    }, duration);
+                }
+            }
+
+            // --- View Management (Show/Hide sections) ---
+            function hideAllContentSections() {
+                document.querySelectorAll('.page-container').forEach(container => {
+                    container.classList.remove('show');
+                    container.style.display = 'none';
+                });
+                document.querySelectorAll('.page-header').forEach(header => {
+                    header.classList.remove('show');
+                    header.style.display = 'none';
+                });
+
+                // Hide modals
+                if (createAdModal) createAdModal.classList.remove('show');
+                if (uploadModal) uploadModal.classList.remove('show');
+                if (loginModal) loginModal.classList.remove('show');
+                if (signupModal) signupModal.classList.remove('show');
+                if (itemDetailsModal) itemDetailsModal.classList.remove('show'); // Changed from productDetailsModal
+                if (textPostModal) textPostModal.classList.remove('show'); // New
+            }
+
+            function showPage(pageElement, headerElement = null) {
+                hideAllContentSections();
+                if (pageElement) {
+                    pageElement.classList.add('show');
+                    pageElement.style.display = 'flex'; // Use flex for page containers
+                }
+                if (headerElement) {
+                    headerElement.classList.add('show');
+                    headerElement.style.display = 'flex';
+                }
+
+                // Control FAB visibility
+                const fabContainer = document.querySelector('.fab-container');
+                if (fabContainer) {
+                    if (pageElement === mainContent) {
+                        fabContainer.style.display = 'flex'; // Show FAB container on main content
+                    } else {
+                        fabContainer.style.display = 'none'; // Hide FAB container on other pages
+                    }
+                }
+            }
+
+            function showMainContent() {
+                showPage(mainContent);
+                renderAdsAndProducts(currentFilterCategory); // Ensure main feed is refreshed with current filter
+                previousPage = 'main';
+            }
+
+            function showUsersListPage() {
+                showPage(usersListPage);
+                renderUserCards();
+                previousPage = 'users';
+            }
+
+            function showProfilePage(user) {
+                showPage(profilePageContainer, profilePageHeader);
+                currentViewingUser = user; // Set the user being viewed
+
+                populateProfileDetails(user); // Populate with the selected user's data
+                renderUserProducts(user.id); // Render products for the selected user
+
+                // Show/hide back button based on whether it's the logged-in user's profile
+                if (profilePageHeader) {
+                    if (loggedInUser && user.id === loggedInUser.id) {
+                        profilePageHeader.classList.remove('show'); // No back button for own profile
+                    } else {
+                        profilePageHeader.classList.add('show'); // Show back button for other users
+                    }
+                }
+
+                // Show/hide edit/logout buttons based on if it's the logged-in user's profile
+                const isMyProfile = loggedInUser && user.id === loggedInUser.id;
+                if (editPublicDetailsBtn) editPublicDetailsBtn.style.display = isMyProfile ? 'block' : 'none';
+                if (postCreationProfilePic) postCreationProfilePic.style.display = isMyProfile ? 'block' : 'none';
+                if (postStatusInput) postStatusInput.style.display = isMyProfile ? 'block' : 'none';
+                document.querySelectorAll('.post-creation-actions .action-item').forEach(item => {
+                    item.style.display = isMyProfile ? 'flex' : 'none';
+                });
+                if (aboutEditProfileBtn) aboutEditProfileBtn.style.display = isMyProfile ? 'block' : 'none';
+                if (aboutLogoutBtn) aboutLogoutBtn.style.display = isMyProfile ? 'block' : 'none';
+
+                // Handle follow/unfollow buttons
+                if (followUserBtn) followUserBtn.style.display = 'none';
+                if (unfollowUserBtn) unfollowUserBtn.style.display = 'none';
+                if (!isMyProfile && loggedInUser) { // If viewing someone else's profile and logged in
+                    // Simulate follow state (not persistent without backend)
+                    const isFollowing = (loggedInUser.following || []).includes(user.id);
+                    if (isFollowing) {
+                        if (unfollowUserBtn) unfollowUserBtn.style.display = 'flex';
+                    } else {
+                        if (followUserBtn) followUserBtn.style.display = 'flex';
+                    }
+                }
+                previousPage = 'profile';
+            }
+
+            // Generalized function to show item details
+            function showItemDetailsModal(item) {
+                if (!itemDetailsModal) return;
+
+                // Reset visibility of all detail rows
+                detailsImage.style.display = 'none';
+                detailsCategoryRow.style.display = 'none';
+                detailsPriceRow.style.display = 'none';
+                detailsLocationRow.style.display = 'none';
+                detailsDurationRow.style.display = 'none';
+                detailsBudgetRow.style.display = 'none';
+
+                // Populate common details
+                detailsTitle.textContent = item.type === 'product' ? item.name : item.title || item.content;
+                detailsDescription.textContent = item.description || item.content;
+                detailsContactUsername.textContent = item.username;
+                detailsContactPhone.textContent = item.phone;
+                detailsUserId.textContent = item.userId;
+
+                // Populate type-specific details
+                if (item.type === 'product') {
+                    detailsImage.src = item.imageUrl;
+                    detailsImage.style.display = 'block';
+                    detailsCategory.textContent = item.category || 'N/A';
+                    detailsPriceNaira.textContent = `₦${item.price}`;
+                    detailsPriceDollar.textContent = `$${(item.price * NAIRA_TO_DOLLAR).toFixed(2)}`;
+                    detailsCategoryRow.style.display = 'flex';
+                    detailsPriceRow.style.display = 'flex';
+                    itemDetailsModal.querySelector('.modal-content').style.backgroundColor = '#fff'; // Reset background
+                    itemDetailsModal.querySelector('.modal-content').style.color = '#000'; // Reset text color
+                } else if (item.type === 'ad') {
+                    detailsImage.src = item.imageUrl;
+                    detailsImage.style.display = 'block';
+                    detailsCategory.textContent = item.category || 'N/A';
+                    detailsLocation.textContent = item.location;
+                    detailsDuration.textContent = item.durationDays;
+                    detailsBudget.textContent = `₦${item.budgetNaira}`;
+                    detailsCategoryRow.style.display = 'flex';
+                    detailsLocationRow.style.display = 'flex';
+                    detailsDurationRow.style.display = 'flex';
+                    detailsBudgetRow.style.display = 'flex';
+                    itemDetailsModal.querySelector('.modal-content').style.backgroundColor = '#fff'; // Reset background
+                    itemDetailsModal.querySelector('.modal-content').style.color = '#000'; // Reset text color
+                } else if (item.type === 'textPost') {
+                    detailsImage.style.display = 'none'; // No image for text posts
+                    // Set modal content background to theme color
+                    itemDetailsModal.querySelector('.modal-content').style.backgroundColor = item.themeColor;
+                    itemDetailsModal.querySelector('.modal-content').style.color = '#fff'; // Assuming dark theme colors, white text
+                    // Hide category, price, location, duration, budget rows
+                    detailsCategoryRow.style.display = 'none';
+                    detailsPriceRow.style.display = 'none';
+                    detailsLocationRow.style.display = 'none';
+                    detailsDurationRow.style.display = 'none';
+                    detailsBudgetRow.style.display = 'none';
+                }
+
+
+                // Render comments
+                renderComments(item.id, itemCommentsList, item.type);
+                // Set up comment post button
+                if (postItemCommentBtn) {
+                    postItemCommentBtn.onclick = () => postComment(item.id, newItemCommentInput, itemCommentsList, item.type);
+                }
+
+                itemDetailsModal.classList.add('show');
+            }
+
+
+            function showNotificationsModal() {
+                showPage(notificationsModal, notificationsPageHeader);
+                renderNotifications();
+                previousPage = 'notifications';
+            }
+
+            function showChatModal() {
+                if (!loggedInUser) {
+                    customAlert('Please log in to use the chat feature.', 'Login Required');
+                    return;
+                }
+                showPage(chatModal, chatPageHeader);
+                renderChatMessages();
+                previousPage = 'chat';
+            }
+
+            function showAdsFullPage() {
+                showPage(adsFullPage, adsPageHeader);
+                renderOnlyAds(); // Render only ads on this page
+                previousPage = 'adsFullPage';
+            }
+
+
+            // --- User Authentication Management ---
+            function loadLoggedInUser() {
+                const userId = localStorage.getItem('loggedInUser');
+                if (userId) {
+                    const allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+                    loggedInUser = allUsers.find(user => user.id === userId);
+                    if (loggedInUser) {
+                        if (statusBarProfilePic) {
+                            statusBarProfilePic.src = loggedInUser.profilePhoto || 'https://placehold.co/40x40/cccccc/333333?text=P';
+                        }
+                    } else {
+                        localStorage.removeItem('loggedInUser');
+                        loggedInUser = null;
+                        if (statusBarProfilePic) {
+                            statusBarProfilePic.src = 'https://placehold.co/40x40/cccccc/333333?text=P';
+                        }
+                    }
+                } else {
+                    loggedInUser = null;
+                    if (statusBarProfilePic) {
+                        statusBarProfilePic.src = 'https://placehold.co/40x40/cccccc/333333?text=P';
+                    }
+                }
+            }
+
+            function setLoggedInUser(user) {
+                loggedInUser = user;
+                localStorage.setItem('loggedInUser', user.id);
+                if (statusBarProfilePic) {
+                    statusBarProfilePic.src = loggedInUser.profilePhoto || 'https://placehold.co/40x40/cccccc/333333?text=P';
+                }
+            }
+
+            function populateProfileDetails(user) {
+                if (!user) return; // Ensure a user object is provided
+
+                if (userProfileImageLarge) userProfileImageLarge.src = user.profilePhoto || 'https://placehold.co/150x150/cccccc/333333?text=P';
+                if (profileNameDisplay) profileNameDisplay.textContent = user.name;
+                if (postCreationProfilePic) postCreationProfilePic.src = user.profilePhoto || 'https://placehold.co/40x40/cccccc/333333?text=P';
+
+                // Populate About tab details
+                if (aboutUserPhone) aboutUserPhone.textContent = user.phone;
+                if (aboutUserLocation) aboutUserLocation.textContent = user.location;
+                if (aboutUserBankName) aboutUserBankName.textContent = user.bankName;
+                if (aboutUserUsername) aboutUserUsername.textContent = user.username;
+
+                // Populate new profile fields (bio, social link)
+                if (profileBio) profileBio.textContent = user.bio || 'No bio yet.';
+                if (profileSocialLink) {
+                    if (user.socialLink && user.socialLink.startsWith('http')) {
+                        profileSocialLink.href = user.socialLink;
+                        profileSocialLink.textContent = user.socialLink;
+                    } else if (user.socialLink) {
+                        profileSocialLink.href = 'http://' + user.socialLink; // Prepend http if missing
+                        profileSocialLink.textContent = user.socialLink;
+                    } else {
+                        profileSocialLink.href = '#';
+                        profileSocialLink.textContent = 'Not set';
+                    }
+                }
+            }
+
+            async function logoutUser() {
+                const confirmed = await customConfirm('Are you sure you want to log out?', 'Logout');
+                if (confirmed) {
+                    loggedInUser = null;
+                    localStorage.removeItem('loggedInUser');
+                    if (statusBarProfilePic) {
+                        statusBarProfilePic.src = 'https://placehold.co/40x40/cccccc/333333?text=P';
+                    }
+                    customAlert('You have been logged out.', 'Logged Out');
+                    showMainContent(); // Go back to main content after logout
+                }
+            }
+
+            // --- Profile Icon Click Handler ---
+            if (statusBarProfilePic) {
+                statusBarProfilePic.onclick = () => {
+                    if (loggedInUser) {
+                        showProfilePage(loggedInUser); // Show logged-in user's profile
+                    } else {
+                        showTimedPopup('Register as a seller');
+                        setTimeout(() => {
+                            if (loginModal) loginModal.classList.add('show');
+                        }, 3000);
+                    }
+                };
+            }
+
+            // --- Profile Page Actions ---
+            if (professionalDashboardBtn) professionalDashboardBtn.onclick = () => customAlert('Professional Dashboard', 'This feature is under development!');
+            if (addToStoryBtn) addToStoryBtn.onclick = () => customAlert('Add to Story', 'You can add to your story here!');
+            if (moreOptionsBtn) moreOptionsBtn.onclick = () => customAlert('More Options', 'More profile options coming soon!');
+            if (postStatusInput) postStatusInput.onclick = () => customAlert('Post Status', 'This will open a new post creation interface!');
+            const photoActionItem = document.querySelector('.action-item.photo');
+            if (photoActionItem) photoActionItem.onclick = () => customAlert('Upload Photo', 'Upload a photo for your post!');
+            const reelsActionItem = document.querySelector('.action-item.reels');
+            if (reelsActionItem) reelsActionItem.onclick = () => customAlert('Create Reel', 'Create a new reel!');
+            const eventActionItem = document.querySelector('.action-item.event');
+            if (eventActionItem) eventActionItem.onclick = () => customAlert('Add Life Event', 'Add a life event!');
+
+            // Follow/Unfollow Button Logic (Simulated)
+            if (followUserBtn) {
+                followUserBtn.onclick = async () => {
+                    if (loggedInUser && currentViewingUser) {
+                        // Simulate adding to following list (not persistent)
+                        if (!loggedInUser.following) loggedInUser.following = [];
+                        if (!loggedInUser.following.includes(currentViewingUser.id)) {
+                            loggedInUser.following.push(currentViewingUser.id);
+                            // Update localStorage for loggedInUser (still not persistent across sessions for following)
+                            let allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+                            const loggedInUserIndex = allUsers.findIndex(u => u.id === loggedInUser.id);
+                            if (loggedInUserIndex !== -1) {
+                                allUsers[loggedInUserIndex] = loggedInUser;
+                                localStorage.setItem('allUsers', JSON.stringify(allUsers));
+                            }
+                            customAlert(`You are now following ${currentViewingUser.name}!`, 'Followed');
+                            showProfilePage(currentViewingUser); // Re-render profile to update button
+                        }
+                    } else {
+                        customAlert('Please log in to follow users.', 'Login Required');
+                    }
+                };
+            }
+            if (unfollowUserBtn) {
+                unfollowUserBtn.onclick = async () => {
+                    if (loggedInUser && currentViewingUser) {
+                        const confirmed = await customConfirm(`Are you sure you want to unfollow ${currentViewingUser.name}?`, 'Unfollow');
+                        if (confirmed) {
+                            if (loggedInUser.following) {
+                                loggedInUser.following = loggedInUser.following.filter(id => id !== currentViewingUser.id);
+                                // Update localStorage for loggedInUser
+                                let allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+                                const loggedInUserIndex = allUsers.findIndex(u => u.id === loggedInUser.id);
+                                if (loggedInUserIndex !== -1) {
+                                    allUsers[loggedInUserIndex] = loggedInUser;
+                                    localStorage.setItem('allUsers', JSON.stringify(allUsers));
+                                }
+                                customAlert(`You have unfollowed ${currentViewingUser.name}.`, 'Unfollowed');
+                                showProfilePage(currentViewingUser); // Re-render profile to update button
+                            }
+                        }
+                    }
+                };
+            }
+
+
+            if (editPublicDetailsBtn) {
+                editPublicDetailsBtn.onclick = () => {
+                    showMainContent(); // Go back to main content
+                    if (signupModal) signupModal.classList.add('show');
+                    // Pre-fill signup form with current user data for editing
+                    if (loggedInUser) {
+                        if (profilePhotoPreview) profilePhotoPreview.src = loggedInUser.profilePhoto || 'https://placehold.co/80x80/cccccc/333333?text=P';
+                        if (signupNameInput) signupNameInput.value = loggedInUser.name || '';
+                        if (signupPhoneInput) signupPhoneInput.value = loggedInUser.phone || '';
+                        if (signupLocationInput) signupLocationInput.value = loggedInUser.location || '';
+                        if (signupAccountNumberInput) signupAccountNumberInput.value = loggedInUser.accountNumber || '';
+                        if (signupAccountNameInput) signupAccountNameInput.value = loggedInUser.accountName || '';
+                        if (signupBankNameInput) signupBankNameInput.value = loggedInUser.bankName || '';
+                        if (signupUsernameInput) signupUsernameInput.value = loggedInUser.username || '';
+                        if (signupPasswordInput) signupPasswordInput.value = loggedInUser.password || '';
+                        // New fields for profile editing
+                        // if (signupBioInput) signupBioInput.value = loggedInUser.bio || ''; // Assuming you add these inputs
+                        // if (signupSocialLinkInput) signupSocialLinkInput.value = loggedInUser.socialLink || '';
+                    }
+                };
+            }
+
+            if (aboutEditProfileBtn) { // New: Edit button in About tab
+                aboutEditProfileBtn.onclick = () => {
+                    showMainContent(); // Go back to main content
+                    if (signupModal) signupModal.classList.add('show');
+                    if (loggedInUser) {
+                        if (profilePhotoPreview) profilePhotoPreview.src = loggedInUser.profilePhoto || 'https://placehold.co/80x80/cccccc/333333?text=P';
+                        if (signupNameInput) signupNameInput.value = loggedInUser.name || '';
+                        if (signupPhoneInput) signupPhoneInput.value = loggedInUser.phone || '';
+                        if (signupLocationInput) signupLocationInput.value = loggedInUser.location || '';
+                        if (signupAccountNumberInput) signupAccountNumberInput.value = loggedInUser.accountNumber || '';
+                        if (signupAccountNameInput) signupAccountNameInput.value = loggedInUser.accountName || '';
+                        if (signupBankNameInput) signupBankNameInput.value = loggedInUser.bankName || '';
+                        if (signupUsernameInput) signupUsernameInput.value = loggedInUser.username || '';
+                        if (signupPasswordInput) signupPasswordInput.value = loggedInUser.password || '';
+                        // New fields for profile editing
+                        // if (signupBioInput) signupBioInput.value = loggedInUser.bio || '';
+                        // if (signupSocialLinkInput) signupSocialLinkInput.value = loggedInUser.socialLink || '';
+                    }
+                };
+            }
+
+            if (aboutLogoutBtn) aboutLogoutBtn.onclick = logoutUser; // New: Logout button in About tab
+
+            // Back button on profile page
+            if (profileBackBtn) {
+                profileBackBtn.onclick = () => {
+                    showUsersListPage(); // Go back to the users list
+                };
+            }
+
+            // Back button on ad details page (now handled by generic item details modal)
+            // if (adDetailsBackBtn) {
+            //     adDetailsBackBtn.onclick = () => {
+            //         showAdsFullPage(); // Go back to the full ads page
+            //     };
+            // }
+
+            // Back button on notifications modal
+            if (notificationsBackBtn) {
+                notificationsBackBtn.onclick = () => {
+                    showMainContent(); // Go back to main content from notifications
+                };
+            }
+
+            // Back button on chat modal
+            if (chatBackBtn) {
+                chatBackBtn.onclick = () => {
+                    showMainContent(); // Go back to main content from chat
+                };
+            }
+
+            // Back button on ads full page
+            if (adsPageBackBtn) {
+                adsPageBackBtn.onclick = () => {
+                    console.log('Ads Page Back Button Clicked'); // Debugging log
+                    showMainContent(); // Go back to main content from ads full page
+                };
+            }
+
+            // Profile Tabs functionality
+            profileTabs.forEach(tab => {
+                tab.onclick = function() {
+                    profileTabs.forEach(item => item.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Hide all tab contents
+                    if (postsTabContent) postsTabContent.style.display = 'none';
+                    if (aboutTabContent) aboutTabContent.style.display = 'none';
+                    if (reelsTabContent) reelsTabContent.style.display = 'none';
+                    if (photosTabContent) photosTabContent.style.display = 'none';
+                    if (videosTabContent) videosTabContent.style.display = 'none';
+
+                    // Show active tab content
+                    const targetTab = this.dataset.tab;
+                    if (targetTab === 'posts') {
+                        if (postsTabContent) postsTabContent.style.display = 'block';
+                        renderUserProducts(currentViewingUser ? currentViewingUser.id : null); // Render products for the currently viewed user
+                    } else if (targetTab === 'about') {
+                        if (aboutTabContent) aboutTabContent.style.display = 'block';
+                    } else if (targetTab === 'reels') {
+                        if (reelsTabContent) reelsTabContent.style.display = 'block';
+                    } else if (targetTab === 'photos') {
+                        if (photosTabContent) photosTabContent.style.display = 'block';
+                    } else if (targetTab === 'videos') {
+                        if (videosTabContent) videosTabContent.style.display = 'block';
+                    }
+                };
+            });
+
+
+            // --- Login Modal Logic ---
+            if (closeLoginModal) closeLoginModal.onclick = () => loginModal.classList.remove('show');
+            if (loginModal) loginModal.onclick = e => { if (e.target === loginModal) loginModal.classList.remove('show'); };
+
+            if (goToSignupBtn) {
+                goToSignupBtn.onclick = () => {
+                    if (loginModal) loginModal.classList.remove('show');
+                    if (signupForm) signupForm.reset();
+                    clearAllErrors(); // Clear errors on form switch
+                    if (profilePhotoPreview) profilePhotoPreview.src = 'https://placehold.co/80x80/cccccc/333333?text=P';
+                    // Reset account name/bank name fields on signup form
+                    if (signupAccountNameInput) {
+                        signupAccountNameInput.value = '';
+                        signupAccountNameInput.disabled = false;
+                    }
+                    if (signupBankNameInput) {
+                        signupBankNameInput.value = '';
+                        signupBankNameInput.disabled = false;
+                    }
+                    if (accountNumberSpinner) accountNumberSpinner.style.display = 'none';
+
+                    if (signupModal) signupModal.classList.add('show');
+                };
+            }
+
+            if (loginForm) {
+                loginForm.onsubmit = async function(e) {
+                    e.preventDefault();
+                    clearAllErrors(); // Clear previous errors
+
+                    const username = loginUsernameInput.value.trim();
+                    const password = loginPasswordInput.value.trim();
+
+                    let isValid = true;
+                    isValid = validateField(loginUsernameInput, loginUsernameError, val => val.length > 0, 'Username/Email is required.') && isValid;
+                    isValid = validateField(loginPasswordInput, loginPasswordError, val => val.length >= 6, 'Password is required and must be at least 6 characters.') && isValid;
+
+                    if (!isValid) return;
+
+                    const allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+                    const foundUser = allUsers.find(user => user.username === username && user.password === password);
+
+                    if (foundUser) {
+                        setLoggedInUser(foundUser);
+                        customAlert('Login successful!', 'Success');
+                        if (loginModal) loginModal.classList.remove('show');
+                        showMainContent();
+                    } else {
+                        customAlert('Invalid username/email or password.', 'Login Failed');
+                    }
+                };
+            }
+
+            // --- Signup Modal Logic ---
+            if (closeSignupModal) closeSignupModal.onclick = () => signupModal.classList.remove('show');
+            if (signupModal) signupModal.onclick = e => { if (e.target === signupModal) signupModal.classList.remove('show'); };
+
+            if (goToLoginBtn) {
+                goToLoginBtn.onclick = () => {
+                    if (signupModal) signupModal.classList.remove('show');
+                    if (loginForm) loginForm.reset();
+                    clearAllErrors(); // Clear errors on form switch
+                    if (loginModal) loginModal.classList.add('show');
+                };
+            }
+
+            if (profilePhotoInput) {
+                profilePhotoInput.onchange = function() {
+                    const file = profilePhotoInput.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(evt) {
+                            if (profilePhotoPreview) profilePhotoPreview.src = evt.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        if (profilePhotoPreview) profilePhotoPreview.src = 'https://placehold.co/80x80/cccccc/333333?text=P';
+                    }
+                };
+            }
+
+            // --- Account Number Auto-fill Logic ---
+            if (signupAccountNumberInput) {
+                let lookupTimeout;
+                signupAccountNumberInput.oninput = function() {
+                    clearTimeout(lookupTimeout);
+                    const accountNumber = this.value.trim();
+                    validateField(signupAccountNumberInput, signupAccountNumberError, val => val.length === 10, 'Account number must be 10 digits.');
+
+                    // Clear and enable fields immediately if input is too short
+                    if (accountNumber.length < 10) { // Assuming a 10-digit account number for lookup
+                        signupAccountNameInput.value = '';
+                        signupBankNameInput.value = '';
+                        signupAccountNameInput.disabled = false;
+                        signupBankNameInput.disabled = false;
+                        if (accountNumberSpinner) accountNumberSpinner.style.display = 'none';
+                        return;
+                    }
+
+                    if (accountNumberSpinner) accountNumberSpinner.style.display = 'block';
+                    signupAccountNameInput.value = '';
+                    signupBankNameInput.value = '';
+                    signupAccountNameInput.disabled = true;
+                    signupBankNameInput.disabled = true;
+
+                    lookupTimeout = setTimeout(() => {
+                        const foundAccount = mockBankAccounts.find(acc => acc.accountNumber === accountNumber);
+                        if (foundAccount) {
+                            signupAccountNameInput.value = foundAccount.accountName;
+                            signupBankNameInput.value = foundAccount.bankName;
+                            showTimedPopup('Account details found!');
+                        } else {
+                            signupAccountNameInput.value = '';
+                            signupBankNameInput.value = '';
+                            signupAccountNameInput.disabled = false;
+                            signupBankNameInput.disabled = false;
+                            showTimedPopup('No matching account found. Please enter manually.');
+                        }
+                        if (accountNumberSpinner) accountNumberSpinner.style.display = 'none';
+                    }, 1000); // Simulate network delay
+                };
+            }
+
+
+            if (signupForm) {
+                signupForm.onsubmit = async function(e) {
+                    e.preventDefault();
+                    clearAllErrors(); // Clear previous errors
+
+                    const name = signupNameInput.value.trim();
+                    const phone = signupPhoneInput.value.trim();
+                    const location = signupLocationInput.value.trim();
+                    const accountNumber = signupAccountNumberInput.value.trim();
+                    const accountName = signupAccountNameInput.value.trim(); // Get value even if disabled
+                    const bankName = signupBankNameInput.value.trim();     // Get value even if disabled
+                    const username = signupUsernameInput.value.trim();
+                    const password = signupPasswordInput.value.trim();
+                    const photoFile = profilePhotoInput.files[0];
+
+                    let isValid = true;
+                    isValid = validateField(signupNameInput, signupNameError, val => val.length > 0, 'Full Name is required.') && isValid;
+                    isValid = validateField(signupPhoneInput, signupPhoneError, val => /^\d{10,15}$/.test(val), 'Phone number must be 10-15 digits.') && isValid;
+                    isValid = validateField(signupLocationInput, signupLocationError, val => val.length > 0, 'Location is required.') && isValid;
+                    isValid = validateField(signupAccountNumberInput, signupAccountNumberError, val => val.length === 10 && /^\d+$/.test(val), 'Account number must be 10 digits.');
+                    // For account name and bank name, if auto-filled, they are disabled, but if not, they must be filled.
+                    if (!signupAccountNameInput.disabled) {
+                        isValid = validateField(signupAccountNameInput, signupAccountNameError, val => val.length > 0, 'Account Name is required.') && isValid;
+                    }
+                    if (!signupBankNameInput.disabled) {
+                        isValid = validateField(signupBankNameInput, signupBankNameError, val => val.length > 0, 'Bank Name is required.') && isValid;
+                    }
+                    isValid = validateField(signupUsernameInput, signupUsernameError, val => val.length > 0, 'Username/Email is required.') && isValid;
+                    isValid = validateField(signupPasswordInput, signupPasswordError, val => val.length >= 6, 'Password must be at least 6 characters.') && isValid;
+
+
+                    if (!isValid) return;
+
+                    let profilePhotoDataUrl = 'https://placehold.co/80x80/cccccc/333333?text=P';
+                    if (photoFile) {
+                         profilePhotoDataUrl = await new Promise(resolve => {
+                            const reader = new FileReader();
+                            reader.onload = (evt) => resolve(evt.target.result);
+                            reader.readAsDataURL(photoFile); // Use photoFile here
+                        });
+                    } else if (loggedInUser && loggedInUser.profilePhoto) {
+                        profilePhotoDataUrl = loggedInUser.profilePhoto;
+                    }
+
+
+                    let allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+                    const existingUserIndex = allUsers.findIndex(user => user.username === username);
+
+                    if (existingUserIndex !== -1 && (!loggedInUser || allUsers[existingUserIndex].id !== loggedInUser.id)) {
+                        customAlert('Username/Email already exists. Please choose a different one or login.', 'Registration Failed');
+                        return;
+                    }
+
+                    const newUserId = loggedInUser ? loggedInUser.id : 'user_' + Date.now().toString();
+
+                    const newUserData = {
+                        id: newUserId,
+                        profilePhoto: profilePhotoDataUrl,
+                        name: name,
+                        phone: phone,
+                        location: location,
+                        accountNumber: accountNumber,
+                        accountName: accountName,
+                        bankName: bankName,
+                        username: username,
+                        password: password,
+                        bio: loggedInUser ? loggedInUser.bio : '', // Preserve bio if editing
+                        socialLink: loggedInUser ? loggedInUser.socialLink : '', // Preserve socialLink if editing
+                        following: loggedInUser ? loggedInUser.following : [] // Preserve following if editing
+                    };
+
+                    if (loggedInUser && existingUserIndex !== -1) {
+                        allUsers[existingUserIndex] = newUserData;
+                        customAlert('Profile updated successfully!', 'Success');
+                    } else {
+                        allUsers.push(newUserData);
+                        customAlert('Account created successfully! You are now logged in.', 'Success');
+                    }
+
+                    localStorage.setItem('allUsers', JSON.stringify(allUsers));
+                    setLoggedInUser(newUserData);
+                    if (signupModal) signupModal.classList.remove('show');
+                    showMainContent();
+                };
+            }
+
+            // --- Upload Product Modal Logic (using localStorage) ---
+            if (fab) {
+                fab.onclick = () => {
+                    if (!loggedInUser) {
+                        showTimedPopup('Register as a seller');
+                        setTimeout(() => {
+                            if (loginModal) loginModal.classList.add('show');
+                        }, 3000);
+                        return;
+                    }
+                    // Reset for new product creation
+                    editingItemId = null;
+                    editingItemType = null;
+                    if (uploadModalTitle) uploadModalTitle.textContent = 'Upload New Product';
+                    if (uploadProductSubmitBtn) uploadProductSubmitBtn.textContent = 'Upload Product';
+                    if (uploadForm) uploadForm.reset();
+                    clearAllErrors(); // Clear errors on form switch
+                    if (convertedPrice) convertedPrice.textContent = '';
+                    if (imagePreview) {
+                        imagePreview.src = '';
+                        imagePreview.style.display = 'none';
+                    }
+                    if (uploadModal) uploadModal.classList.add('show');
+                };
+            }
+            if (closeUploadModal) closeUploadModal.onclick = () => uploadModal.classList.remove('show');
+            if (uploadModal) uploadModal.onclick = e => { if (e.target === uploadModal) uploadModal.classList.remove('show'); };
+
+            if (priceNaira) {
+                priceNaira.oninput = function() {
+                    const val = parseFloat(priceNaira.value) || 0;
+                    if (convertedPrice) convertedPrice.textContent = val ? `≈ $${(val * NAIRA_TO_DOLLAR).toFixed(2)}` : '';
+                    validateField(priceNaira, priceNairaError, val => val > 0, 'Price must be a positive number.');
+                };
+            }
+            if (productNameInput) productNameInput.oninput = () => validateField(productNameInput, productNameError, val => val.length > 0, 'Product Name is required.');
+            if (productDescriptionInput) productDescriptionInput.oninput = () => validateField(productDescriptionInput, productDescriptionError, val => val.length > 0, 'Description is required.');
+            if (productCategorySelect) productCategorySelect.onchange = () => validateField(productCategorySelect, productCategoryError, val => val.length > 0, 'Category is required.');
+
+
+            if (productImageInput) {
+                productImageInput.onchange = function() {
+                    const file = productImageInput.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(evt) {
+                            if (imagePreview) {
+                                imagePreview.src = evt.target.result;
+                                imagePreview.style.display = 'block';
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        if (imagePreview) {
+                            imagePreview.src = '';
+                            imagePreview.style.display = 'none';
+                        }
+                    }
+                };
+            }
+
+            // New: Enhance Description Button Logic
+            if (enhanceDescriptionBtn) {
+                enhanceDescriptionBtn.onclick = async () => {
+                    const productName = productNameInput.value.trim();
+                    const currentDescription = productDescriptionInput.value.trim();
+
+                    if (!productName && !currentDescription) {
+                        customAlert('Please enter a Product Name or some Description to enhance.', 'Input Required');
+                        return;
+                    }
+
+                    if (uploadSpinner) uploadSpinner.style.display = 'block';
+                    enhanceDescriptionBtn.disabled = true;
+                    productDescriptionInput.disabled = true;
+
+                    try {
+                        const prompt = `Generate a compelling and detailed product description for a marketplace.
+                        Product Name: ${productName}
+                        ${currentDescription ? `Current Description/Keywords: ${currentDescription}` : ''}
+
+                        Focus on benefits, features, and appeal to potential buyers. Keep it concise but informative.`;
+
+                        let chatHistory = [];
+                        chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                        const payload = { contents: chatHistory };
+                        const apiKey = ""; // Canvas will provide this at runtime
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        const result = await response.json();
+
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            const generatedText = result.candidates[0].content.parts[0].text;
+                            productDescriptionInput.value = generatedText.trim();
+                            customAlert('Description enhanced successfully!', 'AI Generated');
+                        } else {
+                            customAlert('Failed to generate description. Please try again.', 'AI Error');
+                        }
+                    } catch (error) {
+                        console.error("Error calling Gemini API:", error);
+                        customAlert('An error occurred while enhancing the description. Please try again.', 'Error');
+                    } finally {
+                        if (uploadSpinner) uploadSpinner.style.display = 'none';
+                        enhanceDescriptionBtn.disabled = false;
+                        productDescriptionInput.disabled = false;
+                    }
+                };
+            }
+
+
+            if (uploadForm) {
+                uploadForm.onsubmit = async function(e) {
+                    e.preventDefault();
+                    clearAllErrors(); // Clear previous errors
+
+                    const file = productImageInput.files[0];
+                    const name = productNameInput.value.trim();
+                    const description = productDescriptionInput.value.trim();
+                    const category = productCategorySelect.value;
+                    const price = parseFloat(priceNaira.value);
+
+                    let isValid = true;
+                    isValid = validateField(productNameInput, productNameError, val => val.length > 0, 'Product Name is required.') && isValid;
+                    isValid = validateField(productDescriptionInput, productDescriptionError, val => val.length > 0, 'Description is required.') && isValid;
+                    isValid = validateField(productCategorySelect, productCategoryError, val => val.length > 0, 'Category is required.');
+                    isValid = validateField(priceNaira, priceNairaError, val => !isNaN(val) && val > 0, 'Price must be a positive number.') && isValid;
+
+                    if (!editingItemId && !file) { // If creating new and no file selected
+                        customAlert('Please select an image for your product.', 'Validation Error');
+                        isValid = false;
+                    }
+
+                    if (!isValid) return;
+
+                    if (uploadSpinner) uploadSpinner.style.display = 'block';
+                    const submitButton = uploadForm.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                    }
+
+                    try {
+                        let imageUrl = imagePreview.src; // Keep existing image if no new file selected
+                        if (file) {
+                             imageUrl = await new Promise(resolve => {
+                                const reader = new FileReader();
+                                reader.onload = (evt) => resolve(evt.target.result);
+                                reader.readAsDataURL(file);
+                            });
+                        }
+
+                        let products = JSON.parse(localStorage.getItem('products') || '[]');
+
+                        if (editingItemId && editingItemType === 'product') {
+                            const itemIndex = products.findIndex(p => p.id === editingItemId);
+                            if (itemIndex !== -1) {
+                                products[itemIndex] = {
+                                    ...products[itemIndex],
+                                    name: name,
+                                    description: description,
+                                    category: category,
+                                    price: price,
+                                    imageUrl: imageUrl, // Update image only if new one provided
+                                    timestamp: new Date().toISOString() // Update timestamp on edit
+                                };
+                                customAlert('Product updated successfully!', 'Success');
+                            }
+                        } else {
+                            const newProduct = {
+                                type: 'product',
+                                id: Date.now().toString(),
+                                name: name,
+                                description: description,
+                                category: category,
+                                price: price,
+                                imageUrl: imageUrl,
+                                likes: 0,
+                                commentsCount: 0, // Initialize comments count
+                                timestamp: new Date().toISOString(),
+                                username: loggedInUser.name,
+                                phone: loggedInUser.phone,
+                                userId: loggedInUser.id
+                            };
+                            products.unshift(newProduct);
+                            customAlert('Product uploaded successfully!', 'Success');
+                        }
+
+                        localStorage.setItem('products', JSON.stringify(products));
+
+                        uploadForm.reset();
+                        if (convertedPrice) convertedPrice.textContent = '';
+                        if (imagePreview) {
+                            imagePreview.src = '';
+                            imagePreview.style.display = 'none';
+                        }
+                        if (uploadModal) uploadModal.classList.remove('show');
+                        renderAdsAndProducts(currentFilterCategory); // Re-render all products and ads on main page
+                        if (profilePageContainer && profilePageContainer.classList.contains('show')) {
+                            renderUserProducts(currentViewingUser ? currentViewingUser.id : null); // Re-render products if on profile page
+                        }
+                    } catch (error) {
+                        console.error("Error saving product:", error);
+                        customAlert('Failed to save product. Please try again.', 'Save Failed');
+                    } finally {
+                        if (uploadSpinner) uploadSpinner.style.display = 'none';
+                        if (submitButton) {
+                            submitButton.disabled = false;
+                        }
+                        editingItemId = null; // Reset editing state
+                        editingItemType = null;
+                    }
+                };
+            }
+
+            // --- Create Ad Modal Logic ---
+            // adsNavBtn now shows the full ads page
+            if (adsNavBtn) {
+                adsNavBtn.onclick = () => {
+                    showAdsFullPage();
+                };
+            }
+            // createAdBtnHeader is the button on the ads full page header
+            if (createAdBtnHeader) {
+                createAdBtnHeader.onclick = () => {
+                    if (!loggedInUser) {
+                        showTimedPopup('Login to create ads');
+                        setTimeout(() => {
+                            if (loginModal) loginModal.classList.add('show');
+                        }, 3000);
+                        return;
+                    }
+                    // Reset for new ad creation
+                    editingItemId = null;
+                    editingItemType = null;
+                    if (createAdModalTitle) createAdModalTitle.textContent = 'Create New Ad';
+                    if (createAdSubmitBtn) createAdSubmitBtn.textContent = 'Post Ad';
+                    if (createAdForm) createAdForm.reset();
+                    clearAllErrors(); // Clear errors on form switch
+                    if (adImagePreview) {
+                        adImagePreview.src = '';
+                        adImagePreview.style.display = 'none';
+                    }
+                    if (createAdModal) createAdModal.classList.add('show');
+                };
+            }
+
+            if (closeCreateAdModal) closeCreateAdModal.onclick = () => createAdModal.classList.remove('show');
+            if (createAdModal) createAdModal.onclick = e => { if (e.target === createAdModal) createAdModal.classList.remove('show'); };
+
+            if (adImageInput) {
+                adImageInput.onchange = function() {
+                    const file = adImageInput.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(evt) {
+                            if (adImagePreview) {
+                                adImagePreview.src = evt.target.result;
+                                adImagePreview.style.display = 'block';
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        if (adImagePreview) {
+                            adImagePreview.src = '';
+                            adImagePreview.style.display = 'none';
+                        }
+                    }
+                };
+            }
+
+            if (adTitleInput) adTitleInput.oninput = () => validateField(adTitleInput, adTitleError, val => val.length > 0, 'Ad Title is required.');
+            if (adDescriptionInput) adDescriptionInput.oninput = () => validateField(adDescriptionInput, adDescriptionError, val => val.length > 0, 'Description is required.');
+            if (adCategorySelect) adCategorySelect.onchange = () => validateField(adCategorySelect, adCategoryError, val => val.length > 0, 'Category is required.');
+            if (adLocationInput) adLocationInput.oninput = () => validateField(adLocationInput, adLocationError, val => val.length > 0, 'Location is required.');
+            if (adDurationInput) adDurationInput.oninput = () => validateField(adDurationInput, adDurationError, val => !isNaN(val) && val > 0, 'Duration must be a positive number.');
+            if (adBudgetInput) adBudgetInput.oninput = () => validateField(adBudgetInput, adBudgetError, val => !isNaN(val) && val >= 100, 'Budget must be at least ₦100.');
+
+
+            if (createAdForm) {
+                createAdForm.onsubmit = async function(e) {
+                    e.preventDefault();
+                    clearAllErrors(); // Clear previous errors
+
+                    const file = adImageInput.files[0];
+                    const title = adTitleInput.value.trim();
+                    const description = adDescriptionInput.value.trim();
+                    const category = adCategorySelect.value;
+                    const location = adLocationInput.value.trim();
+                    const duration = parseInt(adDurationInput.value);
+                    const budget = parseFloat(adBudgetInput.value);
+
+                    let isValid = true;
+                    isValid = validateField(adTitleInput, adTitleError, val => val.length > 0, 'Ad Title is required.') && isValid;
+                    isValid = validateField(adDescriptionInput, adDescriptionError, val => val.length > 0, 'Description is required.') && isValid;
+                    isValid = validateField(adCategorySelect, adCategoryError, val => val.length > 0, 'Category is required.') && isValid;
+                    isValid = validateField(adLocationInput, adLocationError, val => val.length > 0, 'Location is required.') && isValid;
+                    isValid = validateField(adDurationInput, adDurationError, val => !isNaN(val) && val > 0, 'Duration must be a positive number.');
+                    isValid = validateField(adBudgetInput, adBudgetError, val => !isNaN(val) && val >= 100, 'Budget must be at least ₦100.') && isValid;
+
+                    if (!editingItemId && !file) { // If creating new and no file selected
+                        customAlert('Please select an image for your ad.', 'Validation Error');
+                        isValid = false;
+                    }
+
+                    if (!isValid) return;
+
+                    if (adSpinner) adSpinner.style.display = 'block';
+                    const submitButton = createAdForm.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                    }
+
+                    try {
+                        let imageUrl = adImagePreview.src; // Keep existing image if no new file selected
+                        if (file) {
+                            imageUrl = await new Promise(resolve => {
+                                const reader = new FileReader();
+                                reader.onload = (evt) => resolve(evt.target.result);
+                                reader.readAsDataURL(file);
+                            });
+                        }
+
+                        let ads = JSON.parse(localStorage.getItem('ads') || '[]');
+
+                        if (editingItemId && editingItemType === 'ad') {
+                            const itemIndex = ads.findIndex(a => a.id === editingItemId);
+                            if (itemIndex !== -1) {
+                                ads[itemIndex] = {
+                                    ...ads[itemIndex],
+                                    title: title,
+                                    description: description,
+                                    category: category,
+                                    location: location,
+                                    durationDays: duration,
+                                    budgetNaira: budget,
+                                    imageUrl: imageUrl, // Update image only if new one provided
+                                    timestamp: new Date().toISOString() // Update timestamp on edit
+                                };
+                                customAlert('Ad updated successfully!', 'Success');
+                            }
+                        } else {
+                            const newAd = {
+                                type: 'ad',
+                                id: Date.now().toString(),
+                                title: title,
+                                description: description,
+                                category: category,
+                                imageUrl: imageUrl,
+                                location: location,
+                                durationDays: duration,
+                                budgetNaira: budget,
+                                likes: 0,
+                                commentsCount: 0, // Initialize comments count
+                                timestamp: new Date().toISOString(),
+                                username: loggedInUser.name,
+                                phone: loggedInUser.phone,
+                                userId: loggedInUser.id
+                            };
+                            ads.unshift(newAd);
+                            customAlert('Ad posted successfully!', 'Success');
+                        }
+
+                        localStorage.setItem('ads', JSON.stringify(ads));
+
+                        createAdForm.reset();
+                        if (adImagePreview) {
+                            adImagePreview.src = '';
+                            adImagePreview.style.display = 'none';
+                        }
+                        if (createAdModal) createAdModal.classList.remove('show');
+                        renderAdsAndProducts(currentFilterCategory); // Re-render all products and ads on main page
+                        if (adsFullPage && adsFullPage.classList.contains('show')) { // If on ads full page, refresh it
+                             renderOnlyAds();
+                        }
+                    } catch (error) {
+                        console.error("Error saving ad:", error);
+                        customAlert('Failed to save ad. Please try again.', 'Save Failed');
+                    } finally {
+                        if (adSpinner) adSpinner.style.display = 'none';
+                        if (submitButton) {
+                            submitButton.disabled = false;
+                        }
+                        editingItemId = null; // Reset editing state
+                        editingItemType = null;
+                    }
+                };
+            }
+
+            // --- New: Text Post Modal Logic ---
+            if (textPostFab) { // Changed from textPostBtn to textPostFab
+                textPostFab.onclick = () => {
+                    if (!loggedInUser) {
+                        showTimedPopup('Login to create text posts');
+                        setTimeout(() => {
+                            if (loginModal) loginModal.classList.add('show');
+                        }, 3000);
+                        return;
+                    }
+                    // Reset for new text post creation
+                    editingItemId = null;
+                    editingItemType = null;
+                    if (textPostForm) textPostForm.reset();
+                    clearAllErrors(); // Clear errors on form switch
+                    // Reset selected color to default
+                    colorPalette.querySelectorAll('.color-swatch').forEach(swatch => {
+                        swatch.classList.remove('selected');
+                        if (swatch.dataset.color === '#9b23ea') { // Default color
+                            swatch.classList.add('selected');
+                            selectedThemeColor = '#9b23ea';
+                        }
+                    });
+                    if (textPostModal) textPostModal.classList.add('show');
+                };
+            }
+
+            if (closeTextPostModal) closeTextPostModal.onclick = () => textPostModal.classList.remove('show');
+            if (textPostModal) textPostModal.onclick = e => { if (e.target === textPostModal) textPostModal.classList.remove('show'); };
+
+            if (colorPalette) {
+                colorPalette.onclick = function(e) {
+                    if (e.target.classList.contains('color-swatch')) {
+                        colorPalette.querySelectorAll('.color-swatch').forEach(swatch => {
+                            swatch.classList.remove('selected');
+                        });
+                        e.target.classList.add('selected');
+                        selectedThemeColor = e.target.dataset.color;
+                    }
+                };
+            }
+
+            if (textPostContentInput) textPostContentInput.oninput = () => validateField(textPostContentInput, textPostContentError, val => val.length > 0, 'Post content cannot be empty.');
+
+
+            if (textPostForm) {
+                textPostForm.onsubmit = async function(e) {
+                    e.preventDefault();
+                    clearAllErrors();
+
+                    const content = textPostContentInput.value.trim();
+
+                    let isValid = validateField(textPostContentInput, textPostContentError, val => val.length > 0, 'Post content cannot be empty.');
+
+                    if (!isValid) return;
+
+                    if (textPostSpinner) textPostSpinner.style.display = 'block';
+                    if (postTextBtn) postTextBtn.disabled = true;
+
+                    try {
+                        let textPosts = JSON.parse(localStorage.getItem('textPosts') || '[]');
+
+                        if (editingItemId && editingItemType === 'textPost') {
+                            const itemIndex = textPosts.findIndex(p => p.id === editingItemId);
+                            if (itemIndex !== -1) {
+                                textPosts[itemIndex] = {
+                                    ...textPosts[itemIndex],
+                                    content: content,
+                                    themeColor: selectedThemeColor,
+                                    timestamp: new Date().toISOString() // Update timestamp on edit
+                                };
+                                customAlert('Text post updated successfully!', 'Success');
+                            }
+                        } else {
+                            const newTextPost = {
+                                type: 'textPost',
+                                id: Date.now().toString(),
+                                content: content,
+                                themeColor: selectedThemeColor,
+                                likes: 0,
+                                commentsCount: 0, // Initialize comments count
+                                timestamp: new Date().toISOString(),
+                                username: loggedInUser.name,
+                                phone: loggedInUser.phone,
+                                userId: loggedInUser.id
+                            };
+                            textPosts.unshift(newTextPost);
+                            customAlert('Text post created successfully!', 'Success');
+                        }
+
+                        localStorage.setItem('textPosts', JSON.stringify(textPosts));
+
+                        textPostForm.reset();
+                        if (textPostModal) textPostModal.classList.remove('show');
+                        renderAdsAndProducts(currentFilterCategory); // Re-render main feed
+                        if (profilePageContainer && profilePageContainer.classList.contains('show')) {
+                            renderUserProducts(currentViewingUser ? currentViewingUser.id : null); // Re-render products if on profile page
+                        }
+                    } catch (error) {
+                        console.error("Error saving text post:", error);
+                        customAlert('Failed to save text post. Please try again.', 'Save Failed');
+                    } finally {
+                        if (textPostSpinner) textPostSpinner.style.display = 'none';
+                        if (postTextBtn) postTextBtn.disabled = false;
+                        editingItemId = null; // Reset editing state
+                        editingItemType = null;
+                    }
+                };
+            }
+
+
+            // --- Product/Ad/Text Post Card Display and Details Logic (using localStorage) ---
+            function addCardToDOM(item, targetList) {
+                const card = document.createElement('div');
+                card.className = `product-card ${item.type === 'ad' ? 'ad-card' : ''} ${item.type === 'textPost' ? 'text-post-card' : ''}`;
+                card.dataset.id = item.id;
+                card.dataset.type = item.type; // Store type in dataset
+
+                let innerHtmlContent = '';
+                if (item.type === 'product') {
+                    innerHtmlContent = `
+                        <img src="${item.imageUrl}" class="product-img" alt="${item.name}">
+                        <div class="prices">
+                            <span>₦${item.price}</span>
+                            <span>$${(item.price * NAIRA_TO_DOLLAR).toFixed(2)}</span>
+                        </div>
+                        <div class="product-info">
+                            <h4>${item.name}</h4>
+                            <p>${item.description ? item.description.substring(0, 70) + (item.description.length > 70 ? '...' : '') : ''}</p>
+                            <p class="seller-info">Category: ${item.category || 'N/A'}</p>
+                            <p class="seller-info">Seller: ${item.username} (${item.phone})</p>
+                        </div>
+                        <div class="like-order">
+                            <button class="like-btn" data-item-id="${item.id}" data-likes="${item.likes || 0}" data-item-type="${item.type}"><span class="material-icons">${item.likes > 0 ? 'favorite' : 'favorite_border'}</span><span class="like-count">${item.likes || 0}</span></button>
+                            <button class="order-btn">Order</button>
+                        </div>
+                        <button class="view-details-btn">View Details</button>
+                    `;
+                } else if (item.type === 'ad') {
+                    innerHtmlContent = `
+                        <img src="${item.imageUrl}" class="product-img" alt="${item.title}">
+                        <span class="sponsored-tag">Sponsored</span>
+                        <div class="product-info">
+                            <h4>${item.title}</h4>
+                            <p>${item.description ? item.description.substring(0, 70) + (item.description.length > 70 ? '...' : '') : ''}</p>
+                            <p class="seller-info">Category: ${item.category || 'N/A'}</p>
+                            <p class="seller-info">Advertiser: ${item.username} (${item.phone})</p>
+                        </div>
+                        <div class="like-order">
+                            <button class="like-btn" data-item-id="${item.id}" data-likes="${item.likes || 0}" data-item-type="${item.type}"><span class="material-icons">${item.likes > 0 ? 'favorite' : 'favorite_border'}</span><span class="like-count">${item.likes || 0}</span></button>
+                        </div>
+                        <button class="view-details-btn">View Details</button>
+                    `;
+                } else if (item.type === 'textPost') {
+                    card.style.backgroundColor = item.themeColor; // Apply theme color to card
+                    innerHtmlContent = `
+                        <p class="post-content">${item.content}</p>
+                        <p class="post-author">By: ${item.username}</p>
+                        <div class="like-order">
+                            <button class="like-btn" data-item-id="${item.id}" data-likes="${item.likes || 0}" data-item-type="${item.type}"><span class="material-icons">${item.likes > 0 ? 'favorite' : 'favorite_border'}</span><span class="like-count">${item.likes || 0}</span></button>
+                            <button class="comment-btn" data-item-id="${item.id}" data-item-type="${item.type}"><span class="material-icons">comment</span><span class="comment-count">${item.commentsCount || 0}</span></button>
+                        </div>
+                        <button class="view-details-btn" style="display: none;">View Details</button>
+                    `;
+                }
+
+                card.innerHTML = `
+                    ${innerHtmlContent}
+                    <div class="product-actions" style="display: none;">
+                        <button class="action-icon-btn edit-btn" data-item-id="${item.id}" data-item-type="${item.type}"><span class="material-icons">edit</span></button>
+                        <button class="action-icon-btn delete-btn" data-item-id="${item.id}" data-item-type="${item.type}"><span class="material-icons">delete</span></button>
+                    </div>
+                `;
+
+                // Show edit/delete buttons if logged-in user is the owner
+                const productActions = card.querySelector('.product-actions');
+                if (loggedInUser && item.userId === loggedInUser.id && productActions) {
+                    productActions.style.display = 'flex';
+                }
+
+                const viewDetailsBtn = card.querySelector('.view-details-btn');
+                if (viewDetailsBtn) {
+                    viewDetailsBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        showItemDetailsModal(item);
+                    };
+                }
+
+                const likeBtn = card.querySelector('.like-btn');
+                const likeIcon = likeBtn ? likeBtn.querySelector('.material-icons') : null;
+                const likeCount = likeBtn ? likeBtn.querySelector('.like-count') : null;
+
+                if (likeBtn) {
+                    likeBtn.onclick = function(e) {
+                        e.stopPropagation();
+                        if (!loggedInUser) {
+                            showTimedPopup('Register or Login to like items.');
+                            setTimeout(() => {
+                                if (loginModal) loginModal.classList.add('show');
+                            }, 3000);
+                            return;
+                        }
+
+                        let currentLikes = parseInt(likeBtn.dataset.likes);
+                        const itemId = likeBtn.dataset.itemId;
+                        const itemType = likeBtn.dataset.itemType;
+                        let items;
+                        if (itemType === 'product') items = JSON.parse(localStorage.getItem('products') || '[]');
+                        else if (itemType === 'ad') items = JSON.parse(localStorage.getItem('ads') || '[]');
+                        else if (itemType === 'textPost') items = JSON.parse(localStorage.getItem('textPosts') || '[]');
+
+                        const itemIndex = items.findIndex(p => p.id === itemId);
+
+                        if (itemIndex !== -1) {
+                            if (likeBtn.classList.contains('liked')) {
+                                currentLikes = Math.max(0, currentLikes - 1);
+                                likeBtn.classList.remove('liked');
+                                if (likeIcon) likeIcon.textContent = 'favorite_border';
+                            } else {
+                                currentLikes++;
+                                likeBtn.classList.add('liked');
+                                if (likeIcon) likeIcon.textContent = 'favorite';
+                                addNotification(`Your ${itemType} "${item.type === 'product' ? item.name : item.type === 'ad' ? item.title : item.content.substring(0,20) + '...'}" was liked!`);
+                            }
+                            if (likeCount) likeCount.textContent = currentLikes;
+                            likeBtn.dataset.likes = currentLikes;
+
+                            items[itemIndex].likes = currentLikes;
+                            if (itemType === 'product') localStorage.setItem('products', JSON.stringify(items));
+                            else if (itemType === 'ad') localStorage.setItem('ads', JSON.stringify(items));
+                            else if (itemType === 'textPost') localStorage.setItem('textPosts', JSON.stringify(items));
+                        }
+                    };
+                }
+
+                // New: Comment Button Handler for text posts
+                const commentBtn = card.querySelector('.comment-btn');
+                if (commentBtn) {
+                    commentBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        showItemDetailsModal(item); // Open details modal to view/add comments
+                    };
+                }
+
+
+                const orderBtn = card.querySelector('.order-btn');
+                if (orderBtn) {
+                    orderBtn.onclick = async function(e) {
+                        e.stopPropagation();
+                        if (!loggedInUser) {
+                            showTimedPopup('Register or Login to order products.');
+                            setTimeout(() => {
+                                if (loginModal) loginModal.classList.add('show');
+                            }, 3000);
+                            return;
+                        }
+                        const confirmed = await customConfirm('Are you sure you want to order this product?', 'Confirm Order');
+                        if (confirmed) {
+                            customAlert('Your order has been placed successfully! (This is a demo order and not actually processed.)', 'Order Placed');
+                            // Add a notification for the seller
+                            addNotification(`New order for your product "${item.name}" from ${loggedInUser.name}!`);
+                        }
+                    };
+                }
+
+                // Edit Button Handler
+                const editBtn = card.querySelector('.edit-btn');
+                if (editBtn) {
+                    editBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        editingItemId = item.id;
+                        editingItemType = item.type;
+                        clearAllErrors(); // Clear errors when opening edit modal
+
+                        if (item.type === 'product') {
+                            if (uploadModalTitle) uploadModalTitle.textContent = 'Edit Product';
+                            if (uploadProductSubmitBtn) uploadProductSubmitBtn.textContent = 'Update Product';
+                            if (productImageInput) productImageInput.value = ''; // Clear file input
+                            if (imagePreview) {
+                                imagePreview.src = item.imageUrl;
+                                imagePreview.style.display = 'block';
+                            }
+                            if (productNameInput) productNameInput.value = item.name;
+                            if (productDescriptionInput) productDescriptionInput.value = item.description;
+                            if (productCategorySelect) productCategorySelect.value = item.category;
+                            if (priceNaira) priceNaira.value = item.price;
+                            if (convertedPrice) convertedPrice.textContent = `≈ $${(item.price * NAIRA_TO_DOLLAR).toFixed(2)}`;
+                            if (uploadModal) uploadModal.classList.add('show');
+                        } else if (item.type === 'ad') {
+                            if (createAdModalTitle) createAdModalTitle.textContent = 'Edit Ad';
+                            if (createAdSubmitBtn) createAdSubmitBtn.textContent = 'Update Ad';
+                            if (adImageInput) adImageInput.value = ''; // Clear file input
+                            if (adImagePreview) {
+                                adImagePreview.src = item.imageUrl;
+                                adImagePreview.style.display = 'block';
+                            }
+                            if (adTitleInput) adTitleInput.value = item.title;
+                            if (adDescriptionInput) adDescriptionInput.value = item.description;
+                            if (adCategorySelect) adCategorySelect.value = item.category;
+                            if (adLocationInput) adLocationInput.value = item.location;
+                            if (adDurationInput) adAdDurationInput.value = item.durationDays;
+                            if (adBudgetInput) adBudgetInput.value = item.budgetNaira;
+                            if (createAdModal) createAdModal.classList.add('show');
+                        } else if (item.type === 'textPost') {
+                            if (textPostContentInput) textPostContentInput.value = item.content;
+                            // Select the correct color swatch
+                            colorPalette.querySelectorAll('.color-swatch').forEach(swatch => {
+                                swatch.classList.remove('selected');
+                                if (swatch.dataset.color === item.themeColor) {
+                                    swatch.classList.add('selected');
+                                    selectedThemeColor = item.themeColor;
+                                }
+                            });
+                            if (textPostModal) textPostModal.classList.add('show');
+                        }
+                    };
+                }
+
+                // Delete Button Handler
+                const deleteBtn = card.querySelector('.delete-btn');
+                if (deleteBtn) {
+                    deleteBtn.onclick = async (e) => {
+                        e.stopPropagation();
+                        const confirmed = await customConfirm(`Are you sure you want to delete this ${item.type}: "${item.type === 'product' ? item.name : item.type === 'ad' ? item.title : item.content.substring(0,20) + '...'}"?`, 'Delete Confirmation');
+                        if (confirmed) {
+                            let items;
+                            if (item.type === 'product') items = JSON.parse(localStorage.getItem('products') || '[]');
+                            else if (item.type === 'ad') items = JSON.parse(localStorage.getItem('ads') || '[]');
+                            else if (item.type === 'textPost') items = JSON.parse(localStorage.getItem('textPosts') || '[]');
+
+                            items = items.filter(i => i.id !== item.id);
+
+                            if (item.type === 'product') localStorage.setItem('products', JSON.stringify(items));
+                            else if (item.type === 'ad') localStorage.setItem('ads', JSON.stringify(items));
+                            else if (item.type === 'textPost') localStorage.setItem('textPosts', JSON.stringify(items));
+
+                            customAlert(`${item.type === 'product' ? 'Product' : item.type === 'ad' ? 'Ad' : 'Text Post'} deleted successfully!`, 'Deleted');
+                            renderAdsAndProducts(currentFilterCategory); // Re-render main feed
+                            if (profilePageContainer && profilePageContainer.classList.contains('show')) {
+                                renderUserProducts(currentViewingUser ? currentViewingUser.id : null); // Re-render profile products
+                            }
+                            if (adsFullPage && adsFullPage.classList.contains('show')) { // If on ads full page, refresh it
+                                renderOnlyAds();
+                            }
+                        }
+                    };
+                }
+
+                if (targetList) targetList.prepend(card);
+            }
+
+            if (closeItemDetailsModal) closeItemDetailsModal.onclick = () => itemDetailsModal.classList.remove('show');
+            if (itemDetailsModal) itemDetailsModal.onclick = e => { if (e.target === itemDetailsModal) itemDetailsModal.classList.remove('show'); };
+
+            // --- Commenting System (UI Only) ---
+            function renderComments(itemId, commentsListElement, itemType) {
+                // In a real app, you would fetch comments from a backend database
+                // For this frontend-only demo, comments are not persistent.
+                // We'll just display what's entered for the current session.
+                const comments = JSON.parse(sessionStorage.getItem(`comments_${itemType}_${itemId}`) || '[]');
+
+                if (commentsListElement) commentsListElement.innerHTML = '';
+                const noCommentsMessageDiv = commentsListElement.querySelector('div[style*="No comments yet"]');
+
+                if (comments.length === 0) {
+                     if (commentsListElement) commentsListElement.innerHTML = '<div style="text-align: center; color: #888;">No comments yet.</div>';
+                } else {
+                    comments.forEach(comment => {
+                        const commentItem = document.createElement('div');
+                        commentItem.className = 'comment-item';
+                        commentItem.innerHTML = `<strong>${comment.username}:</strong> ${comment.text}`;
+                        if (commentsListElement) commentsListElement.appendChild(commentItem);
+                    });
+                }
+                // Update comments count on the card
+                updateCommentCountOnCard(itemId, itemType, comments.length);
+            }
+
+            function updateCommentCountOnCard(itemId, itemType, count) {
+                const card = document.querySelector(`.product-card[data-id="${itemId}"][data-type="${itemType}"]`);
+                if (card) {
+                    const commentCountSpan = card.querySelector('.comment-count');
+                    if (commentCountSpan) {
+                        commentCountSpan.textContent = count;
+                    }
+                    // Also update the commentsCount in localStorage for persistence
+                    let items;
+                    if (itemType === 'product') items = JSON.parse(localStorage.getItem('products') || '[]');
+                    else if (itemType === 'ad') items = JSON.parse(localStorage.getItem('ads') || '[]');
+                    else if (itemType === 'textPost') items = JSON.parse(localStorage.getItem('textPosts') || '[]');
+
+                    const itemIndex = items.findIndex(p => p.id === itemId);
+                    if (itemIndex !== -1) {
+                        items[itemIndex].commentsCount = count;
+                        if (itemType === 'product') localStorage.setItem('products', JSON.stringify(items));
+                        else if (itemType === 'ad') localStorage.setItem('ads', JSON.stringify(items));
+                        else if (itemType === 'textPost') localStorage.setItem('textPosts', JSON.stringify(items));
+                    }
+                }
+            }
+
+
+            function postComment(itemId, commentInput, commentsListElement, itemType) {
+                if (!loggedInUser) {
+                    customAlert('Please log in to post comments.', 'Login Required');
+                    return;
+                }
+                const commentText = commentInput.value.trim();
+                if (commentText.length === 0) {
+                    customAlert('Comment cannot be empty.', 'Validation Error');
+                    return;
+                }
+
+                const newComment = {
+                    username: loggedInUser.name,
+                    text: commentText,
+                    timestamp: new Date().toISOString()
+                };
+
+                const comments = JSON.parse(sessionStorage.getItem(`comments_${itemType}_${itemId}`) || '[]');
+                comments.push(newComment);
+                sessionStorage.setItem(`comments_${itemType}_${itemId}`, JSON.stringify(comments)); // Use sessionStorage for non-persistent comments
+
+                commentInput.value = ''; // Clear input
+                renderComments(itemId, commentsListElement, itemType); // Re-render comments
+                // Find the item to get its name/title for the notification
+                let itemTitle = "";
+                if (itemType === 'product') {
+                    const products = JSON.parse(localStorage.getItem('products') || '[]');
+                    const product = products.find(p => p.id === itemId);
+                    if (product) itemTitle = product.name;
+                } else if (itemType === 'ad') {
+                    const ads = JSON.parse(localStorage.getItem('ads') || '[]');
+                    const ad = ads.find(a => a.id === itemId);
+                    if (ad) itemTitle = ad.title;
+                } else if (itemType === 'textPost') {
+                    const textPosts = JSON.parse(localStorage.getItem('textPosts') || '[]');
+                    const textPost = textPosts.find(t => t.id === itemId);
+                    if (textPost) itemTitle = textPost.content.substring(0, 20) + '...';
+                }
+                addNotification(`New comment on your ${itemType} "${itemTitle}" from ${loggedInUser.name}!`);
+            }
+
+
+            // --- Load All Products, Ads, and Text Posts for Main Feed with Optional Category Filter ---
+            function renderAdsAndProducts(category = 'All') {
+                const products = JSON.parse(localStorage.getItem('products') || '[]');
+                const ads = JSON.parse(localStorage.getItem('ads') || '[]');
+                const textPosts = JSON.parse(localStorage.getItem('textPosts') || '[]'); // New: Get text posts
+
+                let combinedFeed = [...products, ...ads, ...textPosts]; // Combine all types
+
+                if (category !== 'All') {
+                    combinedFeed = combinedFeed.filter(item => item.category === category || (item.type === 'textPost' && category === 'Other')); // Text posts can be filtered by 'Other' or 'All'
+                }
+
+                // Sort by timestamp (most recent first)
+                combinedFeed.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                if (productList) productList.innerHTML = ''; // Clear main product list
+                if (emptyProductListMessage) emptyProductListMessage.style.display = combinedFeed.length === 0 ? 'block' : 'none';
+
+                combinedFeed.forEach(item => {
+                    addCardToDOM(item, productList);
+                });
+            }
+
+            // --- Load ONLY Ads for the Ads Full Page ---
+            function renderOnlyAds() {
+                if (adsListContent) adsListContent.innerHTML = ''; // Clear ads list content
+                const ads = JSON.parse(localStorage.getItem('ads') || '[]');
+
+                if (emptyAdsListMessage) emptyAdsListMessage.style.display = ads.length === 0 ? 'block' : 'none';
+
+                ads.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Sort by most recent
+                ads.forEach(ad => {
+                    addCardToDOM(ad, adsListContent);
+                });
+            }
+
+
+            // --- Load Products, Ads, and Text Posts for a Specific User (for Profile Page) ---
+            function renderUserProducts(targetUserId) {
+                if (myProductsList) myProductsList.innerHTML = ''; // Clear my products list
+                if (!targetUserId) {
+                    if (emptyMyProductsMessage) emptyMyProductsMessage.style.display = 'block';
+                    return;
+                }
+
+                const allProducts = JSON.parse(localStorage.getItem('products') || '[]');
+                const allAds = JSON.parse(localStorage.getItem('ads') || '[]');
+                const allTextPosts = JSON.parse(localStorage.getItem('textPosts') || '[]'); // New
+
+                const userUploadedItems = [...allProducts, ...allAds, ...allTextPosts].filter(item => item.userId === targetUserId);
+                userUploadedItems.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Sort by most recent
+
+                if (emptyMyProductsMessage) emptyMyProductsMessage.style.display = userUploadedItems.length === 0 ? 'block' : 'none';
+
+                userUploadedItems.forEach(item => {
+                    addCardToDOM(item, myProductsList);
+                });
+            }
+
+            // --- Render All User Cards for the Users List Page ---
+            function renderUserCards() {
+                if (usersGrid) usersGrid.innerHTML = ''; // Clear previous user cards
+                const allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+
+                if (emptyUsersListMessage) emptyUsersListMessage.style.display = allUsers.length === 0 ? 'block' : 'none';
+
+                allUsers.forEach(user => {
+                    const userCard = document.createElement('div');
+                    userCard.className = 'user-card';
+                    userCard.innerHTML = `
+                        <img src="${user.profilePhoto || 'https://placehold.co/80x80/cccccc/333333?text=P'}" alt="${user.name}" class="user-profile-pic">
+                        <p class="user-name">${user.name}</p>
+                    `;
+                    userCard.onclick = () => showProfilePage(user); // Click to view user's profile
+                    if (usersGrid) usersGrid.appendChild(userCard);
+                });
+            }
+
+
+            // --- Default User Creation ---
+            function createDefaultUser() {
+                let allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]');
+                const defaultUsername = 'remarkablesamuel1@gmail.com';
+                const defaultPassword = 'schoolmate';
+
+                const defaultUserExists = allUsers.some(user => user.username === defaultUsername);
+
+                if (!defaultUserExists) {
+                    const defaultUser = {
+                        id: 'user_default_samuel',
+                        profilePhoto: 'https://placehold.co/80x80/9b23ea/ffffff?text=RS',
+                        name: 'Remarkable Samuel',
+                        phone: '08012345678',
+                        location: 'Lagos, Nigeria',
+                        accountNumber: '0012345678',
+                        accountName: 'Remarkable Samuel',
+                        bankName: 'First Bank',
+                        username: defaultUsername,
+                        password: defaultPassword,
+                        bio: 'Official support and test user for KnowEmpire Marketplace.',
+                        socialLink: 'https://twitter.com/RemarkableSamuel',
+                        following: []
+                    };
+                    allUsers.push(defaultUser);
+                    localStorage.setItem('allUsers', JSON.stringify(allUsers));
+                    console.log('Default user "Remarkable Samuel" created.');
+                }
+            }
+
+            // Call to create default user on load
+            createDefaultUser();
+
+            // Initial load of products and user when the page loads
+            loadLoggedInUser();
+            showMainContent(); // Initial render of combined feed with default filter
+
+            // Check for editProfile action from URL param (if coming back from profile page edit)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('action') === 'editProfile' && loggedInUser) {
+                if (signupModal) signupModal.classList.add('show');
+                if (profilePhotoPreview) profilePhotoPreview.src = loggedInUser.profilePhoto || 'https://placehold.co/80x80/cccccc/333333?text=P';
+                if (signupNameInput) signupNameInput.value = loggedInUser.name || '';
+                if (signupPhoneInput) signupPhoneInput.value = loggedInUser.phone || '';
+                if (signupLocationInput) signupLocationInput.value = loggedInUser.location || '';
+                if (signupAccountNumberInput) signupAccountNumberInput.value = loggedInUser.accountNumber || '';
+                if (signupAccountNameInput) signupAccountNameInput.value = loggedInUser.accountName || '';
+                if (signupBankNameInput) signupBankNameInput.value = loggedInUser.bankName || '';
+                if (signupUsernameInput) signupUsernameInput.value = loggedInUser.username || '';
+                if (signupPasswordInput) signupPasswordInput.value = loggedInUser.password || '';
+                window.history.replaceState({}, document.title, window.location.pathname); // Clear the URL parameter
+            }
+
+
+            // --- Search Functionality (integrated into status bar) ---
+            if (statusBarSearchInput) {
+                statusBarSearchInput.oninput = function() {
+                    renderSearchResults(statusBarSearchInput.value.trim().toLowerCase());
+                };
+            }
+
+            // This button now just focuses the search input
+            if (searchBtn) {
+                searchBtn.onclick = function() {
+                    if (statusBarSearchInput) statusBarSearchInput.focus();
+                };
+            }
+
+            function renderSearchResults(queryText) {
+                if (productList) productList.innerHTML = '';
+                if (queryText === '') {
+                    renderAdsAndProducts(currentFilterCategory); // Show all if query is empty
+                    return;
+                }
+
+                const products = JSON.parse(localStorage.getItem('products') || '[]');
+                const ads = JSON.parse(localStorage.getItem('ads') || '[]');
+                const textPosts = JSON.parse(localStorage.getItem('textPosts') || '[]'); // New
+
+                const combinedItems = [...products, ...ads, ...textPosts]; // Combine all types
+
+                const filteredItems = combinedItems.filter(item => {
+                    const itemName = item.type === 'product' ? item.name : item.type === 'ad' ? item.title : item.content;
+                    return (itemName && itemName.toLowerCase().includes(queryText)) ||
+                           (item.description && item.description.toLowerCase().includes(queryText)) ||
+                           (item.username && item.username.toLowerCase().includes(queryText)) ||
+                           (item.phone && item.phone.toLowerCase().includes(queryText)) ||
+                           (item.price && item.price.toString().includes(queryText)) ||
+                           (item.location && item.location.toLowerCase().includes(queryText)) || // Search ad location
+                           (item.category && item.category.toLowerCase().includes(queryText)); // Search by category
+                });
+
+                if (emptyProductListMessage) emptyProductListMessage.style.display = filteredItems.length === 0 ? 'block' : 'none';
+
+                filteredItems.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Sort by most recent
+                filteredItems.forEach(item => {
+                    addCardToDOM(item, productList);
+                });
+            }
+
+            // --- Category Filter Bar Logic ---
+            if (categoryFilterBar) {
+                categoryFilterBar.querySelectorAll('button').forEach(button => {
+                    button.onclick = function() {
+                        categoryFilterBar.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+                        currentFilterCategory = this.dataset.category;
+                        renderAdsAndProducts(currentFilterCategory); // Re-render with new filter
+                    };
+                });
+            }
+
+            // Clear Filters Button
+            if (clearFiltersBtn) {
+                clearFiltersBtn.onclick = () => {
+                    categoryFilterBar.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                    const allCategoryBtn = categoryFilterBar.querySelector('[data-category="All"]');
+                    if (allCategoryBtn) allCategoryBtn.classList.add('active');
+                    currentFilterCategory = 'All';
+                    statusBarSearchInput.value = ''; // Clear search input as well
+                    renderAdsAndProducts('All');
+                };
+            }
+
+
+            // --- Header and Navigation Button Placeholders ---
+            if (addBtn) addBtn.onclick = () => customAlert('Add Content', 'This button will allow you to add various types of content soon!');
+            if (chatBtn) chatBtn.onclick = () => showChatModal(); // Open chat modal
+            if (homeNavBtn) {
+                homeNavBtn.onclick = () => {
+                    showMainContent();
+                };
+            }
+            // adsNavBtn is now handled above for opening the ads full page
+            if (usersNavBtn) usersNavBtn.onclick = () => showUsersListPage(); // Show users list when this button is clicked
+            if (notificationsNavBtn) notificationsNavBtn.onclick = () => showNotificationsModal(); // Show notifications modal
+            if (menuNavBtn) menuNavBtn.onclick = () => customAlert('Menu', 'The main menu with more options is under development!');
+
+            // Test Notification Button
+            if (addTestNotificationBtn) {
+                addTestNotificationBtn.onclick = () => {
+                    addNotification(`A new product was added to the marketplace!`);
+                    addNotification(`Someone liked your post!`);
+                    addNotification(`You have a new message!`);
+                };
+            }
+
+            // Mark All Read Notifications
+            if (markAllReadBtn) {
+                markAllReadBtn.onclick = () => {
+                    const notifications = getNotifications();
+                    notifications.forEach(notif => notif.read = true);
+                    saveNotifications(notifications);
+                    renderNotifications();
+                    showTimedPopup('All notifications marked as read.');
+                };
+            }
+
+            // Clear All Notifications
+            if (clearAllNotificationsBtn) {
+                clearAllNotificationsBtn.onclick = async () => {
+                    const confirmed = await customConfirm('Are you sure you want to clear all notifications?', 'Clear Notifications');
+                    if (confirmed) {
+                        localStorage.removeItem('notifications');
+                        renderNotifications();
+                        showTimedPopup('All notifications cleared.');
+                    }
+                };
+            }
+
+            // --- Chat Functionality ---
+            const defaultBotUser = {
+                id: 'bot_support',
+                name: "KnowEmpire Support",
+                profilePhoto: "https://placehold.co/36x36/9b23ea/ffffff?text=S"
+            };
+
+            function getChatHistory() {
+                return JSON.parse(localStorage.getItem('chatHistory') || '[]');
+            }
+
+            function saveChatHistory(history) {
+                localStorage.setItem('chatHistory', JSON.stringify(history));
+            }
+
+            function addChatMessage(senderUser, message, type = 'text', status = 'sent') {
+                const chatHistory = getChatHistory();
+                const newMessage = {
+                    senderId: senderUser.id,
+                    senderName: senderUser.name,
+                    senderPhoto: senderUser.profilePhoto,
+                    message: message,
+                    type: type,
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    status: status // 'sent', 'delivered', 'read'
+                };
+                chatHistory.push(newMessage);
+                saveChatHistory(chatHistory);
+                renderChatMessages();
+
+                // Simulate status updates for sent messages
+                if (senderUser.id === (loggedInUser ? loggedInUser.id : null)) {
+                    setTimeout(() => {
+                        updateMessageStatus(newMessage, 'delivered');
+                    }, 1500); // Simulate delivery
+                    setTimeout(() => {
+                        updateMessageStatus(newMessage, 'read');
+                    }, 3000); // Simulate read
+                }
+            }
+
+            function updateMessageStatus(messageToUpdate, newStatus) {
+                const chatHistory = getChatHistory();
+                const index = chatHistory.findIndex(msg => msg === messageToUpdate); // Find by reference
+                if (index !== -1) {
+                    chatHistory[index].status = newStatus;
+                    saveChatHistory(chatHistory);
+                    renderChatMessages(); // Re-render to show updated status
+                }
+            }
+
+            function renderChatMessages() {
+                if (!chatMessages) return;
+                chatMessages.innerHTML = '';
+                const history = getChatHistory();
+
+                history.forEach(msg => {
+                    const messageBubble = document.createElement('div');
+                    messageBubble.classList.add('message-bubble');
+                    messageBubble.classList.add(msg.senderId === (loggedInUser ? loggedInUser.id : '') ? 'sent' : 'received');
+
+                    let contentHtml = '';
+                    if (msg.type === 'text') {
+                        contentHtml = `<div class="message-content">${msg.message}</div>`;
+                    } else if (msg.type === 'photo') {
+                        contentHtml = `<img src="${msg.message}" alt="Sent Image" class="message-image">`;
+                    } else if (msg.type === 'voice') {
+                        contentHtml = `<audio controls src="${msg.message}" class="message-audio"></audio>`;
+                    }
+
+                    const statusIconHtml = msg.senderId === (loggedInUser ? loggedInUser.id : '') ?
+                        `<span class="status-icon ${msg.status}"><span class="material-icons">${msg.status === 'read' ? 'done_all' : msg.status === 'delivered' ? 'done_all' : 'done'}</span></span>` : '';
+
+                    messageBubble.innerHTML = `
+                        <div class="sender-info">
+                            <img src="${msg.senderPhoto || 'https://placehold.co/30x30/cccccc/333333?text=P'}" alt="Profile" class="sender-profile-pic">
+                            <span class="sender-name">${msg.senderName}</span>
+                        </div>
+                        ${contentHtml}
+                        <div class="timestamp-and-status">
+                            <span class="timestamp">${msg.timestamp}</span>
+                            ${statusIconHtml}
+                        </div>
+                    `;
+                    chatMessages.appendChild(messageBubble);
+                });
+                // Scroll to the bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function botReply(userMessage) {
+                let reply = "I'm sorry, I don't understand that.";
+                const lowerCaseMessage = userMessage.toLowerCase();
+
+                if (lowerCaseMessage.includes("hello") || lowerCaseMessage.includes("hi")) {
+                    reply = "Hello there! How can I assist you today?";
+                } else if (lowerCaseMessage.includes("product") || lowerCaseMessage.includes("item")) {
+                    reply = "Are you looking for a specific product? You can use the search bar on the main page.";
+                } else if (lowerCaseMessage.includes("ad") || lowerCaseMessage.includes("advertise")) {
+                    reply = "You can create an ad by clicking the 'Storefront' icon in the navigation bar.";
+                } else if (lowerCaseMessage.includes("help") || lowerCaseMessage.includes("support")) {
+                    reply = "I'm here to help! What specific issue are you facing?";
+                } else if (lowerCaseMessage.includes("photo")) { // Simplified check for photo
+                    reply = "Got it! I received your photo. What would you like to discuss about it?";
+                } else if (lowerCaseMessage.includes("voice message")) { // Simplified check for voice
+                    reply = "Thanks for the voice message! How can I help with that?";
+                } else if (lowerCaseMessage.includes("thank you") || lowerCaseMessage.includes("thanks")) {
+                    reply = "You're welcome! Feel free to ask if you have more questions.";
+                } else {
+                    const genericReplies = [
+                        "I'm still learning, please ask me something else.",
+                        "Could you please rephrase that?",
+                        "I'm a bot, but I'll do my best to help!",
+                        "Is there anything else I can assist you with?"
+                    ];
+                    reply = genericReplies[Math.floor(Math.random() * genericReplies.length)];
+                }
+
+                setTimeout(() => {
+                    addChatMessage(defaultBotUser, reply);
+                }, 1000); // Simulate bot typing delay
+            }
+
+            if (sendTextBtn) {
+                sendTextBtn.onclick = () => {
+                    const message = chatTextInput.value.trim();
+                    if (message && loggedInUser) {
+                        addChatMessage(loggedInUser, message, 'text', 'sent');
+                        botReply(message);
+                        chatTextInput.value = '';
+                    } else if (!loggedInUser) {
+                        customAlert('Please log in to send messages.', 'Login Required');
+                    }
+                };
+                chatTextInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendTextBtn.click();
+                    }
+                });
+            }
+
+            // Photo sending logic
+            if (sendPhotoBtn) {
+                sendPhotoBtn.onclick = () => {
+                    if (!loggedInUser) {
+                        customAlert('Please log in to send photos.', 'Login Required');
+                        return;
+                    }
+                    chatPhotoInput.click(); // Trigger hidden file input
+                };
+            }
+
+            if (chatPhotoInput) {
+                chatPhotoInput.onchange = function() {
+                    const file = chatPhotoInput.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            addChatMessage(loggedInUser, e.target.result, 'photo', 'sent');
+                            botReply("photo"); // Trigger bot reply for photo
+                            chatPhotoInput.value = ''; // Clear input
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+            }
+
+            // Voice message recording logic
+            let mediaRecorder;
+            let audioChunks = [];
+            let isRecording = false;
+
+            if (sendVoiceBtn) {
+                sendVoiceBtn.addEventListener('mousedown', startRecording);
+                sendVoiceBtn.addEventListener('mouseup', stopRecording);
+                sendVoiceBtn.addEventListener('touchstart', startRecording); // For touch devices
+                sendVoiceBtn.addEventListener('touchend', stopRecording);   // For touch devices
+
+                function startRecording(e) {
+                    e.preventDefault(); // Prevent default touch behavior (e.g., scrolling)
+                    if (!loggedInUser) {
+                        customAlert('Please log in to send voice messages.', 'Login Required');
+                        return;
+                    }
+                    if (isRecording) return;
+                    isRecording = true;
+                    sendVoiceBtn.classList.add('recording');
+                    audioChunks = [];
+
+                    navigator.mediaDevices.getUserMedia({ audio: true })
+                        .then(stream => {
+                            mediaRecorder = new MediaRecorder(stream);
+                            mediaRecorder.ondataavailable = event => {
+                                audioChunks.push(event.data);
+                            };
+                            mediaRecorder.onstop = () => {
+                                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                                const audioUrl = URL.createObjectURL(audioBlob);
+                                addChatMessage(loggedInUser, audioUrl, 'voice', 'sent');
+                                botReply("voice message"); // Trigger bot reply for voice
+                                stream.getTracks().forEach(track => track.stop()); // Stop microphone access
+                            };
+                            mediaRecorder.start();
+                            showTimedPopup('Recording voice message...', 2000);
+                        })
+                        .catch(err => {
+                            console.error('Error accessing microphone:', err);
+                            customAlert('Could not access microphone. Please ensure permissions are granted.', 'Microphone Error');
+                            isRecording = false;
+                            sendVoiceBtn.classList.remove('recording');
+                        });
+                }
+
+                function stopRecording() {
+                    if (mediaRecorder && mediaRecorder.state === 'recording') {
+                        mediaRecorder.stop();
+                        isRecording = false;
+                        sendVoiceBtn.classList.remove('recording');
+                    }
+                }
+            }
+
+
+            // Initialize chat history if empty (add initial bot message)
+            if (getChatHistory().length === 0) {
+                addChatMessage(defaultBotUser, "Welcome to KnowEmpire chat! How can I help you today?", 'text');
+            }
+        });
