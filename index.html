@@ -2193,21 +2193,6 @@
                 <div class="preview-container">
                     <img id="imagePreview" class="image-preview" src="" alt="Image Preview" style="display: none;">
                 </div>
-                <input type="text" id="productName" placeholder="Product Name" required>
-                <span class="error-message" id="productNameError"></span>
-                <textarea id="productDescription" placeholder="Product Description" rows="3" required></textarea>
-                <button type="button" class="ai-button" id="enhanceDescriptionBtn">✨ Enhance Description</button>
-                <span class="error-message" id="productDescriptionError"></span>
-                <select id="productCategory" required>
-                    <option value="">Select Category</option>
-                    <option value="Electronics">Electronics</option>
-                    <option value="Fashion">Fashion</option>
-                    <option value="Home">Home & Garden</option>
-                    <option value="Vehicles">Vehicles</option>
-                    <option value="Services">Services</option>
-                    <option value="Other">Other</option>
-                </select>
-                <span class="error-message" id="productCategoryError"></span>
                 <input type="number" id="priceNaira" placeholder="Price in Naira (₦)" required>
                 <span class="error-message" id="priceNairaError"></span>
                 <div class="converted-price" id="convertedPrice"></div>
@@ -2629,7 +2614,7 @@
             const productImageInput = document.getElementById('productImage');
             const imagePreview = document.getElementById('imagePreview');
             const productNameInput = document.getElementById('productName'); // New
-            const productDescriptionInput = document.getElementById('productDescription'); // New
+            // Removed productDescriptionInput
             const productCategorySelect = document.getElementById('productCategory'); // New
             const priceNaira = document.getElementById('priceNaira');
             const convertedPrice = document.getElementById('convertedPrice');
@@ -2763,7 +2748,7 @@
             const signupUsernameError = document.getElementById('signupUsernameError');
             const signupPasswordError = document.getElementById('signupPasswordError');
             const productNameError = document.getElementById('productNameError');
-            const productDescriptionError = document.getElementById('productDescriptionError');
+            // Removed productDescriptionError
             const productCategoryError = document.getElementById('productCategoryError');
             const priceNairaError = document.getElementById('priceNairaError');
             const adTitleError = document.getElementById('adTitleError');
@@ -3611,7 +3596,7 @@
                 };
             }
             if (productNameInput) productNameInput.oninput = () => validateField(productNameInput, productNameError, val => val.length > 0, 'Product Name is required.');
-            if (productDescriptionInput) productDescriptionInput.oninput = () => validateField(productDescriptionInput, productDescriptionError, val => val.length > 0, 'Description is required.');
+            // Removed productDescriptionInput validation
             if (productCategorySelect) productCategorySelect.onchange = () => validateField(productCategorySelect, productCategoryError, val => val.length > 0, 'Category is required.');
 
 
@@ -4628,7 +4613,8 @@
             // adsNavBtn is now handled above for opening the ads full page
             if (usersNavBtn) usersNavBtn.onclick = () => showUsersListPage(); // Show users list when this button is clicked
             if (notificationsNavBtn) notificationsNavBtn.onclick = () => showNotificationsModal(); // Show notifications modal
-            if (menuNavBtn) menuNavBtn.onclick = () => customAlert('Menu', 'The main menu with more options is under development!');
+            if (menuNavBtn) menuNavBtn.onclick = () => { window.location.href = 'menu.html'; };
+            if (menuNavBtn) menuNavBtn.onclick = () => { window.location.href = 'menu.html'; };
 
             // Test Notification Button
             if (addTestNotificationBtn) {
