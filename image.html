@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Remarkable Shopping</title>
+    <style>
+        body {
+            background-color: #f7f7fa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .image-welcome-container {
+            text-align: center;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        .logo-img {
+            width: 180px;
+            height: 180px;
+            object-fit: contain;
+            margin-bottom: 32px;
+        }
+        .brand-text {
+            font-size: 2rem;
+            color: #9b23ea;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .sub-text {
+            font-size: 1.1rem;
+            color: #7a1bb7;
+            opacity: 0.85;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="image-welcome-container">
+        <img src="remark.png" alt="Welcome Logo" class="logo-img">
+        <div class="brand-text">Welcome to Remarkable Shopping</div>
+        <div class="sub-text">Your journey to extraordinary shopping starts here!</div>
+    </div>
+    <script>
+        // Redirect to main.html after 2 seconds
+        setTimeout(function() {
+            window.location.href = "main.html";
+        }, 2000);
+    </script>
+</body>
+</html>
