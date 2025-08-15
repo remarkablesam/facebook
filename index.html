@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remarkable Shopping - Welcome</title>
+    <style>
+        body {
+            background-color: #f7f7fa;
+            color: #9b23ea; /* Brand purple */
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .welcome-container {
+            text-align: center;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            color: #9b23ea;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: textFadeUp 1.2s 0.2s forwards;
+        }
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            opacity: 0;
+            color: #7a1bb7;
+            animation: textFadeUp 1.2s 0.7s forwards;
+        }
+        @keyframes textFadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .loader {
+            width: 150px;
+            height: 5px;
+            background-color: #e5d6f7;
+            border-radius: 10px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        .loader-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #9b23ea;
+            border-radius: 10px;
+            animation: loading 3s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes loading {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <h1>Remarkable Shopping</h1>
+        <p class="tagline">Discover the Extraordinary</p>
+        <div class="loader">
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+    <script>
+        // Redirect to image welcome page after 3 seconds
+        setTimeout(function() {
+            window.location.href = "image.html";
+        }, 3000);
+    </script>
+</body>
+</html>
