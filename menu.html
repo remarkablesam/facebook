@@ -4,89 +4,318 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            background: #f7f7fa;
-            font-family: 'Segoe UI', Arial, sans-serif;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
         .menu-container {
-            max-width: 400px;
-            margin: 60px auto;
+            max-width: 420px;
+            width: 100%;
             background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            padding: 32px 24px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 36px 28px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 28px;
+            background: none;
+            border: none;
+            color: #9b23ea;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .back-btn:hover {
+            background: rgba(155, 35, 234, 0.1);
+            transform: translateX(-5px);
+        }
+
         .menu-title {
             text-align: center;
             color: #9b23ea;
-            margin-bottom: 32px;
-            font-size: 2rem;
+            margin-bottom: 36px;
+            font-size: 2.4rem;
+            font-weight: 700;
+            position: relative;
         }
+
+        .menu-title::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #9b23ea, #7a1bb7);
+            border-radius: 2px;
+        }
+
         .menu-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
+
         .menu-list li {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+            opacity: 0;
+            animation: slideUp 0.5s ease forwards;
         }
+
+        .menu-list li:nth-child(1) { animation-delay: 0.1s; }
+        .menu-list li:nth-child(2) { animation-delay: 0.2s; }
+        .menu-list li:nth-child(3) { animation-delay: 0.3s; }
+        .menu-list li:nth-child(4) { animation-delay: 0.4s; }
+        .menu-list li:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .menu-btn {
             width: 100%;
-            padding: 14px;
+            padding: 16px 20px;
             border: none;
-            border-radius: 8px;
-            background: #9b23ea;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #9b23ea, #7a1bb7);
             color: #fff;
-            font-size: 1.1em;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(155, 35, 234, 0.3);
         }
+
         .menu-btn:hover {
-            background: #7a1bb7;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(155, 35, 234, 0.4);
         }
-        .back-btn {
-            display: block;
-            margin: 0 auto 24px auto;
-            background: none;
-            border: none;
-            color: #9b23ea;
-            font-size: 1.2em;
+
+        .menu-btn:active {
+            transform: translateY(1px);
+        }
+
+        .menu-btn i {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-btn:hover i {
+            transform: translateX(5px);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: slideDown 0.4s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
             cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .close:hover {
+            color: #9b23ea;
+        }
+
+        .modal-header {
+            color: #9b23ea;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-body {
+            color: #444;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .modal-body p {
+            margin-bottom: 12px;
+        }
+
+        .modal-body a {
+            color: #9b23ea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .modal-body a:hover {
+            color: #7a1bb7;
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 36px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #888;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
     <div class="menu-container">
-        <button class="back-btn" onclick="window.history.back()">&larr; Back</button>
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
         <div class="menu-title">Menu</div>
         <ul class="menu-list">
-            <li><button class="menu-btn" id="logoutBtn">Logout</button></li>
-            <li><button class="menu-btn" id="faqBtn">FAQ</button></li>
-            <li><button class="menu-btn" id="supportBtn">Support</button></li>
-            <li><button class="menu-btn" id="contactBtn">Contact Developer</button></li>
-            <li><button class="menu-btn" id="dedicationBtn">Dedication</button></li>
+            <li><button class="menu-btn" id="logoutBtn">Logout <i class="fas fa-sign-out-alt"></i></button></li>
+            <li><button class="menu-btn" id="faqBtn">FAQ <i class="fas fa-question-circle"></i></button></li>
+            <li><button class="menu-btn" id="supportBtn">Support <i class="fas fa-headset"></i></button></li>
+            <li><button class="menu-btn" id="contactBtn">Contact Developer <i class="fas fa-envelope"></i></button></li>
+            <li><button class="menu-btn" id="dedicationBtn">Dedication <i class="fas fa-heart"></i></button></li>
         </ul>
+        <div class="footer">
+            © 2023 KnowEmpire. All rights reserved.
+        </div>
     </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header" id="modal-title"></div>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
     <script>
+        // Modal functionality
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const closeBtn = document.querySelector('.close');
+
+        function showModal(title, content) {
+            modalTitle.textContent = title;
+            modalBody.innerHTML = content;
+            modal.style.display = 'block';
+        }
+
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Button event handlers
         document.getElementById('logoutBtn').onclick = function() {
-            localStorage.removeItem('loggedInUser');
-            alert('You have been logged out.');
-            window.location.href = 'index.html';
+            showModal('Logout', '<p>You have been logged out successfully.</p><p>Redirecting to login page...</p>');
+            setTimeout(function() {
+                localStorage.removeItem('loggedInUser');
+                window.location.href = 'index.html';
+            }, 2000);
         };
+
         document.getElementById('faqBtn').onclick = function() {
-            alert('FAQ: \n\n1. How do I use KnowEmpire?\n2. How do I post a product?\n3. How do I contact support?\n\nMore coming soon!');
+            showModal('Frequently Asked Questions', 
+                '<p><strong>1. How do I use KnowEmpire?</strong></p>' +
+                '<p>KnowEmpire is designed to be intuitive. Simply navigate through the menu to access different features.</p>' +
+                '<p><strong>2. How do I post a product?</strong></p>' +
+                '<p>Go to the "Products" section and click on "Add New Product". Fill in the required details and submit.</p>' +
+                '<p><strong>3. How do I contact support?</strong></p>' +
+                '<p>You can contact our support team through the Support option in this menu.</p>' +
+                '<p>More FAQs will be added soon!</p>');
         };
+
         document.getElementById('supportBtn').onclick = function() {
-            alert('Support: \n\nFor support, please email support@knowempire.com or use the in-app chat.');
+            showModal('Support', 
+                '<p>Our support team is here to help you!</p>' +
+                '<p><strong>Email:</strong> <a href="mailto:support@knowempire.com">support@knowempire.com</a></p>' +
+                '<p><strong>In-App Chat:</strong> Available during business hours (9 AM - 6 PM EST)</p>' +
+                '<p>Response time: Within 24 hours on business days.</p>');
         };
+
         document.getElementById('contactBtn').onclick = function() {
-            alert('Contact Developer: \n\nEmail: remarkable.samuel1@gmail.com\nTwitter: @RemarkableSamuel');
+            showModal('Contact Developer', 
+                '<p><strong>Developer:</strong> Samuel</p>' +
+                '<p><strong>Email:</strong> <a href="mailto:remarkable.samuel1@gmail.com">remarkable.samuel1@gmail.com</a></p>' +
+                '<p><strong>Twitter:</strong> <a href="https://twitter.com/RemarkableSamuel" target="_blank">@RemarkableSamuel</a></p>' +
+                '<p>Feel free to reach out with feedback, suggestions, or collaboration opportunities!</p>');
         };
+
         document.getElementById('dedicationBtn').onclick = function() {
-            alert('Dedication: \n\nThis project is dedicated to all passionate learners and creators.');
+            showModal('Dedication', 
+                '<p>This project is dedicated to all passionate learners and creators who strive to make a difference in the world.</p>' +
+                '<p>Special thanks to the open-source community and everyone who contributed to this project.</p>' +
+                '<p>Keep learning, keep creating, and keep inspiring!</p>');
         };
     </script>
 </body>
